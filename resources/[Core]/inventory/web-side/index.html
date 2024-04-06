@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
+  <link rel="stylesheet" href="css.css">
+</head>
+<body style="display: none;">
+
+  <main>
+
+
+    <inventory>
+
+      <div class="Header">
+        <h1>inventário</h1>
+      </div>
+
+      <section class="invLeft"></section>
+    </inventory>
+
+
+
+    <inventoryActions>
+      
+      <input class="amount" placeholder="QTD" type="number" onKeyPress="if (this.value.length==9) return false;" />
+      <div class="use" id="inventoryActionsButton">Usar</div>
+
+      <div class="send" id="inventoryActionsButton">DROPAR</div>
+
+    </inventoryActions>
+
+    <inventory style="display: none;">
+      <section class="invRight"></section>
+    </inventory>
+
+  </main>
+
+
+  <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+  <script src="jquery.js"></script>
+</body>
+</html>

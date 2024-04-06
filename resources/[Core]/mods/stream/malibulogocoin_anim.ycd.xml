@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClipDictionary>
+ <Clips>
+  <Item>
+   <Hash>malibulogocoin</Hash>
+   <Name>pack:/malibulogocoin.clip</Name>
+   <Type value="Animation" />
+   <Unknown30 value="1" />
+   <Tags />
+   <Properties>
+    <Item>
+     <NameHash>hash_BF6A5D60</NameHash>
+     <UnkHash>hash_996C3B27</UnkHash>
+     <Attributes>
+      <Item>
+       <NameHash>hash_BF6A5D60</NameHash>
+       <Type value="Int" />
+       <Value value="32" />
+      </Item>
+     </Attributes>
+    </Item>
+   </Properties>
+   <AnimationHash>malibulogocoin</AnimationHash>
+   <StartTime value="0" />
+   <EndTime value="50" />
+   <Rate value="1" />
+  </Item>
+ </Clips>
+ <Animations>
+  <Item>
+   <Hash>malibulogocoin</Hash>
+   <Unknown10 value="1" />
+   <FrameCount value="33" />
+   <SequenceFrameLimit value="47" />
+   <Duration value="50" />
+   <Unknown1C>hash_D63D1860</Unknown1C>
+   <BoneIds>
+    <Item>
+     <BoneId value="0" />
+     <Track value="0" />
+     <Unk0 value="0" />
+    </Item>
+    <Item>
+     <BoneId value="1" />
+     <Track value="0" />
+     <Unk0 value="0" />
+    </Item>
+    <Item>
+     <BoneId value="0" />
+     <Track value="1" />
+     <Unk0 value="1" />
+    </Item>
+    <Item>
+     <BoneId value="1" />
+     <Track value="1" />
+     <Unk0 value="1" />
+    </Item>
+   </BoneIds>
+   <Sequences>
+    <Item>
+     <Hash>hash_651CFC2F</Hash>
+     <FrameCount value="33" />
+     <SequenceData>
+      <Item>
+       <Channels>
+        <Item>
+         <Type value="StaticVector3" />
+         <Value x="0" y="0" z="0" />
+        </Item>
+       </Channels>
+      </Item>
+      <Item>
+       <Channels>
+        <Item>
+         <Type value="StaticVector3" />
+         <Value x="0" y="-0.014" z="0" />
+        </Item>
+       </Channels>
+      </Item>
+      <Item>
+       <Channels>
+        <Item>
+         <Type value="StaticQuaternion" />
+         <Value x="0" y="0" z="0" w="1" />
+        </Item>
+       </Channels>
+      </Item>
+      <Item>
+       <Channels>
+        <Item>
+         <Type value="StaticFloat" />
+         <Value value="-8.742278E-08" />
+        </Item>
+        <Item>
+         <Type value="StaticFloat" />
+         <Value value="-2.4869E-14" />
+        </Item>
+        <Item>
+         <Type value="QuantizeFloat" />
+         <Quantum value="0.00048852" />
+         <Offset value="-1" />
+         <Values>
+          4.76837158E-07 -0.0981920362 -0.19491899 -0.2901804 -0.382510722 -0.471421361 -0.555446744 -0.634587049 -0.70688796 -0.7728382
+          -0.8314606 -0.8817782 -0.9237909 -0.957010269 -0.980947733 -0.9951148 -1 -0.9951148 -0.980947733 -0.957010269
+          -0.9237909 -0.8817782 -0.8314606 -0.7728382 -0.70688796 -0.634587049 -0.555446744 -0.471421361 -0.382510722 -0.2901804
+          -0.19491899 -0.0981920362 4.76837158E-07
+         </Values>
+        </Item>
+        <Item>
+         <Type value="QuantizeFloat" />
+         <Quantum value="0.0004884005" />
+         <Offset value="-1" />
+         <Values>
+          1 0.9951161 0.9809525 0.9570209 0.923809648 0.8818072 0.831501961 0.7728939 0.706959844 0.6341882
+          0.5555557 0.4715507 0.382661819 0.290354133 0.195116043 0.09792435 -0.000244140625 -0.09792423 -0.195115924 -0.290354073
+          -0.38266176 -0.471550643 -0.5555555 -0.634188056 -0.7069597 -0.7728938 -0.831501842 -0.8818071 -0.9238095 -0.95702076
+          -0.9809524 -0.995116 -1
+         </Values>
+        </Item>
+        <Item>
+         <Type value="CachedQuaternion2" />
+         <QuatIndex value="0" />
+        </Item>
+       </Channels>
+      </Item>
+     </SequenceData>
+    </Item>
+   </Sequences>
+  </Item>
+ </Animations>
+</ClipDictionary>

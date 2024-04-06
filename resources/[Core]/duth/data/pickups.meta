@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CPickupDataManager>
+  <pickupData>
+
+	<Item type="CPickupData">
+		<Name>PICKUP_AMMO_PISTOLLUIZ</Name>
+		<Model>prop_ld_ammo_pack_01</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+  <Item type="CPickupData">
+		<Name>PICKUP_WEAPON_PARAFAL</Name>
+		<Model>w_ar_parafal</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+
+  <Item type="CPickupData">
+		<Name>PICKUP_ENERGETICO</Name>
+		<Model>prop_energy_drink</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+
+    <Item type="CPickupData">
+		<Name>PICKUP_AIRDROP</Name>
+		<Model>prop_box_ammo07a</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+
+
+	<Item type="CPickupData">
+		<Name>PICKUP_AMMO_SMGLUIZ</Name>
+		<Model>prop_ld_ammo_pack_01</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+
+		<Item type="CPickupData">
+		<Name>PICKUP_ATTACHS_PT</Name>
+		<Model>w_at_pi_comp_2</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+	<Item type="CPickupData">
+		<Name>PICKUP_AMMO_SMGLUIZ</Name>
+		<Model>prop_ld_ammo_pack_01</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+	<Item type="CPickupData">
+		<Name>PICKUP_AMMO_RIFLELUIZ</Name>
+		<Model>prop_ld_ammo_pack_03</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+	<Item type="CPickupData">
+	  	<Name>PICKUP_AMMO_MG</Name>
+	  	<Model>prop_ld_ammo_pack_02</Model>
+    <GenerationRange value="80.000000" />
+    <RegenerationTime value="60.000000" />
+	  	<CollectionRadiusFirstPerson value="2.000000" />
+	  <CollectionRadius value="1.000000" />
+	  	<Scale value="1.000000" />
+	  	<LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+	  	<GlowRed value="1.000000" />
+	  	<GlowGreen value="0.225000" />
+	  	<GlowBlue value="0.000000" />
+	  	<GlowIntensity value="0.500000" />
+	  	<DarkGlowIntensity value="0.500000" />
+	  	<MPGlowIntensity value="0.500000" />
+	  	<MPDarkGlowIntensity value="0.500000" />
+	  	<GlowRange value="2.000000" />
+	  	<AttachmentBone>BONETAG_ROOT</AttachmentBone>
+	  	<AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+	  	<AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+	  	<PickupFlags>CollectableOnFoot ManualPickUp</PickupFlags>
+	  	<OnFootPickupActions>
+	  		<Item>ACTION_GROUP_ONFOOT</Item>
+	  		<Item>ACTION_AUDIO_AMMO_BULLET_MP</Item>
+	  	</OnFootPickupActions>
+	  	<InCarPickupActions />
+	  	<OnShotPickupActions />
+	  	<Rewards>
+	  		<Item>REWARD_AMMO_MG</Item>
+	  	</Rewards>
+	</Item>
+	<Item type="CPickupData">
+	  	<Name>PICKUP_AMMO_SHOTGUNLUIZ</Name>
+	  	<Model>prop_ld_ammo_pack_02</Model>
+      <GenerationRange value="80.000000" />
+      <RegenerationTime value="60.000000" />
+      <CollectionRadiusFirstPerson value="2.000000" />
+    <CollectionRadius value="1.000000" />
+      <Scale value="1.000000" />
+      <LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+      <GlowRed value="0.000000" />
+      <GlowGreen value="1.000000" />
+      <GlowBlue value="0.200000" />
+      <GlowIntensity value="0.500000" />
+      <DarkGlowIntensity value="0.500000" />
+      <MPGlowIntensity value="0.500000" />
+      <MPDarkGlowIntensity value="0.500000" />
+      <GlowRange value="2.000000" />
+      <AttachmentBone>BONETAG_ROOT</AttachmentBone>
+      <AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+      <AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+      <PickupFlags>CollectableOnFoot</PickupFlags>
+      <OnFootPickupActions>
+    <Item>ACTION_GROUP_ONFOOT</Item>
+        <Item>ACTION_AUDIO_HEALTH_STANDARDLUIZ</Item>
+      </OnFootPickupActions>
+      <InCarPickupActions />
+      <OnShotPickupActions />
+      <Rewards>
+        <Item>REWARD_HEALTH</Item>
+        <Item>REWARD_STAT_HEALTH</Item>
+      </Rewards>
+	</Item>
+	<Item type="CPickupData">
+	  	<Name>PICKUP_AMMO_SNIPER</Name>
+	  	<Model>prop_ld_ammo_pack_02</Model>
+    <GenerationRange value="80.000000" />
+    <RegenerationTime value="60.000000" />
+	  	<CollectionRadiusFirstPerson value="2.000000" />
+	  <CollectionRadius value="1.000000" />
+	  	<Scale value="1.000000" />
+	  	<LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+	  	<GlowRed value="1.000000" />
+	  	<GlowGreen value="0.225000" />
+	  	<GlowBlue value="0.000000" />
+	  	<GlowIntensity value="0.500000" />
+	  	<DarkGlowIntensity value="0.500000" />
+	  	<MPGlowIntensity value="0.500000" />
+	  	<MPDarkGlowIntensity value="0.500000" />
+	  	<GlowRange value="2.000000" />
+	  	<AttachmentBone>BONETAG_ROOT</AttachmentBone>
+	  	<AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+	  	<AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+	  	<PickupFlags>CollectableOnFoot ManualPickUp</PickupFlags>
+	  	<OnFootPickupActions>
+	  		<Item>ACTION_GROUP_ONFOOT</Item>
+	  		<Item>ACTION_AUDIO_AMMO_BULLET_MP</Item>
+	  	</OnFootPickupActions>
+	  	<InCarPickupActions />
+	  	<OnShotPickupActions />
+	  	<Rewards>
+	  		<Item>REWARD_AMMO_SNIPERRIFLE</Item>
+	  	</Rewards>
+	</Item>
+	<Item type="CPickupData">
+	  	<Name>PICKUP_AMMO_GRENADELAUNCHER</Name>
+	  	<Model>prop_ld_ammo_pack_02</Model>
+    <GenerationRange value="80.000000" />
+    <RegenerationTime value="60.000000" />
+	  	<CollectionRadiusFirstPerson value="2.000000" />
+	  <CollectionRadius value="1.000000" />
+	  	<Scale value="1.000000" />
+	  	<LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+	  	<GlowRed value="1.000000" />
+	  	<GlowGreen value="0.225000" />
+	  	<GlowBlue value="0.000000" />
+	  	<GlowIntensity value="0.500000" />
+	  	<DarkGlowIntensity value="0.500000" />
+	  	<MPGlowIntensity value="0.500000" />
+	  	<MPDarkGlowIntensity value="0.500000" />
+	  	<GlowRange value="2.000000" />
+	  	<AttachmentBone>BONETAG_ROOT</AttachmentBone>
+	  	<AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+	  	<AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+	  	<PickupFlags>CollectableOnFoot ManualPickUp</PickupFlags>
+	  	<OnFootPickupActions>
+	  		<Item>ACTION_GROUP_ONFOOT</Item>
+	  		<Item>ACTION_AUDIO_AMMO_BULLET_MP</Item>
+	  	</OnFootPickupActions>
+	  	<InCarPickupActions />
+	  	<OnShotPickupActions />
+	  	<Rewards>
+	  		<Item>REWARD_AMMO_GRENADELAUNCHER</Item>
+	  	</Rewards>
+	</Item>
+	<Item type="CPickupData">
+	  	<Name>PICKUP_AMMO_RPG</Name>
+	  	<Model>prop_ld_ammo_pack_02</Model>
+    <GenerationRange value="80.000000" />
+    <RegenerationTime value="60.000000" />
+	  	<CollectionRadiusFirstPerson value="2.000000" />
+	  <CollectionRadius value="1.000000" />
+	  	<Scale value="1.000000" />
+	  	<LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+	  	<GlowRed value="1.000000" />
+	  	<GlowGreen value="0.225000" />
+	  	<GlowBlue value="0.000000" />
+	  	<GlowIntensity value="0.500000" />
+	  	<DarkGlowIntensity value="0.500000" />
+	  	<MPGlowIntensity value="0.500000" />
+	  	<MPDarkGlowIntensity value="0.500000" />
+	  	<GlowRange value="2.000000" />
+	  	<AttachmentBone>BONETAG_ROOT</AttachmentBone>
+	  	<AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+	  	<AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+	  	<PickupFlags>CollectableOnFoot ManualPickUp</PickupFlags>
+	  	<OnFootPickupActions>
+	  		<Item>ACTION_GROUP_ONFOOT</Item>
+	  		<Item>ACTION_AUDIO_AMMO_BULLET_MP</Item>
+	  	</OnFootPickupActions>
+	  	<InCarPickupActions />
+	  	<OnShotPickupActions />
+	  	<Rewards>
+	  		<Item>REWARD_AMMO_RPG</Item>
+	  	</Rewards>
+	</Item>
+	<Item type="CPickupData">
+	  	<Name>PICKUP_AMMO_MINIGUN</Name>
+	  	<Model>prop_ld_ammo_pack_02</Model>
+    <GenerationRange value="80.000000" />
+    <RegenerationTime value="60.000000" />
+	  	<CollectionRadiusFirstPerson value="2.000000" />
+	  <CollectionRadius value="1.000000" />
+	  	<Scale value="1.000000" />
+	  	<LoopingAudioRef>NULL_SOUND</LoopingAudioRef>
+	  	<GlowRed value="1.000000" />
+	  	<GlowGreen value="0.225000" />
+	  	<GlowBlue value="0.000000" />
+	  	<GlowIntensity value="0.500000" />
+	  	<DarkGlowIntensity value="0.500000" />
+	  	<MPGlowIntensity value="0.500000" />
+	  	<MPDarkGlowIntensity value="0.500000" />
+	  	<GlowRange value="2.000000" />
+	  	<AttachmentBone>BONETAG_ROOT</AttachmentBone>
+	  	<AttachmentOffset x="0.000000" y="0.000000" z="0.000000" />
+	  	<AttachmentRotation x="0.000000" y="0.000000" z="0.000000" />
+	  	<PickupFlags>CollectableOnFoot ManualPickUp</PickupFlags>
+	  	<OnFootPickupActions>
+	  		<Item>ACTION_GROUP_ONFOOT</Item>
+	  		<Item>ACTION_AUDIO_AMMO_BULLET_MP</Item>
+	  	</OnFootPickupActions>
+	  	<InCarPickupActions />
+	  	<OnShotPickupActions />
+	  	<Rewards>
+	  		<Item>REWARD_AMMO_MINIGUN</Item>
+	  	</Rewards>
+	</Item>
+
+
+  </pickupData>
+</CPickupDataManager>

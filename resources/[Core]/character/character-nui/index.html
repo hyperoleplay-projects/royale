@@ -1,0 +1,407 @@
+﻿<html>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="style.css">
+	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css'>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+	<script src="vue.js"></script>
+	<body>
+		<div class="b1" id="app" v-show="CharacterMode" style="display: none;">
+
+			<div class="fm-b">
+				<p>Nome do Personagem</p>
+				<div class="fm-b_main">
+					<input type="text" id="characterName" v-model="characterNome" maxlength="15" @input="changeAppearance">
+				</div>
+			</div>
+
+			<div class="fm-b">
+				<p>{{ i18n.gender }}</p>
+				<div class="fm-b_main">
+					<div class="fm-b_arrow" @click="changeGender"><i class="fas fa-caret-left"></i></div>
+					<div class="fm-b_name">{{ genderNames[gender] }}</div>
+					<div class="fm-b_arrow" @click="changeGender"><i class="fas fa-caret-right"></i></div>
+				</div>
+			</div>
+
+			<div class="fm-b">
+				<p>{{ i18n.father }}</p>
+				<div class="fm-b_main">
+					<div class="fm-b_arrow" @click="prevFather"><i class="fas fa-caret-left"></i></div>
+					<div class="fm-b_name">{{ fatherNames[father] }}</div>
+					<div class="fm-b_arrow" @click="nextFather"><i class="fas fa-caret-right"></i></div>
+				</div>
+			</div>
+
+			<div class="fm-input-b">
+				<input type="range" min="0.0" max="1.0" step="0.1" v-model.number="shapeMix" list="my-detents" @input="changeAppearance">
+			</div>
+
+			<div class="fm-b">
+				<p>{{ i18n.mother }}</p>
+				<div class="fm-b_main">
+					<div class="fm-b_arrow" @click="prevMother"><i class="fas fa-caret-left"></i></div>
+					<div class="fm-b_name">{{ motherNames[mother] }}</div>
+					<div class="fm-b_arrow" @click="nextMother"><i class="fas fa-caret-right"></i></div>
+				</div>
+			</div>
+	
+			<div class="fm-b">
+				<p>{{ i18n.skinCol }}</p>
+				<div class="fm-b_main">
+					<input type="range" min="0" max="12" step="1" v-model.number="skinColor" @input="changeAppearance">
+				</div>
+			</div>
+
+			<div class="fm-b">
+				<p>{{ i18n.rot }}</p>
+				<div class="fm-b_main">
+					<input type="range" min="0" max="360" step="2" v-model.number="camRotation" @input="changeCamRotation">
+				</div>
+			</div>
+	
+			<div class="b1-done" @click="done">
+				{{ i18n.next }}
+			</div>
+		</div>
+
+		<div class="b1" id="app2" v-show="CharacterMode2" style="display: none;">
+			<div class="b1-face-item" style="margin-top: 2vmin">
+				<p>{{ i18n.rot }}</p>
+				<input type="range" min="0" max="360" step="2" v-model.number="camRotation" @input="changeCamRotation">
+			</div>
+		
+
+			<div class="b1-face-item">
+				<p>Altura Sobrancelhas ({{ eyebrowsHeight }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="eyebrowsHeight" @input="changeAppearance">
+			</div>
+			<div class="b1-face-item">
+				<p>Tamanho Sobrancelhas ({{ eyebrowsWidth }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="eyebrowsWidth" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Tamanho Nariz ({{ noseWidth }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="noseWidth" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Altura Nariz ({{ noseHeight }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="noseHeight" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Tamanho Nariz ({{ noseLength }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="noseLength" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Ponte Nasal ({{ noseBridge }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="noseBridge" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Ponta do Nariz ({{ noseTip }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="noseTip" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Altura Bochechas ({{ cheekboneHeight }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="cheekboneHeight" @input="changeAppearance">
+			</div>
+			<div class="b1-face-item">
+				<p>Largura Bochechas ({{ cheekboneWidth }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="cheekboneWidth" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Tamanho Bochechas ({{ cheeksWidth }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="cheeksWidth" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Lábios ({{ lips }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="lips" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Largura Mandíbula ({{ jawWidth }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="jawWidth" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Altura Mandíbula ({{ jawHeight }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="jawHeight" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Tamanho Queixo ({{ chinLength }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="chinLength" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Posição Queixo ({{ chinPosition }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="chinPosition" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Tamanho Queixo ({{ chinWidth }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="chinWidth" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Forma do Queixo ({{ chinShape }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="chinShape" @input="changeAppearance">
+			</div>
+
+			<div class="b1-face-item">
+				<p>Largura Pescoço ({{ neckWidth }})</p>
+				<input type="range" min="-1.0" max="0.99" step="0.01" v-model.number="neckWidth" @input="changeAppearance">
+			</div>
+
+			<div class="Modal-Buttons">
+				<div class="Modal-Button" @click="back">
+					{{ i18n.back }}
+				</div>
+				<div class="Modal-Button color2" @click="exit">
+					{{ i18n.save }}
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
+
+
+<script>
+
+function checkName(str) {
+	return !(/^[a-z A-Z]*$/g.test(str));
+}
+
+$(document).on('keyup', '#characterName', function(e) {
+	let name = $('#characterName').val();
+	if (checkName(name.trim()) || (name.match(/\s/g) && name.match(/\s/g).length > 1) || name.trim().length < 2 || name.trim().length > 15) {
+		$('#characterName').css('border', '2px solid rgb(230, 30, 30)');
+	} else {
+		$('#characterName').css('border', 'none');
+	}
+});
+
+const app = new Vue({
+	el: '#app',
+	data: {
+		CharacterMode: false,
+		characterNome: "",
+		gender: 0,
+		genderNames: ["Masculino", "Feminino"],
+		father: 0,
+		mother: 0,
+		fatherNames: ["Benjamin", "Daniel", "Joshua", "Noah", "Andrew", "Juan", "Alex", "Isaac", "Evan", "Ethan", "Vincent", "Angel", "Diego", "Adrian", "Gabriel", "Michael", "Santiago", "Kevin", "Louis", "Samuel", "Anthony", "Claude", "Niko", "John"],
+		motherNames: ["Hannah", "Aubrey", "Jasmine", "Gisele", "Amelia", "Isabella", "Zoe", "Ava", "Camila", "Violet", "Sophia", "Evelyn", "Nicole", "Ashley", "Gracie", "Brianna", "Natalie", "Olivia", "Elizabeth", "Charlotte", "Emma", "Misty"],
+		fathersID: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 42, 43, 44],
+		mothersID: [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 45],
+		skinColor: 6,
+		shapeMix: 0.5,
+		camRotation: 180,
+
+		i18n: {
+			gender: "Gênero",
+			father: "Pai",
+			mother: "Mãe",
+			skinCol: "Cor da Pele",
+			rot: "Rotação",
+			save: "Salvar",
+			next: "Continuar",
+		},
+		
+	},
+	methods: {
+		OpenCharacterMode: function() {
+			this.CharacterMode = true
+		},
+		CloseCharacterMode: function() {
+			this.CharacterMode = false
+		},
+		prevFather: function() {
+			if (this.father === 0) this.father = 23;
+			else this.father--;
+			this.changeAppearance();
+		},	
+		nextFather: function() {
+			if (this.father === 23) this.father = 0;
+			else this.father++;
+			this.changeAppearance();
+		},	
+		prevMother: function() {
+			if (this.mother === 0) this.mother = 21;
+			else this.mother--;
+			this.changeAppearance();
+		},	
+		nextMother: function() {
+			if (this.mother === 21) this.mother = 0;
+			else this.mother++;
+			this.changeAppearance();
+		},	
+		changeAppearance: function() {
+			const arr = {
+				characterNome: this.characterNome.trim(),
+				fathersID: this.fathersID[this.father],
+				mothersID: this.mothersID[this.mother], 
+				skinColor: this.skinColor,
+				shapeMix: this.shapeMix,
+			};
+			//mp.trigger("cCharCreator-UpdateSkinOptions", JSON.stringify(arr));
+			$.post('http://character/UpdateSkinOptions', JSON.stringify(arr));
+
+		},	
+		changeGender: function() {
+			if (this.gender === 1) {
+				this.gender = 0;
+			} else {
+				this.gender = 1
+			};
+			//mp.trigger("cMisc-CallServerEvent", "sCharCreator-ChangeGender", this.gender);
+			$.post('http://character/ChangeGender', JSON.stringify({ gender: this.gender }));
+			this.changeAppearance();
+		},	
+		changeCamRotation: function() {
+			//mp.trigger("cChangeHeading", this.camRotation);
+			$.post('http://character/cChangeHeading', JSON.stringify({ camRotation: this.camRotation }));
+
+		},
+		done: function() {
+			const arr = [
+				this.characterNome.trim(),
+				this.fathersID[this.father],
+				this.mothersID[this.mother], 
+				this.skinColor,  
+				this.shapeMix,
+			];
+
+			if (checkName(this.characterNome.trim())) return;
+			if (name.match(/\s/g) && name.match(/\s/g).length > 1) return;
+			if (this.characterNome.trim().length < 2) return;
+			if (this.characterNome.trim().length > 15) return;
+
+			$.post('http://character/cDone');
+			//mp.trigger("cMisc-CallServerEvent", "sCharCreator-SaveSkinOptions", JSON.stringify(arr));
+			//mp.trigger("cCharCreator-LoadWindowTwo");
+		},
+	}
+});
+
+app.changeAppearance();
+
+
+const app2 = new Vue({
+	el: '#app2',
+	data: {
+		CharacterMode2: false,
+		camRotation: 180,
+
+		// FaceData -- Default Settings
+		eyesColor: 0,
+		eyebrowsHeight: 0.0,
+		eyebrowsWidth: 0.0,
+		noseWidth: 0.0,
+		noseHeight: 0.0,
+		noseLength: 0.0,
+		noseBridge: 0.0,
+		noseTip: 0.0,
+		noseShift: 0.0,
+		cheekboneHeight: 0.0,
+		cheekboneWidth: 0.0,
+		cheeksWidth: 0.0,
+		lips: 0.0,
+		jawWidth: 0.0,
+		jawHeight: 0.0,
+		chinLength: 0.0,
+		chinPosition: 0.0,
+		chinWidth: 0.0,
+		chinShape: 0.0,
+		neckWidth: 0.0,
+		// End
+
+		i18n: {
+			rot: "Rotação",
+			next: "Continuar",
+			save: "Salvar",
+			back: "Voltar",
+		},
+	},
+	methods: {
+		OpenCharacterMode: function() {
+			this.CharacterMode2 = true
+		},
+		CloseCharacterMode: function() {
+			this.CharacterMode2 = false
+		},
+		changeAppearance: function() {
+			const arr = {
+				eyesColor: this.eyesColor,
+
+				eyebrowsHeight: this.eyebrowsHeight,
+				eyebrowsWidth: this.eyebrowsWidth,
+
+				noseWidth: this.noseWidth,
+				noseHeight: this.noseHeight,
+				noseLength: this.noseLength,
+				noseBridge: this.noseBridge,
+				noseTip: this.noseTip,
+				noseShift: this.noseShift,
+
+				cheekboneHeight: this.cheekboneHeight,
+				cheekboneWidth: this.cheekboneWidth,
+				cheeksWidth: this.cheeksWidth,
+				lips: this.lips,
+				jawWidth: this.jawWidth,
+				jawHeight: this.jawHeight,
+				chinLength: this.chinLength,
+				chinPosition: this.chinPosition,
+				chinWidth: this.chinWidth,
+				chinShape: this.chinShape,
+				neckWidth: this.neckWidth,
+			};
+			//mp.trigger("cCharCreator-UpdateSkinOptions", JSON.stringify(arr));
+			$.post('http://character/UpdateFaceOptions', JSON.stringify(arr));
+
+		},	
+		changeCamRotation: function() {
+			//mp.trigger("cChangeHeading", this.camRotation); 
+			$.post('http://character/cChangeHeading', JSON.stringify({ camRotation: this.camRotation }));
+		},
+		back: function() {
+			//mp.trigger("cMisc-CallServerEvent", "sCharCreator-SaveFaceOptions", JSON.stringify(this.facedata));
+			//mp.trigger("cCloseCefAndDestroyCam");
+			$.post('http://character/BackPart1');
+		},
+		exit: function() {
+			//mp.trigger("cMisc-CallServerEvent", "sCharCreator-SaveFaceOptions", JSON.stringify(this.facedata));
+			//mp.trigger("cCloseCefAndDestroyCam");
+			$.post('http://character/cDoneSave');
+		},
+	}
+});
+
+app2.changeAppearance();
+
+
+// Listen for NUI Events
+window.addEventListener('message', function(event){
+	var item = event.data;
+	if (item.CharacterMode == true) {
+		app.OpenCharacterMode()
+	}
+	else if (item.CharacterMode == false) {
+		app.CloseCharacterMode()
+	}
+	if (item.CharacterMode2 == true) {
+		app2.OpenCharacterMode()
+	}
+	else if (item.CharacterMode2 == false) {
+		app2.CloseCharacterMode()
+	}
+});
+
+</script>

@@ -1,0 +1,422 @@
+@import url('http://fonts.cdnfonts.com/css/akrobat');
+
+@font-face {
+	font-family: "TT Lakes";
+	src: url("./fonts/ttlakes.eot");
+	/* IE9*/
+	src: url("./fonts/ttlakes.eot?#iefix") format("embedded-opentype"),
+		/* IE6-IE8 */
+		url("./fonts/ttlakes.woff2") format("woff2"),
+		/* chrome、firefox */
+		url("./fonts/ttlakes.woff") format("woff"),
+		/* chrome、firefox */
+		url("./fonts/ttlakes.ttf") format("truetype"),
+		/* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+		url("./fonts/ttlakes.svg") format("svg");
+	/* iOS 4.1- */
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Montserrat";
+}
+
+html,
+body {
+	margin: 0;
+	height: 100%;
+	overflow: hidden;
+	/* background-color: #2e6e4c; */
+}
+
+.console {
+	color: red;
+	background-color: white;
+}
+
+.wprompt {
+	width: 476px;
+	height: 216px;
+
+	background: rgba(17, 17, 17, 0.9);
+	border: 1px solid rgba(255, 255, 255, 0.01);
+	border-radius: 10px;
+
+	display: none;
+	flex-direction: column;
+
+	position: absolute;
+	padding: 10px;
+
+	font-family: "Montserrat";
+	color: #fff;
+
+	user-select: none;
+}
+
+.wprompt header {
+	width: 100%;
+	height: 56px;
+
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	background: rgba(255, 255, 255, 0.011);
+	border: 1px solid rgba(255, 255, 255, 0.03);
+	border-radius: 6px;
+
+	margin-bottom: 10px;
+	padding-inline: 10px;
+}
+
+.wprompt header img {
+	width: 100px;
+}
+
+.wprompt header div.wprompt-title {
+	min-width: 162px;
+	width: fit-content;
+	height: 35px;
+
+	padding-inline: 10px;
+	background: linear-gradient(65.13deg, rgba(245, 175, 0, 0.8) -6.69%, rgba(245, 175, 0, 0.4) 53.29%), rgba(17, 17, 17, 0.85);
+	opacity: 0.66;
+	border: 0.835637px solid rgb(245, 175, 0);
+	border-radius: 6px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.wprompt h1 {
+	font-family: 'TT LAKES';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 12px;
+	letter-spacing: .3px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.wprompt textarea {
+	box-sizing: border-box;
+	flex: 1;
+	resize: none;
+	padding: 10px;
+	
+	width: 100%;
+	
+	font-family: 'TT LAKES';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 13px;
+	line-height: 14px;
+	color: #ccc;
+	
+	background: rgba(255, 255, 255, 0.011);
+	outline: none !important;
+	border: none !important;
+	border-radius: 6px;
+
+	accent-color: rgb(245, 175, 0);
+}
+
+::selection {
+	background-color: rgb(245, 175, 0);
+	color: #fff;
+}
+
+.wprompt textarea:focus {
+	outline: none !important;
+}
+
+.wprompt .help {
+	margin: 0 auto;
+
+	font-family: 'TT Lakes';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 11px;
+	line-height: 14px;
+
+	padding-top: 20px;
+	padding-bottom: 10px;
+
+	color: rgba(255, 255, 255, 0.15);
+}
+
+#deathScreen {
+	display: none;
+	font-family: "TT Lakes";
+	position: absolute;
+	left: 50%;
+	bottom: 50px;
+	/* display: flex; */
+	color: #fff;
+	font-size: 11px;
+	font-weight: 600;
+	text-align: center;
+	letter-spacing: 1px;
+	align-items: center;
+	white-space: nowrap;
+	flex-direction: column;
+	justify-content: center;
+	text-transform: uppercase;
+	transform: translate(-50%, 0);
+	background: linear-gradient(65.13deg, rgba(245, 175, 0, 0.8) -6.69%, rgba(245, 175, 0, 0.4) 53.29%), rgba(17, 17, 17, 0.85);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+	border-radius: 5px;
+}
+
+#deathScreen #key {
+	width: 2.1rem;
+	height: 2.1rem;
+	display: inline-block;
+	padding: 4px 4px;
+	align-items: center;
+	margin-bottom: 15px;
+	justify-content: center;
+	animation: pulse-green 2s infinite;
+	margin: 0;
+	background: rgba(17, 17, 17, 0.15);
+	border: 1px solid rgba(17, 17, 17, 0.05);
+	box-shadow: 0 0 0 0 rgb(17 17 17 / 5%);
+	border-radius: 3px;
+	margin: 0.5rem;
+}
+
+#deathScreen #key>div {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	border-radius: 100%;
+	justify-content: center;
+	text-transform: uppercase;
+	/* border: 2px solid rgba(255, 255, 255, 0.2); */
+	font-family: "TT Lakes";
+	font-style: normal;
+	font-weight: 700;
+	font-size: 18px;
+	line-height: 24px;
+	text-align: center;
+	color: #ffffff;
+}
+
+#deathScreen b {
+	color: #ffffff;
+	text-shadow: 0px 0px 7px #00000066;
+	margin-left: 3px;
+}
+
+#deathScreen span {
+	float: right;
+	margin: 1.1rem 1rem 1rem 0.5rem;
+	font-family: "TT Lakes";
+	font-style: normal;
+	font-weight: 500;
+	font-size: 11px;
+	line-height: 15px;
+	display: flex;
+	align-items: center;
+	text-align: center;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.55);
+}
+
+#identityDiv {
+	top: 175px;
+	right: 50px;
+	color: #ccc;
+	float: right;
+	display: none;
+	max-width: 345px;
+	border-radius: 3px;
+	position: absolute;
+	padding: 10px 20px 20px;
+	text-shadow: 1px 1px #000;
+	border-left: 5px solid #12AC5A;
+	background: rgba(15, 15, 15, .75);
+}
+
+.identityLeft {
+	color: #666;
+	float: left;
+	width: 175px;
+	font-size: 11px;
+	margin-top: 10px;
+	line-height: 15px;
+}
+
+.identityRight {
+	color: #777;
+	float: left;
+	width: 150px;
+	font-size: 11px;
+	margin-top: 10px;
+	line-height: 15px;
+	margin-left: 15px;
+}
+
+.identityLeft r,
+.identityRight r {
+	color: #fff;
+	font-size: 13px;
+	letter-spacing: 1px;
+	font-family: "Saira";
+}
+
+.requestManager {
+	position: absolute;
+	left: 50%;
+	bottom: 130px;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	transform: translate(-50%, 0);
+}
+
+.requestManager .request {
+	position: relative;
+	padding: 20px;
+	border-radius: 5px;
+	padding-bottom: 25px;
+	background: linear-gradient(65.13deg, rgba(245, 175, 0, 0.8) -6.69%, rgba(245, 175, 0, 0.4) 53.29%), rgba(17, 17, 17, 0.85);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.requestManager .request .bar {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	width: 100px;
+	height: 3px;
+	border-radius: 30px;
+	background-color: rgba(255, 255, 255, 0.11);
+}
+
+.requestManager .request .bar .fill {
+	width: 100%;
+	height: 100%;
+	border-radius: 30px;
+	background-color: rgb(245, 175, 0);
+}
+
+/* .requestManager .request::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	width: 2px;
+	left: -1px;
+	height: 60%;
+	border-radius: 30px;
+	background-color: #12AC5A;
+	transform: translate(0,-50%);
+} */
+
+.requestManager .title {
+	width: 100%;
+	display: flex;
+	margin-right: 30px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.requestManager .title .column {
+	display: flex;
+	align-items: center;
+}
+
+.requestManager .title .column i {
+	color: #fff;
+	font-size: 25px;
+}
+
+.requestManager .title .column p {
+	display: flex;
+	color: #fff;
+	font-size: 12px;
+	margin-left: 10px;
+	flex-direction: column;
+	text-transform: uppercase;
+}
+
+.requestManager .title .column p span {
+	font-weight: 600;
+	margin-bottom: 2px;
+}
+
+.requestManager .title .column p small {
+	opacity: .5;
+	font-size: 8px;
+	font-weight: 300;
+	letter-spacing: 1px;
+}
+
+.requestManager .title .column .btn {
+	display: flex;
+	border-radius: 6px;
+	margin-right: 10px;
+	align-items: center;
+	background: rgba(17, 17, 17, 0.15);
+}
+
+.requestManager .title .column .btn .mark {
+	width: 25px;
+	height: 25px;
+	display: flex;
+	color: #fff;
+	font-size: 10px;
+	font-weight: 600;
+	border-radius: 6px;
+	align-items: center;
+	justify-content: center;
+	background:  rgb(245, 175, 0);
+}
+
+.requestManager .title .column .btn button {
+	border: 0;
+	width: 55px;
+	color: #fff;
+	outline: none;
+	padding: 5px 0;
+	font-size: 7px;
+	font-weight: bold;
+	padding-right: 5px;
+	border-radius: 30px;
+	letter-spacing: .5px;
+	background-size: cover;
+	text-transform: uppercase;
+	background-color: transparent;
+}
+
+/* .requestManager .title .column .btn:last-child {
+	background: #1d1d1dbe;
+} */
+
+/* .requestManager .title .column .btn:last-child .mark {
+	background: rgba(17, 17, 17, 0.15);
+	border: 1px solid rgba(17, 17, 17, 0.05);
+	box-shadow: 0 0 0 0 rgb(17 17 17 / 5%);
+} */
+
+.requestManager #text {
+	font-size: 9px;
+	max-width: 450px;
+	margin-top: 15px;
+	color: #dbdbdb;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.option:nth-child(1) {
+	background-color:  rgb(245, 175, 0);
+}
+
+.option:nth-child(2) {
+	background-color: #ff5959b1;
+}
