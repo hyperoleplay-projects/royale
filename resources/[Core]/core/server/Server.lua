@@ -890,6 +890,7 @@ ApiController.loadUserData = function(source)
         description = "#"..user_id.." "..identity.username.."",
     })
     
+    print('Setando o JoinLobby para o Client')
     ApiController.sendPlayerEvent(source, "JoinLobby", {})
     -- DiscordSync.UpdateDiscord(source)
     ApiController.SetupGroup(source, user_id)
