@@ -1,2 +1,2 @@
 @echo off
-start ./build/FXServer.exe +exec server.cfg
+start ./artifacts/FXServer.exe +exec server.cfg

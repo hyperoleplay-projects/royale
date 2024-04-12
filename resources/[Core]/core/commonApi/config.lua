@@ -1,6 +1,6 @@
 Config = {}
 Config.MinPlayers = 64
-Config.StartTime = 60
+Config.StartTime = 5
 
 Config.gamemodesList = {
     ["solo"] = {

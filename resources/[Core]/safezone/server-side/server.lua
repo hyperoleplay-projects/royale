@@ -40,6 +40,8 @@ function BR:Safe(Game)
     local gameId = Game.gameId
 
     if BR.BaseZone[gameId] and not BR.Zone[gameId] and os.time() >= BR.StartTime[gameId] + BR.StartZone[gameId] then
+        print('PASSOU AQUI 1')
+
         BR.ZoneRadius[gameId] = BR.ZoneRadius[gameId] / 2
         BR.Zone[gameId] = BR.BaseZone[gameId] - GenerateCenterPoint(BR.ZoneRadius[gameId])
        
@@ -60,12 +62,16 @@ function BR:Safe(Game)
             end
         end
     elseif BR.Zone[gameId] and not BR.ZoneTime[gameId] then
+        print('PASSOU AQUI 2')
+
         BR.ZoneTime[gameId] = os.time()
         BR.ZoneTimer[gameId] = BR.IntervalZone[gameId]
         
         local SafeTeste = false
        
         Citizen.SetTimeout(60000, function()
+            print('PASSOU AQUI 3')
+
             for _, playerObject in pairs(BR.Players[gameId]) do 
                 if playerObject.source and not Player(playerObject.source).state.finishGameUI and (BR.Players[gameId][playerObject.user_id] ~= nil) then
                     if not SafeTeste then
@@ -88,6 +94,8 @@ function BR:Safe(Game)
             end
         end)
     elseif BR.ZoneCount[gameId] < BR.MaxZones[gameId] and BR.ZoneTime[gameId] and BR.ZoneTime[gameId] + BR.ZoneTimer[gameId] <= os.time() then
+        print('PASSOU AQUI 4')
+
         BR.ZoneTime[gameId] = false
         BR.ZoneTimer[gameId] = false
         BR.ZoneRadius[gameId] = BR.ZoneRadius[gameId] / 2
@@ -110,6 +118,8 @@ function BR:Safe(Game)
                 })
             end
         end
+
+        print('PASSOU AQUI 5')
 
         BR.ZoneCount[gameId] = BR.ZoneCount[gameId] + 1
     end

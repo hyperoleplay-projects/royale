@@ -1,9 +1,7 @@
 txData/
 db/
-bot/
 cache/
-addons/
-build/
+artifacts/
 node_modules/
 .DS_Store
 .rar 
