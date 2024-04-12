@@ -171,6 +171,7 @@ end
 -- JoinLobby - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientApiEvents.JoinLobby = function() 
+    print('SETADO COMO TRUE')
     LocalPlayer.state.inLobbyPrincipal = true
     LocalPlayer.state.Buttons = true
     LocalPlayer.state.inDashboard = false 

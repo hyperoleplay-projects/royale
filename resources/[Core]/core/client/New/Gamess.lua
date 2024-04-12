@@ -317,6 +317,7 @@ clientEvents.StartGameClient = function(data)
 
     LocalPlayer.state.inDashboard = false
     LocalPlayer.state.inGameLobby = false
+    print('SETADO COMO FALSE')
     LocalPlayer.state.inLobbyPrincipal = false
 
     -- Da god no jogador
