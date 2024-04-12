@@ -781,9 +781,18 @@ AddEventHandler('onResourceStop', function(resourceName)
                 DeleteVehicle(vehicle) 
             end
         end
-
-        serverAPI.loadUserData()
 	end
+end)
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- onResourceStart - Event
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddEventHandler('onResourceStart', function(resourceName)
+	if resourceName ~= GetCurrentResourceName() then
+        return
+	end
+
+    serverAPI.loadUserData()
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- StopLoots - Function

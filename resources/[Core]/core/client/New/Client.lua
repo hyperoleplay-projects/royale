@@ -798,20 +798,27 @@ end
 RegisterCommand("+openDashboard", function() 
     local pedId = PlayerId()
 
+    print(1)
     if LocalPlayer.state.inLobbyPrincipal then
+        print(2)
         LocalPlayer.state.inDashboard = true
         DeleteEnitys()
         
         cam.CreateCamLobby1("CAM_LOBBY1")
         cam.CreateCamLobby("CAM_LOBBY2")
         
+        print(3)
         clientApiEvents.BuildPeds({}, false)
         clientApiEvents.BuildGroup({}, false)
+        print(4)
         toggleNuiFrame(true, '/dashboard/home')
         
+        print(5)
         SendReactMessage('buildLogoMidle', false)
+        print(6)
         AddKeyHelp({ status = false })
         
+        print(7)
         DisablePlayerFiring(PlayerPedId(), false)
         exports["vrp"]:ResetCrouch()
         controllerApi.sendServerEvent('ExitLobby', { })

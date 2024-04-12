@@ -1203,6 +1203,7 @@ end
 RegisterServerEvent("UpdateCreateAccount")
 AddEventHandler("UpdateCreateAccount", function(typee)
     local source = source
+    
     ApiController.loadUserData(source)
 end)
 
