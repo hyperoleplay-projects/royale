@@ -171,8 +171,15 @@ end
 -- JoinLobby - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientApiEvents.JoinLobby = function() 
-    print('SETADO COMO TRUE')
     LocalPlayer.state.inLobbyPrincipal = true
+
+    Citizen.CreateThread(function()
+        while true do
+            print(LocalPlayer.state.inLobbyPrincipal)
+            Wait(1000) 
+        end
+    end)
+
     LocalPlayer.state.Buttons = true
     LocalPlayer.state.inDashboard = false 
     LocalPlayer.state.inGame = false 
