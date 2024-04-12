@@ -849,6 +849,8 @@ end
 --  loadUserData - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 ApiController.loadUserData = function(source) 
+    Citizen.Wait(10000)
+
     print('Etapas loadUserData', 1)
     local user_id = vRP.getUserId(source)
 	local identity = vRP.getIdentity(user_id)
