@@ -1210,6 +1210,69 @@ RegisterCommand('game-play', function(source)
     TriggerClientEvent('test:startGameForced', -1)
 end)
 
+RegisterNetEvent('test:startGameForced', function(data)
+    local source = source
+    local user_id = vRP.getUserId(source)
+
+    local gameMode = ""
+    local playerCount = Groups[Player(source).state.teamCode].playersCount
+    
+    if data.Gamemode == "SOLO" then
+        if playerCount == 1 then
+            gameMode = "solo"
+        else
+            return
+        end
+    elseif data.Gamemode == "DUO" then
+        if playerCount == 2 or playerCount == 1 then
+            gameMode = "duo"
+        else
+            return
+        end
+    elseif data.Gamemode == "SQUAD" then
+        if playerCount >= 3 and playerCount <= 4 or playerCount == 1 or playerCount == 2 then
+            gameMode = "squad"
+        else
+            return
+        end
+    end
+    
+    if not GameController.GetGamesForType(gameMode) then
+        local gameId = GameController.HostGame(gameMode, 'player').gameId
+        
+        for k,v in pairs(Groups[Player(source).state.teamCode].players) do
+            if not Player(v.source).state.inQueue and not Player(v.source).state.inGame then
+                Player(v.source).state.inQueue = true
+                Player(v.source).state.gameId = gameId
+                GameController.JoinGame(gameId, {
+                    source = v.source,
+                    user_id = v.user_id,
+                    username = v.username,
+                    team = Player(v.source).state.teamCode,
+                })
+            end
+            Wait(1)
+        end
+    else
+        local gameId = GameController.GetGamesForType(gameMode)
+
+        for k,v in pairs(Groups[Player(source).state.teamCode].players) do
+            if not Player(v.source).state.inQueue and not Player(v.source).state.inGame then
+                Player(v.source).state.inQueue = true
+                Player(v.source).state.gameId = gameId
+
+                GameController.JoinGame(gameId, {
+                    source = v.source,
+                    user_id = v.user_id,
+                    username = v.username,
+                    team = Player(v.source).state.teamCode,
+                })
+            end
+            Wait(1)
+        end
+    end
+end)
+
 RegisterServerEvent("UpdateCreateAccount")
 AddEventHandler("UpdateCreateAccount", function(typee)
     local source = source

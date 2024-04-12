@@ -434,7 +434,7 @@ RegisterNUICallback('PlayButton', function(data, cb)
 end)
 
 RegisterNetEvent('test:startGameForced', function()
-    controllerApi.sendServerEvent('Play', { type = "Start", Gamemode = "SOLO" })
+    TriggerServerEvent('test:startGameForced', { type = "Start", Gamemode = "SOLO" })
 end)
 -----------------------------------------------------------------------------------------
 -- noDamage - Function
