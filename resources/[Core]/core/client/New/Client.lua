@@ -429,7 +429,6 @@ end)
 -- sendInviteGroup - NUI
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback('PlayButton', function(data, cb)
-    print('PlayButton', json.encode(data))
     controllerApi.sendServerEvent('Play', { type = data.type, Gamemode = data.Gamemode, code = data.code })
     cb({})
 end)
