@@ -171,7 +171,7 @@ end
 -- JoinLobby - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientApiEvents.JoinLobby = function() 
-    LocalPlayer.state:set('inLobbyPrincipal', true)
+    LocalPlayer.state.inLobbyPrincipal = true
     LocalPlayer.state.Buttons = true
     LocalPlayer.state.inDashboard = false 
     LocalPlayer.state.inGame = false 
