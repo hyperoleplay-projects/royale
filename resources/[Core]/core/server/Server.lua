@@ -1200,13 +1200,13 @@ ApiController.Play = function(source, data)
     end
 end
 
-RegisterCommand('game-play', function()
+RegisterCommand('game-play', function(source)
     local user_id = vRP.getUserId(source)
-    
+
 	if not exports["core"]:Group().hasPermission(user_id,"staff") then
         return
     end
-    
+
     TriggerClientEvent('test:startGameForced', -1)
 end)
 
