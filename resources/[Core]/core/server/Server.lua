@@ -1007,7 +1007,6 @@ end
 ApiController.Play = function(source, data)
     local user_id = vRP.getUserId(source)
     
-    -- Função sair da fila!!!!!!!
     if Player(source).state.inQueue and not Player(source).state.inGameLobby and not Player(source).state.inGame and not Player(source).state.inPlane then
         local playerCount = #Groups[Player(source).state.teamCode].players
         if playerCount > 1 and not GameController.GetGameStatus(Player(source).state.gameId) then
@@ -1046,6 +1045,7 @@ ApiController.Play = function(source, data)
                     Text = ""
                 })
             end
+            
             return
         end
     end
@@ -1200,10 +1200,20 @@ ApiController.Play = function(source, data)
     end
 end
 
+RegisterCommand('game-play', function()
+    local user_id = vRP.getUserId(source)
+    
+	if not exports["core"]:Group().hasPermission(user_id,"staff") then
+        return
+    end
+    
+    TriggerClientEvent('test:startGameForced', -1)
+end)
+
 RegisterServerEvent("UpdateCreateAccount")
 AddEventHandler("UpdateCreateAccount", function(typee)
     local source = source
-    
+
     ApiController.loadUserData(source)
 end)
 
