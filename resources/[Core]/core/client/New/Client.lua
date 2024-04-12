@@ -865,6 +865,7 @@ AddEventHandler('events_controllerApi', function(sv_content)
     local eventName = sv_content.event
     local data = sv_content.data
 
+    print('EVENTO RECEBIDO: ' .. eventName, clientApiEvents[eventName] ~= nil , json.encode(data))
     if clientApiEvents[eventName] ~= nil then
         clientApiEvents[eventName](data)
     end
