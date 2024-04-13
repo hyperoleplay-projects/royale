@@ -8,7 +8,7 @@ src = {}
 Tunnel.bindInterface("safezone",src)
 clientAPI = Tunnel.getInterface("safezone")
 
-local SAFEZONE_ROUTES = { -- Isso aqui é a rota de uma safezone
+SAFEZONE_ROUTES = { -- Isso aqui é a rota de uma safezone
     {
         -- Etapa de rota: { Centro (vector2), Radius (number), Duration (number) }
         { vector2(0, 0), 2000.0, 200 },
@@ -43,7 +43,7 @@ function BR:Safe(Game)
         print('PASSOU AQUI 1')
 
         BR.ZoneRadius[gameId] = BR.ZoneRadius[gameId] / 2
-        BR.Zone[gameId] = BR.BaseZone[gameId] - GenerateCenterPoint(BR.ZoneRadius[gameId])
+        BR.Zone[gameId] = BR.BaseZone[gameId] - GenerateCenterPoint(BR.ZoneRadius[gameId], BR.ZoneConfigIndex[Game.gameId])
        
         for _, playerObject in pairs(BR.Players[gameId]) do 
             if playerObject.source and (BR.Players[gameId][playerObject.user_id] ~= nil) then
@@ -99,7 +99,7 @@ function BR:Safe(Game)
         BR.ZoneTime[gameId] = false
         BR.ZoneTimer[gameId] = false
         BR.ZoneRadius[gameId] = BR.ZoneRadius[gameId] / 2
-        BR.Zone[gameId] = BR.Zone[gameId] - GenerateCenterPoint(BR.ZoneRadius[gameId])
+        BR.Zone[gameId] = BR.Zone[gameId] - GenerateCenterPoint(BR.ZoneRadius[gameId], BR.ZoneConfigIndex[Game.gameId])
         BR.IntervalZone[gameId] = 180
         
         for _, playerObject in pairs(BR.Players[gameId]) do 
@@ -148,6 +148,7 @@ AddEventHandler("battle-CreateSafe", function(Game, Center)
     BR.ZoneTime[Game.gameId] = false
     BR.ZoneTimer[Game.gameId] = false
     BR.Players[Game.gameId] = Game.players
+    BR.ZoneConfigIndex[Game.gameId] = 1 
 
     BR:Safe(Game)
 
