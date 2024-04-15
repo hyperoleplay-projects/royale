@@ -15,6 +15,8 @@ BR.ZoneTimer = {}
 BR.Zone = {}
 BR.ZoneRadius = {}
 BR.StartTime = {}
+BR.ZoneConfigIndex = {}
+BR.CurrentStage = {}
 
 --[[
 	0 -> WAITING GAME START.

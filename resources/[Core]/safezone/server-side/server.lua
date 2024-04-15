@@ -8,42 +8,26 @@ src = {}
 Tunnel.bindInterface("safezone",src)
 clientAPI = Tunnel.getInterface("safezone")
 
-SAFEZONE_ROUTES = { -- Isso aqui é a rota de uma safezone
+SAFEZONE_ROUTES = {
     {
-        -- Etapa de rota: { Centro (vector2), Radius (number), Duration (number) }
-        { vector2(0, 0), 2000.0, 200 },
-        { vector2(0, 0), 1000.0, 100 },
-        { vector2(0, 0), 500.0, 50 },
-        { vector2(0, 0), 250.0, 20 },
-        { vector2(0, 0), 100.0, 10 },
-        { vector2(0, 0), 50.0, 10 },
-        { vector2(0, 0), 0.0, nil } -- Essa etapa não move mais, ele finaliza o movimento, por isso não tem duração
-    },
-    {
-        -- Etapa de rota: { Centro (vector2), Radius (number), Duration (number) }
-        { vector2(0, 0), 2000.0, 200 },
-        { vector2(0, 0), 1000.0, 100 },
-        { vector2(0, 0), 500.0, 50 },
-        { vector2(0, 0), 250.0, 20 },
-        { vector2(0, 0), 100.0, 10 },
-        { vector2(0, 0), 50.0, 10 },
-        { vector2(0, 0), 0.0, nil } -- Essa etapa não move mais, ele finaliza o movimento, por isso não tem duração
+        -- Etapa de rota: { Centro (vector3), Radius (number), Duration (number) }
+        { vector3(-94.68, 881.03, 30.38), 2000.0, 200 },
+        { vector3(-94.68, 881.03, 30.38), 1000.0, 100 },
+        { vector3(-94.68, 881.03, 30.38), 500.0, 20 },
+        { vector3(-94.68, 881.03, 30.38), 250.0, 20 },
+        { vector3(-94.68, 881.03, 30.38), 100.0, 10 },
+        { vector3(-94.68, 881.03, 30.38), 50.0, 10 },
+        { vector3(-94.68, 881.03, 30.38), 0.0, 0 } -- Essa etapa não move mais, ele finaliza o movimento, por isso não tem duração
     }
 }
 
-local threadExists = false
-local Games = {}
-
 function BR:Safe(Game) 
     local nextTimeout = 1500
-
     local gameId = Game.gameId
 
     if BR.BaseZone[gameId] and not BR.Zone[gameId] and os.time() >= BR.StartTime[gameId] + BR.StartZone[gameId] then
-        print('PASSOU AQUI 1')
-
-        BR.ZoneRadius[gameId] = BR.ZoneRadius[gameId] / 2
-        BR.Zone[gameId] = BR.BaseZone[gameId] - GenerateCenterPoint(BR.ZoneRadius[gameId], BR.ZoneConfigIndex[Game.gameId])
+        BR.ZoneRadius[gameId] = SAFEZONE_ROUTES[BR.ZoneConfigIndex[gameId]][BR.CurrentStage[gameId]][2]
+        BR.Zone[gameId] = SAFEZONE_ROUTES[BR.ZoneConfigIndex[gameId]][BR.CurrentStage[gameId]][1]
        
         for _, playerObject in pairs(BR.Players[gameId]) do 
             if playerObject.source and (BR.Players[gameId][playerObject.user_id] ~= nil) then
@@ -62,16 +46,12 @@ function BR:Safe(Game)
             end
         end
     elseif BR.Zone[gameId] and not BR.ZoneTime[gameId] then
-        print('PASSOU AQUI 2')
-
         BR.ZoneTime[gameId] = os.time()
         BR.ZoneTimer[gameId] = BR.IntervalZone[gameId]
         
         local SafeTeste = false
        
         Citizen.SetTimeout(60000, function()
-            print('PASSOU AQUI 3')
-
             for _, playerObject in pairs(BR.Players[gameId]) do 
                 if playerObject.source and not Player(playerObject.source).state.finishGameUI and (BR.Players[gameId][playerObject.user_id] ~= nil) then
                     if not SafeTeste then
@@ -93,14 +73,14 @@ function BR:Safe(Game)
                 end
             end
         end)
-    elseif BR.ZoneCount[gameId] < BR.MaxZones[gameId] and BR.ZoneTime[gameId] and BR.ZoneTime[gameId] + BR.ZoneTimer[gameId] <= os.time() then
-        print('PASSOU AQUI 4')
-
+    elseif BR.ZoneCount[gameId] < BR.MaxZones[gameId] and BR.ZoneTimer[gameId] and BR.ZoneTimer[gameId] > 0 and BR.ZoneTime[gameId] and BR.ZoneTime[gameId] + BR.ZoneTimer[gameId] <= os.time() then
         BR.ZoneTime[gameId] = false
         BR.ZoneTimer[gameId] = false
-        BR.ZoneRadius[gameId] = BR.ZoneRadius[gameId] / 2
-        BR.Zone[gameId] = BR.Zone[gameId] - GenerateCenterPoint(BR.ZoneRadius[gameId], BR.ZoneConfigIndex[Game.gameId])
-        BR.IntervalZone[gameId] = 180
+
+        BR.CurrentStage[gameId] = BR.CurrentStage[gameId] + 1
+        BR.ZoneRadius[gameId] = SAFEZONE_ROUTES[BR.ZoneConfigIndex[gameId]][BR.CurrentStage[gameId]][2]
+        BR.Zone[gameId] = SAFEZONE_ROUTES[BR.ZoneConfigIndex[gameId]][BR.CurrentStage[gameId]][1]
+        BR.IntervalZone[gameId] = SAFEZONE_ROUTES[BR.ZoneConfigIndex[gameId]][BR.CurrentStage[gameId]][3] or 0
         
         for _, playerObject in pairs(BR.Players[gameId]) do 
             if playerObject.source and not Player(playerObject.source).state.finishGameUI and (BR.Players[gameId][playerObject.user_id] ~= nil) then
@@ -119,8 +99,6 @@ function BR:Safe(Game)
             end
         end
 
-        print('PASSOU AQUI 5')
-
         BR.ZoneCount[gameId] = BR.ZoneCount[gameId] + 1
     end
 
@@ -131,42 +109,23 @@ end
 
 RegisterNetEvent("battle-CreateSafe")
 AddEventHandler("battle-CreateSafe", function(Game, Center) 
-    -- Games[Game.gameId] = {
-    --     gameId = Game.gameId
-    -- }
-
-    -- Wait(100)
-
     BR.StartZone[Game.gameId] = 120
-    BR.IntervalZone[Game.gameId] = 300
-    BR.MaxZones[Game.gameId] = 9
     BR.ZoneCount[Game.gameId] = 0
     BR.StartTime[Game.gameId] = os.time()
-    BR.ZoneRadius[Game.gameId] = 2400.0
-    BR.BaseZone[Game.gameId] = Center
     BR.Zone[Game.gameId] = false
     BR.ZoneTime[Game.gameId] = false
     BR.ZoneTimer[Game.gameId] = false
     BR.Players[Game.gameId] = Game.players
-    BR.ZoneConfigIndex[Game.gameId] = 1 
+    
+    BR.CurrentStage[Game.gameId] = 1
+    BR.ZoneConfigIndex[Game.gameId] = math.random(#SAFEZONE_ROUTES)
+    BR.MaxZones[Game.gameId] = #SAFEZONE_ROUTES[BR.ZoneConfigIndex[Game.gameId]]
+    BR.BaseZone[Game.gameId] = SAFEZONE_ROUTES[BR.ZoneConfigIndex[Game.gameId]][1][1]
+    BR.ZoneRadius[Game.gameId] = SAFEZONE_ROUTES[BR.ZoneConfigIndex[Game.gameId]][1][2]
+    BR.IntervalZone[Game.gameId] = SAFEZONE_ROUTES[BR.ZoneConfigIndex[Game.gameId]][1][3]
 
     BR:Safe(Game)
 
-    -- table.insert(Games, {
-    --     gameId = Game.gameId
-    -- })
-    
-    -- if not threadExists then
-    --     threadExists = true
-    --     print("Create thread safe")
-    --     Citizen.CreateThread(function()
-    --         while true do
-    --             Safe()
-    --             Wait(1000)
-    --         end
-    --     end)
-    -- end
-   
     for _, playerObject in pairs(Game.players) do 
         Player(playerObject.source).state.inGame = true
         Player(playerObject.source).state.gameId = Game.gameId
@@ -197,8 +156,8 @@ function dump(o)
             s = s .. '['..k..'] = ' .. dump(v) .. ','
         end
 
-       return s .. '} '
+        return s .. '} '
     else
-       return tostring(o)
+        return tostring(o)
     end
 end

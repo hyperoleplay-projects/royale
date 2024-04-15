@@ -512,62 +512,68 @@ end
 
 RegisterNetEvent('brv:createPickups')
 AddEventHandler('brv:createPickups', function(seed, map)
-  Citizen.CreateThread(function()
-    local weapons = {}
-    local weaponModel = ''
-    local index = 0
-    local rand = math.random() * 50000 -- Saves a client sided rand
-    print(seed)
+    Citizen.CreateThread(function()
+        local weapons = {}
+        local weaponModel = ''
+        local index = 0
+        local rand = math.random() * 50000 -- Saves a client sided rand
 
-    math.randomseed(math.floor(seed * 50000))
-    print("Chegou aqui")
-    for i, location in pairs(Config.Maps[map].Loots) do
-        local loot = math.random(#Config.lootsCount)
-        for ii = 1, Config.lootsCount[loot] do
+        print(seed)
+
+        math.randomseed(math.floor(seed * 50000))
+
+        print("Chegou aqui")
+
+        for i, location in pairs(Config.Maps[map].Loots) do
+            local loot = math.random(#Config.lootsCount)
+            
+            for ii = 1, Config.lootsCount[loot] do
+                if coordinatesProcessed >= Config.Maps[map].MaxLoots then
+                    break 
+                end
+        
+                weapons = {
+                    getRandomWeapon('favela'),
+                    getRandomWeapon('municoes'),
+                    getRandomWeapon('municoes2'),
+                    getRandomWeapon('municoes3'),
+                    getRandomWeapon('municoes4'),
+                    -- getRandomWeapon('municoes5'),
+                    -- getRandomWeapon('municoes6'),
+                }
+
+                index = tonumber(round(math.random()) + 1)
+        
+                PickUps[#PickUps + 1] = {
+                    source = #PickUps + 1,
+                    name = weapons[index],
+                    x = location["x"] + (math.random(-8000, 8000) / 1000),
+                    y = location["y"] + (math.random(-8000, 8000) / 1000),
+                    z = location["z"],
+                    created = false,
+                    handle = nil,
+                    drop = false,
+                    ammout = false,
+                    coleted = false
+                }
+        
+                coordinatesProcessed = coordinatesProcessed + 1
+            end
+        
             if coordinatesProcessed >= Config.Maps[map].MaxLoots then
                 break 
             end
-    
-            weapons = {
-                getRandomWeapon('favela'),
-                getRandomWeapon('municoes'),
-                getRandomWeapon('municoes2'),
-                getRandomWeapon('municoes3'),
-                getRandomWeapon('municoes4'),
-                -- getRandomWeapon('municoes5'),
-                -- getRandomWeapon('municoes6'),
-            }
-            index = tonumber(round(math.random()) + 1)
-    
-            PickUps[#PickUps + 1] = {
-                source = #PickUps + 1,
-                name = weapons[index],
-                x = location["x"] + (math.random(-8000, 8000) / 1000),
-                y = location["y"] + (math.random(-8000, 8000) / 1000),
-                z = location["z"],
-                created = false,
-                handle = nil,
-                drop = false,
-                ammout = false,
-                coleted = false
-            }
-    
-            coordinatesProcessed = coordinatesProcessed + 1
+        
+            Wait(1)
         end
-    
-        if coordinatesProcessed >= Config.Maps[map].MaxLoots then
-            break 
-        end
-    
-        Wait(1)
-    end
-    math.randomseed(math.floor(rand))
-    
-    print("Quantidade de loots: "..#PickUps.."")
-    Pick()
-  end)
-end)
 
+        math.randomseed(math.floor(rand))
+        
+        print("Quantidade de loots: "..#PickUps.."")
+
+        Pick()
+    end)
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- count - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -611,13 +617,13 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function pick3()
     local lastPickupTime = 0
-    -- local pickupDelay = 200
     local pickupDelay = 1
     local lastCheckTime = 0
     local checkInterval = 500
 
     if not lootsTheard1 then
         lootsTheard1 = true
+        
         CreateThread(function()
             while true do
                 if LocalPlayer.state.inGame then
@@ -625,12 +631,13 @@ function pick3()
                     local Coords = GetEntityCoords(Ped)
         
                     if currentTime >= lastCheckTime + checkInterval then
-        
                         for i = 1, #PickUps do
                             local pickup = PickUps[i]
+                            
                             if not pickup.coleted then
                                 local pickupCoords = vector3(pickup.x, pickup.y, pickup.z)
                                 local distance = #(Coords - pickupCoords)
+                                
                                 if distance <= 1.9 then
                                     if not closestPickups[i] then
                                         closestPickups[i] = {
@@ -655,6 +662,7 @@ function pick3()
                     for k,v in pairs(closestPickups) do
                         if not v.status and not LocalPlayer.state.death and not LocalPlayer.state.agonizing then
                             local distance = #(Coords - v.pos)
+                            
                             if distance <= 1.9 and not IsPedInAnyVehicle(Ped) then
                                 local currentTime = GetGameTimer()
                     
@@ -664,23 +672,28 @@ function pick3()
                     
                                 if IsControlJustReleased(0, 38) and (currentTime - lastPickupTime) > pickupDelay then
                                     lastPickupTime = currentTime
+
                                     controller.sendServerEvent('GetLoot', {
                                         number = v.tabela,
                                         item = v.item,
                                         drop = v.drop,
                                         ammout = v.ammout
                                     })
+
                                     RemovePickup(v.handle)
+
                                     PickUps[k].coleted = true
                                     closestPickups[k] = nil
                                     
                                     RemoveItemFromTable(v.item)
                     
                                     PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+                                    
                                     break
                                 end
                             else
                                 RemoveItemFromTable(v.item)
+
                                 closestPickups[k] = nil
                             end
                         end
@@ -698,18 +711,22 @@ end
 function Pick()  
     if not lootsTheard2 then
         lootsTheard2 = true
+        
         CreateThread(function()
             while true do
                 if LocalPlayer.state.inGame then
                     local PlayerCoords = GetEntityCoords(Ped)
+                    
                     for i, pickup in ipairs(PickUps) do
                         local distance = #(PlayerCoords - vector3(pickup.x, pickup.y, pickup.z))
+                        
                         if not pickup.created and not pickup.coleted then
                             if distance <= 50 then
                                 local _, cdz = GetGroundZFor_3dCoord(pickup.x, pickup.y, 99990.0, 1)
                                 local pickupHash = GetHashKey('PICKUP_' .. pickup.name .. (pickup.name:find('AMMO_') and 'LUIZ' or ''))
         
                                 local pickupHandle = CreatePickupRotate(pickupHash, pickup.x, pickup.y, cdz + 0.5, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
+                                
                                 SetPickupRegenerationTime(pickupHandle, -1)
         
                                 pickup.handle = pickupHandle
@@ -719,6 +736,7 @@ function Pick()
                         else
                             if distance > 50 then
                                 RemovePickup(pickup.handle)
+
                                 pickup.created = false
                             end
                         end
@@ -729,6 +747,7 @@ function Pick()
             end
         end)
     end
+
 	pick3()
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
