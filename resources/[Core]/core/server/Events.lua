@@ -1,4 +1,3 @@
-
 local events = {
     GetPlayersCountGame = true,
     RandomMap = true,

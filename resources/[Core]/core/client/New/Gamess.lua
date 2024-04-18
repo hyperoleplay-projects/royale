@@ -41,6 +41,54 @@ local lootsTheard2 = nil
 local LuizDev = moduleEE("client")
 local nearbyItems = {}
 local isHudBuilt = false
+
+local CHEST_MODELS = {
+    OPENEDS = {
+        GRAY = 'xm_prop_x17_chest_open', 
+        YELLOW = 'xm_prop_x17_chest_open', 
+        GREEN = 'xm_prop_x17_chest_open', 
+        ORANGE = 'xm_prop_x17_chest_open', 
+        BEIGE = 'xm_prop_x17_chest_open', 
+        PURPLE = 'xm_prop_x17_chest_open'
+    }, 
+
+    CLOSEDS = {
+        GRAY = 'ba_prop_battle_chest_closed', 
+        YELLOW = 'ba_prop_battle_chest_closed', 
+        GREEN = 'ba_prop_battle_chest_closed', 
+        ORANGE = 'ba_prop_battle_chest_closed', 
+        BEIGE = 'ba_prop_battle_chest_closed', 
+        PURPLE = 'ba_prop_battle_chest_closed'
+    }
+}
+
+local AVAILABLE_LOOTS = {
+    'favela', 
+    'municoes', 
+    'municoes2', 
+    'municoes3', 
+    'municoes4', 
+    'municoes5', 
+    'municoes6'
+}
+
+local LOOTS_COLORS_NAMES = {
+    ['favela'] = 'GRAY', 
+    ['municoes'] = 'YELLOW', 
+    ['municoes2'] = 'GREEN', 
+    ['municoes3'] = 'ORANGE', 
+    ['municoes4'] = 'BEIGE', 
+    ['municoes5'] = 'PURPLE'
+}
+
+local LOOTS_COLORS = {
+    GRAY = { R = 29, G = 67, B = 101 }, 
+    YELLOW = { R = 181, G = 223, B = 189 }, 
+    GREEN = { R = 158, G = 190, B = 93 }, 
+    ORANGE = { R = 54, G = 57, B = 62 }, 
+    BEIGE = { R = 247, G = 251, B = 254 }, 
+    PURPLE = { R = 211, G = 190, B = 132 }
+}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ItemExists - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -500,57 +548,34 @@ clientEvents.StartGameClient = function(data)
         end)
     end
 end
--- -----------------------------------------------------------------------------------------------------------------------------------------
--- -- SetupLoots - Function
------------------------------------------------------------------------------------------------------------------------------------------
-function src.SetupLoots(Loots) 
-    PickUps = Loots
-
-    print("Quantidade de loots: "..#PickUps.."")
-    Pick()
-end
 
 RegisterNetEvent('brv:createPickups')
-AddEventHandler('brv:createPickups', function(seed, map)
+AddEventHandler('brv:createPickups', function(seed, mapId)
     Citizen.CreateThread(function()
-        local weapons = {}
-        local weaponModel = ''
-        local index = 0
         local rand = math.random() * 50000 -- Saves a client sided rand
-
-        print(seed)
 
         math.randomseed(math.floor(seed * 50000))
 
-        print("Chegou aqui")
-
-        for i, location in pairs(Config.Maps[map].Loots) do
+        for i, location in pairs(Config.Maps[mapId].Loots) do
             local loot = math.random(#Config.lootsCount)
             
             for ii = 1, Config.lootsCount[loot] do
-                if coordinatesProcessed >= Config.Maps[map].MaxLoots then
+                if coordinatesProcessed >= Config.Maps[mapId].MaxLoots then
                     break 
                 end
-        
-                weapons = {
-                    getRandomWeapon('favela'),
-                    getRandomWeapon('municoes'),
-                    getRandomWeapon('municoes2'),
-                    getRandomWeapon('municoes3'),
-                    getRandomWeapon('municoes4'),
-                    -- getRandomWeapon('municoes5'),
-                    -- getRandomWeapon('municoes6'),
-                }
 
-                index = tonumber(round(math.random()) + 1)
+                local index = tonumber(round(math.random()) + 1)
         
                 PickUps[#PickUps + 1] = {
                     source = #PickUps + 1,
-                    name = weapons[index],
-                    x = location["x"] + (math.random(-8000, 8000) / 1000),
-                    y = location["y"] + (math.random(-8000, 8000) / 1000),
-                    z = location["z"],
+                    color = LOOTS_COLORS_NAMES[AVAILABLE_LOOTS[index]], 
+                    lootName = AVAILABLE_LOOTS[index], 
+                    name = getRandomWeapon(AVAILABLE_LOOTS[index]),
+                    x = location.x + (math.random(-8000, 8000) / 1000),
+                    y = location.y + (math.random(-8000, 8000) / 1000),
+                    z = location.z,
                     created = false,
+                    chestHandle = nil,
                     handle = nil,
                     drop = false,
                     ammout = false,
@@ -560,41 +585,46 @@ AddEventHandler('brv:createPickups', function(seed, map)
                 coordinatesProcessed = coordinatesProcessed + 1
             end
         
-            if coordinatesProcessed >= Config.Maps[map].MaxLoots then
+            if coordinatesProcessed >= Config.Maps[mapId].MaxLoots then
                 break 
             end
         
-            Wait(1)
+            Citizen.Wait(1)
         end
 
         math.randomseed(math.floor(rand))
         
         print("Quantidade de loots: "..#PickUps.."")
-
-        Pick()
     end)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- count - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function count(array)
-	if type(array) ~= 'table' then return false end
+	if type(array) ~= 'table' then 
+        return false 
+    end
   
 	local count = 0
+
 	for k, v in pairs(array) do
 	  count = count + 1
 	end
+
 	return count
 end 
 
--- Returns a random weapon model from a predefined list
-function getRandomWeapon(type)
-    if Config.weapons[type] == nil then return false end
-  
+function getRandomWeapon(type) -- Returns a random weapon model from a predefined list
+    if Config.weapons[type] == nil then 
+        return false 
+    end
+
     local nbWeapons = count(Config.weapons[type])
+    
     local randWeaponIndex = math.random(nbWeapons)
+
     return Config.weapons[type][randWeaponIndex]
-  end
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DropInventoryItem - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -606,6 +636,7 @@ clientEvents.DropInventoryItem = function(data)
 		y = data.coords["y"],
 		z = data.coords["z"],
 		created = false,
+		chestHandle = nil,
 		handle = nil,
 		drop = true,
 		ammout = data.ammout,
@@ -613,63 +644,118 @@ clientEvents.DropInventoryItem = function(data)
 	}
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- pick3 - Function
+-- Pick - Thread
 -----------------------------------------------------------------------------------------------------------------------------------------
-function pick3()
+CreateThread(function()
     local lastPickupTime = 0
     local pickupDelay = 1
     local lastCheckTime = 0
     local checkInterval = 500
 
-    if not lootsTheard1 then
-        lootsTheard1 = true
-        
-        CreateThread(function()
-            while true do
-                if LocalPlayer.state.inGame then
-                    local currentTime = GetGameTimer()
-                    local Coords = GetEntityCoords(Ped)
-        
-                    if currentTime >= lastCheckTime + checkInterval then
-                        for i = 1, #PickUps do
-                            local pickup = PickUps[i]
-                            
-                            if not pickup.coleted then
-                                local pickupCoords = vector3(pickup.x, pickup.y, pickup.z)
-                                local distance = #(Coords - pickupCoords)
-                                
-                                if distance <= 1.9 then
-                                    if not closestPickups[i] then
-                                        closestPickups[i] = {
-                                            handle = pickup.handle,
-                                            pos = vector3(pickup.x, pickup.y, pickup.z),
-                                            item = pickup.name,
-                                            name = itemName(pickup.name),
-                                            index = itemIndex(pickup.name),
-                                            drop = pickup.drop,
-                                            ammout = pickup.ammout,
-                                            tabela = pickup.source,
-                                            status = pickup.coleted
-                                        }
-                                    end
-                                end
+    local isEPressed = false
+    local pressTime = 0
+
+    while true do
+        local sleepTime = 1000
+
+        if LocalPlayer.state.inGame then
+            sleepTime = 0
+
+            local currentTime = GetGameTimer()
+            local pedCoordinates = GetEntityCoords(Ped)
+
+            if currentTime >= lastCheckTime + checkInterval then
+                for i = 1, #PickUps do
+                    local pickup = PickUps[i]
+                    
+                    if not pickup.coleted then
+                        local pickupCoords = vector3(pickup.x, pickup.y, pickup.z)
+                        local distance = #(pedCoordinates - pickupCoords)
+                        
+                        if distance <= 15.0 then
+                            if not closestPickups[i] then
+                                closestPickups[i] = {
+                                    handle = pickup.handle,
+                                    chestHandle = pickup.chestHandle,
+                                    timeout = 0,
+                                    pos = vector3(pickup.x, pickup.y, pickup.z),
+                                    item = pickup.name,
+                                    color = pickup.color,
+                                    lootName = pickup.lootName,
+                                    name = itemName(pickup.name),
+                                    index = itemIndex(pickup.name),
+                                    drop = pickup.drop,
+                                    ammout = pickup.ammout,
+                                    tabela = pickup.source,
+                                    status = pickup.coleted
+                                }
+                            end
+                        else
+                            if closestPickups[i] then
+                                closestPickups[i] = nil
                             end
                         end
-                        
-                        lastCheckTime = GetGameTimer()
                     end
+                end
+                
+                lastCheckTime = GetGameTimer()
+            end
+            
+            for k,v in pairs(closestPickups) do
+                if not v.status and not LocalPlayer.state.death and not LocalPlayer.state.agonizing then
+                    local distance = #(pedCoordinates - v.pos)
                     
-                    for k,v in pairs(closestPickups) do
-                        if not v.status and not LocalPlayer.state.death and not LocalPlayer.state.agonizing then
-                            local distance = #(Coords - v.pos)
+                    local color = LOOTS_COLORS[v.color]
+
+                    DrawLightWithRange(v.pos, color.R, color.G, color.B, 1.0, 300.0)
+
+                    if distance <= 1.9 and not IsPedInAnyVehicle(Ped) then
+                        if not PickUps[k].handle then
+                            if IsControlJustPressed(0, 38) then
+                                isEPressed = true
+                                pressTime = GetGameTimer()
+                            end
                             
-                            if distance <= 1.9 and not IsPedInAnyVehicle(Ped) then
-                                local currentTime = GetGameTimer()
-                    
-                                if (currentTime - lastPickupTime) > pickupDelay then
-                                    AddItemToTable(v.name, v.index)
+                            if IsControlJustReleased(0, 38) then
+                                isEPressed = false
+                                pressTime = 0
+                            end
+                            
+                            if isEPressed and GetGameTimer() - pressTime >= 3000 then
+                                local chestHandle = createObject(CHEST_MODELS.OPENEDS[v.color], vector3(pedCoordinates.x, pedCoordinates.y, pedCoordinates.z + 30.0))
+
+                                if chestHandle then
+                                    deleteObject(v.chestHandle)
+
+                                    SetEntityCoords(chestHandle, v.pos)
+                                    PlaceObjectOnGroundProperly(chestHandle, v.pos)
+
+                                    local pickupHash = GetHashKey('PICKUP_' .. v.item .. (v.item:find('AMMO_') and 'LUIZ' or ''))
+                                    local pickupHandle = CreatePickupRotate(pickupHash, v.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
+                                    
+                                    SetPickupRegenerationTime(pickupHandle, -1)
+
+                                    v.timeout = GetGameTimer() + 550
+
+                                    PickUps[k].handle = pickupHandle
+                                    PickUps[k].chestHandle = chestHandle
+
+                                    PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+                                    
+                                    isEPressed = false
+                                    pressTime = 0
+        
+                                    break
                                 end
+                            end
+                        else
+                            local currentTime = GetGameTimer()
                     
+                            if (currentTime - lastPickupTime) > pickupDelay then
+                                AddItemToTable(v.name, v.index)
+                            end
+                
+                            if GetGameTimer() > v.timeout then 
                                 if IsControlJustReleased(0, 38) and (currentTime - lastPickupTime) > pickupDelay then
                                     lastPickupTime = currentTime
 
@@ -680,7 +766,7 @@ function pick3()
                                         ammout = v.ammout
                                     })
 
-                                    RemovePickup(v.handle)
+                                    RemovePickup(PickUps[k].handle)
 
                                     PickUps[k].coleted = true
                                     closestPickups[k] = nil
@@ -691,75 +777,103 @@ function pick3()
                                     
                                     break
                                 end
-                            else
-                                RemoveItemFromTable(v.item)
-
-                                closestPickups[k] = nil
                             end
+                        end
+                    else
+                        if PickUps[k].handle then
+                            RemoveItemFromTable(v.item)
                         end
                     end
                 end
-    
-                Wait(0)
             end
-        end)
+        end
+
+        Wait(sleepTime)
+    end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- Create Object - Function
+-----------------------------------------------------------------------------------------------------------------------------------------
+function createObject(modelName, coordinates)
+    local modelHash = GetHashKey(modelName)
+
+    if IsModelValid(modelHash) then
+        RequestModel(modelHash)
+
+        while not HasModelLoaded(modelHash) do
+            Citizen.Wait(1)
+        end
+        
+        local object = CreateObjectNoOffset(modelHash, coordinates, false, false, false)
+
+        SetEntityAsMissionEntity(object, true, true)
+        SetModelAsNoLongerNeeded(modelHash)
+
+        return object
     end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- Pick - Function
+-- Delete Object - Functions
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Pick()  
-    if not lootsTheard2 then
-        lootsTheard2 = true
-        
-        CreateThread(function()
-            while true do
-                if LocalPlayer.state.inGame then
-                    local PlayerCoords = GetEntityCoords(Ped)
-                    
-                    for i, pickup in ipairs(PickUps) do
-                        local distance = #(PlayerCoords - vector3(pickup.x, pickup.y, pickup.z))
-                        
-                        if not pickup.created and not pickup.coleted then
-                            if distance <= 50 then
-                                local _, cdz = GetGroundZFor_3dCoord(pickup.x, pickup.y, 99990.0, 1)
-                                local pickupHash = GetHashKey('PICKUP_' .. pickup.name .. (pickup.name:find('AMMO_') and 'LUIZ' or ''))
-        
-                                local pickupHandle = CreatePickupRotate(pickupHash, pickup.x, pickup.y, cdz + 0.5, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
-                                
-                                SetPickupRegenerationTime(pickupHandle, -1)
-        
-                                pickup.handle = pickupHandle
+function deleteObject(entity)
+    if DoesEntityExist(entity) then
+        DeleteEntity(entity)
+        SetEntityAsMissionEntity(entity, true, true)
+    end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- Pick - Thread
+-----------------------------------------------------------------------------------------------------------------------------------------
+Citizen.CreateThread(function()
+    while true do
+        local sleepTime = 1000
+
+        if LocalPlayer.state.inGame then
+            sleepTime = 0
+
+            local pedCoordinates = GetEntityCoords(Ped)
+            
+            for i, pickup in ipairs(PickUps) do
+                local distance = #(pedCoordinates - vector3(pickup.x, pickup.y, pickup.z))
+                
+                if not pickup.created and not pickup.coleted then
+                    if distance <= 50 then
+                        local foundZ, cdz = GetGroundZFor_3dCoord(pickup.x, pickup.y, 99990.0, true)
+
+                        if foundZ then
+                            local chestHandle = createObject(CHEST_MODELS.CLOSEDS[pickup.color], vector3(pickup.x, pickup.y, cdz))
+
+                            if chestHandle then
+                                print('Criou objeto perto', vector3(pickup.x, pickup.y, cdz))
+
+                                pickup.chestHandle = chestHandle
                                 pickup.z = cdz + 0.5
                                 pickup.created = true
                             end
-                        else
-                            if distance > 50 then
-                                RemovePickup(pickup.handle)
+                        end
+                    end
+                else
+                    if distance > 50 then
+                        if DoesEntityExist(pickup.chestHandle) then
+                            deleteObject(pickup.chestHandle)
 
-                                pickup.created = false
-                            end
+                            pickup.chestHandle = nil
+                            pickup.created = false
                         end
                     end
                 end
-        
-                Wait(700)
             end
-        end)
-    end
+        end
 
-	pick3()
-end
+        Citizen.Wait(sleepTime)
+    end
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GetLoot - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.GetLootClient = function(data)
     for i, pickup in ipairs(PickUps) do
         if data.tabela == pickup.source then
-            if pickup.handle then
-                RemovePickup(pickup.handle)
-            end
-
             pickup.coleted = true
         end
     end
@@ -769,8 +883,9 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(5000)
 		Ped = PlayerPedId()
+
+		Citizen.Wait(5000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -801,7 +916,6 @@ AddEventHandler('onResourceStop', function(resourceName)
         end
 	end
 end)
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- onResourceStart - Event
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -817,6 +931,12 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.StopLoots = function()
     for i, pickup in ipairs(PickUps) do
+        if pickup.chestHandle then
+            if DoesEntityExist(pickup.chestHandle) then
+                deleteObject(pickup.chestHandle)
+            end
+        end
+
         if pickup.handle then
             RemovePickup(pickup.handle)
         end
@@ -829,6 +949,7 @@ clientEvents.StopLoots = function()
 	for k, v in pairs(Vehicles) do 
 		if v["handle"] then
 			local veh = VehToNet(v["handle"])
+
 			if NetworkDoesNetworkIdExist(veh) then
 				local vv = NetToEnt(veh)
 				SetEntityAsMissionEntity(vv,false,false)
