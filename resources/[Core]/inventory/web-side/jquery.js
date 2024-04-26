@@ -372,7 +372,7 @@ const updateMochila = () => {
 
 		const nameList2 = data["drop"].sort((a,b) => (a["name"] > b["name"]) ? 1:-1);
 
-		for (let x = 1; x <= 35; x++){
+		for (let x = 1; x <= 10; x++){
 			const slot = x.toString();
 
 			if (data["inventario"][slot] !== undefined){
