@@ -849,13 +849,9 @@ end
 --  loadUserData - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 ApiController.loadUserData = function(source) 
-    Citizen.Wait(10000)
-
-    print('Etapas loadUserData', 1)
     local user_id = vRP.getUserId(source)
 	local identity = vRP.getIdentity(user_id)
     
-    print('Etapas loadUserData', 2)
     -- States
     Player(source).state.inDashboard = false
     Player(source).state.inAimLab = false
@@ -870,7 +866,6 @@ ApiController.loadUserData = function(source)
     Player(source).state.finishGameUI = false
     Player(source).state.isNotifyKill = true
 
-    print('Etapas loadUserData', 3)
     Player(source).state.agonizing = false
     Player(source).state.Compass = false
     Player(source).state.gameId = 0
@@ -884,32 +879,22 @@ ApiController.loadUserData = function(source)
     Player(source).state.userSkins = nil
     Player(source).state.isReviving = false
     
-    print('Etapas loadUserData', 4)
     -- Lobby
     local random = math.random(#Config.Maps["LobbyPrincipal"].possibleDimensionsLobby)
     local lobbyRouting = Config.Maps["LobbyPrincipal"].possibleDimensionsLobby[random]
     SetPlayerRoutingBucket(source, lobbyRouting)
     Player(source).state.inLobbyPrincipal = true
     
-    print('Etapas loadUserData', 5)
     ApiController.sendPlayerEvent(source, "setDiscordRich", {
         title = "DUTH",
         description = "#"..user_id.." "..identity.username.."",
     })
     
-    print('Etapas loadUserData', 6)
     ApiController.sendPlayerEvent(source, "JoinLobby", {})
-    -- DiscordSync.UpdateDiscord(source)
-    print('Etapas loadUserData', 7)
     ApiController.SetupGroup(source, user_id)
     -- Setup player
-    print('Etapas loadUserData', 8)
     Group.load(user_id, source)
-    -- Inventory.LoadInventory(source, user_id)
-    -- clientAPI.SetTattos(source, Player(source).state.userTatuagens)
-    print('Etapas loadUserData', 9)
     DiscordSync.addGroupBasedRole(user_id, source)
-    print('Etapas loadUserData', 10)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 --  ExitLobby - Function
@@ -1285,7 +1270,6 @@ function src.loadUserData()
     local user_id = vRP.getUserId(source)
     local identity = vRP.getIdentity(user_id)
 
-    print("loadUserData / O jogador "..identity.username.." foi carregado / "..user_id.."")
     ApiController.loadUserData(source)
 end
 
@@ -1374,7 +1358,6 @@ end
 -- reMapData - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function reMapData(game_data)
-	-- print(dump(game_data))
 	-- RED
 	local cntRed = 0
 	local _redList = game_data

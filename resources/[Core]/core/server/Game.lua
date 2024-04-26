@@ -120,7 +120,11 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.createVehicle = function(gameId,model,x,y,z,heading,vehPlate,vehDoors,vehBody,single,stateName,routingBucket) 
     local Game = Games[gameId]
-    if Game == nil then return end
+
+    if Game == nil then 
+        return 
+    end
+
     local mHash = GetHashKey(model)
 	local vehObject = CreateVehicle(mHash,x,y,z,heading,true,true)
 
@@ -399,7 +403,11 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.SetupLoots = function(gameId) 
     local Game = Games[gameId]
-    if Game == nil then return end
+
+    if Game == nil then 
+        return 
+    end
+
     local Coords = {}
     local timeExceded = 0
     local CarsCoords = {}
@@ -407,12 +415,15 @@ GameController.SetupLoots = function(gameId)
     local Boats = {}
     local weapons = {}
     local index = 0
+
     Coords[gameId] = {}
     CarsCoords[gameId] = {}
     Cars[gameId] = {}
     Boats[gameId] = {}
     PickUps[gameId] = {}
+
     local shuffledCoordsCars = shuffle(Config.Maps[Game.map].Cars)
+
     Games[gameId].planePos = Config.Maps[Games[gameId].map].center - GenerateCenterPoint(Config.Maps[Games[gameId].map].radius or 3000.0, true)
 
     Citizen.CreateThread(function()
@@ -425,13 +436,13 @@ GameController.SetupLoots = function(gameId)
                 y = shuffledCoordsCars[i]["y"],
                 z = shuffledCoordsCars[i]["z"]
             })
-            Wait(1)
         end
 
         for key, coords in pairs(Cars[gameId]) do
-            local vehPlate = "VEH"..parseInt(math.random(10000,99999))
+            local plateFinal = math.random(10000,99999)
+            local vehPlate = "VEH".. parseInt(plateFinal)
+            
             GameController.createVehicle(gameId, coords.model,coords.x,coords.y,coords.z, 280.0, vehPlate,nil,nil,nil,"Battle",dimension)
-            Wait(1)
         end
     end)
 
@@ -441,7 +452,6 @@ GameController.SetupLoots = function(gameId)
         Citizen.CreateThread(function()
             local dimension = Game.routing
     
-            -- Barcos
             for i = 1, Config.Maps[Games[gameId].map].MaxBoats do
                 table.insert(Boats[gameId], {
                     model = Config.Boats[math.random(1, #Config.Boats)],
@@ -449,32 +459,38 @@ GameController.SetupLoots = function(gameId)
                     y = shuffledCoordsBoats[i]["y"],
                     z = shuffledCoordsBoats[i]["z"]
                 })
-                Wait(1)
             end
     
             for key, coords in pairs(Boats[gameId]) do
                 local vehPlate = "BOAT"..parseInt(math.random(10000,99999))
+                
                 GameController.createVehicle(gameId, coords.model,coords.x,coords.y,coords.z, 280.0, vehPlate,nil,nil,nil,"Battle",dimension)
-                Wait(1)
             end
         end)
     end
 
     local seed = math.random()
+
     for _, playerInGame in pairs(Game.players) do 
-        if playerInGame.source then
+        local isPlayerValid = not not playerInGame.source 
+
+        if isPlayerValid then
             TriggerClientEvent('brv:createPickups', playerInGame.source, seed, Game.map)
         end
     end
-                
-    SetTimeout(60000, function() -- tunnel/proxy delay
+          
+    local timwWithoutSafe = (Config.StartTime - 2)
+    
+    SetTimeout(timwWithoutSafe * 1000, function() 
+        GameController.SetupSafe(gameId)
+
+        Citizen.Wait(2 * 1000)
+
         GameController.PreparesStartGameNew(gameId, "StartGameClient", {
             map = Game.map,
             planePos = Game.planePos
         })
     end)
-
-    GameController.SetupSafe(gameId)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 --  RandomMap - Function
@@ -599,8 +615,11 @@ GameController.StartGame = function(gameId)
         })
 
         Wait(500)
+
         for playerId, player in pairs(Game.players) do
-            if player.source and (Game.players[player.user_id] ~= nil) then
+            local isPlayerValid = player.source and (Game.players[player.user_id] ~= nil)  
+            
+            if isPlayerValid then
                 TriggerClientEvent('events_controller', player.source, {
                     event = "JoinLobbyGame",
                     data = {}
@@ -610,10 +629,11 @@ GameController.StartGame = function(gameId)
                     source = player.source,
                     user_id = playerId,
                 })
+
                 print("Invalid player source for player ID:", playerId)
             end
-            Wait(5)
         end
+
         GameController.SetupLoots(gameId)
 
         GameController.BuildGameUI(gameId, {
@@ -640,11 +660,12 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("game-start", function(source, args, rawCmd) 
     local user_id = vRP.getUserId(source)
-	if not exports["core"]:Group().hasPermission(user_id,"staff") then
+
+	if source ~= 0 and not exports["core"]:Group().hasPermission(user_id,"staff") then
         return
     end
 
-    if not Player(source).state.inQueue then
+    if source > 0 and not Player(source).state.inQueue then
         local Game = Games[parseInt(args[1])]
         if Game == nil then return end
     
@@ -654,7 +675,7 @@ RegisterCommand("game-start", function(source, args, rawCmd)
         if Game == nil then return end
     
         GameController.StartGame(parseInt(args[1]))
-    else
+    elseif source > 0 then 
         local Game = Games[Player(source).state.gameId]
         if Game == nil then return end
         GameController.StartGame(Player(source).state.gameId)

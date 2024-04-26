@@ -1,6 +1,6 @@
 Config = {}
 Config.MinPlayers = 64
-Config.StartTime = 5
+Config.StartTime = 15
 
 Config.gamemodesList = {
     ["solo"] = {
@@ -418,83 +418,31 @@ Config.weapon_types = {
 }
 
 Config.weapons = {
-	favela = {
-		"AMMO_PISTOL",
-		"AMMO_RIFLE",
-		"AMMO_SHOTGUN",
-		"ARMOUR_STANDARD",
-		"HEALTH_STANDARD",
-		"WEAPON_PISTOL_MK2",
-		"WEAPON_MACHINEPISTOL",
-		"WEAPON_COMBATPISTOL",
-		"WEAPON_SPECIALCARBINE",
-        "WEAPON_SPECIALCARBINE_MK2",
-		"WEAPON_SMG",
-		"WEAPON_ASSAULTRIFLE",
-        "WEAPON_ASSAULTRIFLE_MK2",
+    Rifles = {
+		"WEAPON_SPECIALCARBINE_MK2",
+		"WEAPON_CARBINERIFLE_MK2",
+		"WEAPON_ASSAULTRIFLE_MK2",
+    }, 
+
+    Submachines = {
 		"WEAPON_ASSAULTSMG",
-        "WEAPON_PISTOL",
-        "WEAPON_APPISTOL",
-        "WEAPON_PISTOL50",
-        "WEAPON_SNSPISTOL",
-        "WEAPON_SNSPISTOL_MK2",
-        "WEAPON_VINTAGEPISTOL",
-        "WEAPON_REVOLVER",
         "WEAPON_MICROSMG",
         "WEAPON_MINISMG",
-        "WEAPON_PUMPSHOTGUN",
-        "WEAPON_SAWNOFFSHOTGUN",
-        "WEAPON_ADVANCEDRIFLE",
-        "WEAPON_BULLPUPRIFLE",
-        "WEAPON_COMPACTRIFLE",
-        "ENERGETICO",
-	    "AIRDROP"
     },
-	municoes = {
-		"AMMO_PISTOL",
-		"AMMO_RIFLE",
-		"AMMO_SHOTGUN",
-		"ARMOUR_STANDARD",
+
+    Pistols = {
+		"WEAPON_PISTOL_MK2",
+		"WEAPON_COMBATPISTOL",
+        "WEAPON_APPISTOL",
+    },
+
+	Ammo = {
+		"WEAPON_AMMO",
+	},
+    
+	Life = {
+        "ARMOUR_STANDARD",
 		"HEALTH_STANDARD",
-        "ENERGETICO"
-	},
-
-	municoes2 = {
-		"AMMO_PISTOL",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_SHOTGUN",
-        "ENERGETICO"
-	},
-
-	municoes3 = {
-		"AMMO_PISTOL",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_SHOTGUN",
-	},
-
-	municoes4 = {
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-	},
-
-    municoes5 = {
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-	},
-
-    municoes6 = {
-		"AMMO_PISTOL",
-		"AMMO_RIFLE",
-		"AMMO_RIFLE",
-		"AMMO_SHOTGUN",
 	},
 }
 

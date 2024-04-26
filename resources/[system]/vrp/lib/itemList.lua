@@ -175,7 +175,7 @@ local itemlist = {
 		["name"] = "M1911",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.25,
@@ -186,7 +186,7 @@ local itemlist = {
 		["name"] = "FN Five Seven",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.50,
@@ -197,7 +197,7 @@ local itemlist = {
 		["name"] = "AK Compact",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 2.25,
 		["spawName"] = "WEAPON_COMPACTRIFLE"
@@ -207,7 +207,7 @@ local itemlist = {
 		["name"] = "Koch Vp9",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.25,
@@ -218,7 +218,7 @@ local itemlist = {
 		["name"] = "Ati FX45",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.50,
@@ -230,7 +230,7 @@ local itemlist = {
 		["name"] = "Tec-9",
 		["type"] = "Armamento",
 		["drop"] = true,
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.75,
@@ -241,7 +241,7 @@ local itemlist = {
 		["name"] = "Uzi",
 		["type"] = "Armamento",
 		["drop"] = true,
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.25,
@@ -263,7 +263,7 @@ local itemlist = {
 		["name"] = "Skorpion V61",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.75,
@@ -274,7 +274,7 @@ local itemlist = {
 		["name"] = "AMT 380",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.00,
@@ -285,7 +285,7 @@ local itemlist = {
 		["name"] = "HK P7M10",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.25,
@@ -296,7 +296,7 @@ local itemlist = {
 		["name"] = "M1922",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.25,
@@ -307,7 +307,7 @@ local itemlist = {
 		["name"] = "Desert Eagle",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.50,
@@ -318,7 +318,7 @@ local itemlist = {
 		["name"] = "Magnum 44",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.50,
@@ -329,7 +329,7 @@ local itemlist = {
 		["name"] = "Glock",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 1.25,
@@ -340,7 +340,7 @@ local itemlist = {
 		["name"] = "M4A1",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_CARBINERIFLE"
@@ -350,7 +350,7 @@ local itemlist = {
 		["name"] = "M4A4",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.50,
 		["spawName"] = "WEAPON_CARBINERIFLE_MK2"
@@ -360,7 +360,7 @@ local itemlist = {
 		["name"] = "Combat MG",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.50,
 		["spawName"] = "WEAPON_COMBATMG"
@@ -370,7 +370,7 @@ local itemlist = {
 		["name"] = "Double Action",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.50,
 		["spawName"] = "WEAPON_DOUBLEACTION"
@@ -399,7 +399,7 @@ local itemlist = {
 		["name"] = "Tar-21",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ADVANCEDRIFLE"
@@ -409,7 +409,7 @@ local itemlist = {
 		["name"] = "QBZ-95",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_BULLPUPRIFLE"
@@ -419,7 +419,7 @@ local itemlist = {
 		["name"] = "L85",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_BULLPUPRIFLE_MK2"
@@ -430,7 +430,7 @@ local itemlist = {
 		["name"] = "G36C",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["skins"] = {
 			["WEAPON_SPECIALCARBINESKIN1"] = {
@@ -471,7 +471,7 @@ local itemlist = {
 		["name"] = "G36C - SKIN 1",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINESKIN1"
@@ -483,7 +483,7 @@ local itemlist = {
 		["name"] = "G36C - SKIN 2",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINESKIN2"
@@ -494,7 +494,7 @@ local itemlist = {
 		["name"] = "G36C - SKIN 3",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINESKIN3"
@@ -505,7 +505,7 @@ local itemlist = {
 		["name"] = "G36C - SKIN 4",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINESKIN4"
@@ -516,7 +516,7 @@ local itemlist = {
 		["name"] = "G36C - SKIN 5",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINESKIN5"
@@ -527,7 +527,7 @@ local itemlist = {
 		["name"] = "G36C - SKIN 6",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINESKIN6"
@@ -538,7 +538,7 @@ local itemlist = {
 		["name"] = "G36C - SKIN 7",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINESKIN7"
@@ -549,7 +549,7 @@ local itemlist = {
 		["name"] = "PARA-FAL M964A1",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_PARAFAL"
@@ -560,7 +560,7 @@ local itemlist = {
 		["name"] = "FN L1A1",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_FNFAL"
@@ -571,7 +571,7 @@ local itemlist = {
 		["name"] = "Sig Sauer 556",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINE_MK2"
@@ -581,7 +581,7 @@ local itemlist = {
 		["name"] = "Mossberg 590",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_SHOTGUN",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 7.25,
 		["spawName"] = "WEAPON_PUMPSHOTGUN"
@@ -591,7 +591,7 @@ local itemlist = {
 		["name"] = "Mossberg 590A1",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_SHOTGUN",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 7.25,
 		["spawName"] = "WEAPON_PUMPSHOTGUN_MK2"
@@ -601,7 +601,7 @@ local itemlist = {
 		["name"] = "Winchester 1892",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_SHOTGUN",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 6.25,
 		["spawName"] = "WEAPON_MUSKET"
@@ -611,7 +611,7 @@ local itemlist = {
 		["name"] = "Mossberg 500",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_SHOTGUN",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 5.75,
 		["spawName"] = "WEAPON_SAWNOFFSHOTGUN"
@@ -621,7 +621,7 @@ local itemlist = {
 		["name"] = "MP5",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 5.25,
 		["spawName"] = "WEAPON_SMG"
@@ -631,7 +631,7 @@ local itemlist = {
 		["name"] = "Evo-3",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["vehicle"] = true,
 		["weight"] = 5.25,
@@ -642,7 +642,7 @@ local itemlist = {
 		["name"] = "AK-103",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 
 		["skins"] = {
@@ -704,7 +704,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 1",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN1"
 	},
@@ -714,7 +714,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 2",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN2"
 	},
@@ -724,7 +724,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 3",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN3"
 	},
@@ -734,7 +734,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 4",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN4"
 	},
@@ -744,7 +744,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 5",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN5"
 	},
@@ -754,7 +754,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 6",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN6"
 	},
@@ -765,7 +765,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 7",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN7"
 	},
@@ -776,7 +776,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 8",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN8"
 	},
@@ -786,7 +786,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 9",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN9"
 	},
@@ -796,7 +796,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 10",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN10"
 	},
@@ -806,7 +806,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 11",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN11"
 	},
@@ -816,7 +816,7 @@ local itemlist = {
 		["name"] = "AK-103 SKIN 12",
 		["drop"] = false,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLESKIN12"
 	},
@@ -826,7 +826,7 @@ local itemlist = {
 		["name"] = "AK-74",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_RIFLE",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLE_MK2"
@@ -836,7 +836,7 @@ local itemlist = {
 		["name"] = "Steyr AUG",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 5.75,
 		["spawName"] = "WEAPON_ASSAULTSMG"
@@ -846,7 +846,7 @@ local itemlist = {
 		["name"] = "Thompson",
 		["drop"] = true,
 		["type"] = "Armamento",
-		["ammo"] = "AMMO_PISTOL",
+		["ammo"] = "WEAPON_AMMO",
 
 		["weight"] = 6.25,
 		["spawName"] = "WEAPON_GUSENBERG"
@@ -882,45 +882,13 @@ local itemlist = {
 		["weight"] = 0.02,
 		["spawName"] = "WEAPON_NAIL_AMMO"
 	},
-	["AMMO_PISTOL"] = {
+	["WEAPON_AMMO"] = {
 		["index"] = "pistolammo",
 		["drop"] = true,
-		["name"] = "Munição de Pistola/Sub",
+		["name"] = "Munição de arma",
 		["type"] = "Munição",
 		["weight"] = 0.02,
-		["spawName"] = "AMMO_PISTOL"
-	},
-	["AMMO_RIFLE"] = {
-		["index"] = "rifleammo",
-		["drop"] = true,
-		["name"] = "Munição de Rifle",
-		["type"] = "Munição",
-		["weight"] = 0.04,
-		["spawName"] = "AMMO_RIFLE"
-	},
-	["AMMO_SHOTGUN"] = {
-		["index"] = "shotgunammo",
-		["drop"] = true,
-		["name"] = "Munição de Escopeta",
-		["type"] = "Munição",
-		["weight"] = 0.05,
-		["spawName"] = "AMMO_SHOTGUN"
-	},
-	["WEAPON_MUSKET_AMMO"] = {
-		["index"] = "musketammo",
-		["drop"] = true,
-		["name"] = "Munição de Mosquete",
-		["type"] = "Munição",
-		["weight"] = 0.05,
-		["spawName"] = "WEAPON_MUSKET_AMMO"
-	},
-	["WEAPON_PETROLCAN_AMMO"] = {
-		["index"] = "fuel",
-		["drop"] = true,
-		["name"] = "Combustível",
-		["type"] = "Munição",
-		["weight"] = 0.001,
-		["spawName"] = "WEAPON_PETROLCAN_AMMO"
+		["spawName"] = "WEAPON_AMMO"
 	},
 	["WEAPON_BRICK"] = {
 		["index"] = "brick",

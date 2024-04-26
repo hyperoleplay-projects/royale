@@ -343,16 +343,12 @@ end
 -- createVehicle
 -----------------------------------------------------------------------------------------------------------------------------------------
 function src.createVehicle(vehHash,vehNet,vehPlate,vehEngine,vehBody,vehFuel,vehCustom,vehWindows,vehDoors,vehTyres,vehBrakes)
-	-- for id = 0, 256 do
-    --     if id ~= PlayerId() and NetworkIsPlayerActive(id) then
-    --         NetworkFadeInEntity(GetPlayerPed(id), true)
-    --     end
-    -- end
-	
 	if NetworkDoesNetworkIdExist(vehNet) then
 		local nveh = NetToEnt(vehNet)
+
 		if DoesEntityExist(nveh) then
 			NetworkRegisterEntityAsNetworked(nveh)
+
 			while not NetworkGetEntityIsNetworked(nveh) do
 				NetworkRegisterEntityAsNetworked(nveh)
 				Citizen.Wait(1)
@@ -369,24 +365,11 @@ function src.createVehicle(vehHash,vehNet,vehPlate,vehEngine,vehBody,vehFuel,veh
 			SetVehicleNeedsToBeHotwired(nveh,false)
 			SetVehRadioStation(nveh,"OFF")
 
-			-- if vehCustom ~= nil then
-			-- 	local vehMods = json.decode(vehCustom)
-			-- 	vehicleMods(nveh,vehMods)
-			-- end
-
 			local state = GetResourceState("nation_bennys")
+
 			if state == "started" or state == "starting" then
 				TriggerEvent("nation:applymods",nveh,json.decode(vehCustom))
 			end
-
-			-- if vehCustom ~= nil then
-            --     local vehMods = json.decode(vehCustom)
-            --     if vehMods and vehMods.customPcolor then
-            --         TriggerEvent("nation:applymods",nveh,vRP.vehicleModel(vehModel))
-            --     else
-            --         vehicleMods(nveh,vehMods)
-            --     end
-            -- end
 
 			SetVehicleHandlingFloat(nveh,"CHandlingData","fBrakeForce",0.90)
 			SetVehicleHandlingFloat(nveh,"CHandlingData","fBrakeBiasFront",0.55)
@@ -395,6 +378,7 @@ function src.createVehicle(vehHash,vehNet,vehPlate,vehEngine,vehBody,vehFuel,veh
 			SetVehicleEngineHealth(nveh,vehEngine + 0.0)
 			SetVehicleBodyHealth(nveh,vehBody + 0.0)
 			SetVehicleFuelLevel(nveh,vehFuel + 0.0)
+			
 			if vehWindows then
 				if json.decode(vehWindows) ~= nil then
 					for k,v in pairs(json.decode(vehWindows)) do

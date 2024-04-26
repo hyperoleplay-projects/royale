@@ -33,32 +33,32 @@ end
 -- isVipByUserId - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Premium.isVipByUserId(user_id,category)
-    local query = exports.oxmysql:query_async("SELECT `category` FROM `vips` WHERE `user_id` = @user_id AND `is_active` = true",{ user_id = user_id })
-    if #query > 0 then
-        if not category then
-            return true, query[#query].category
-        else
-            for k,v in pairs(query) do
-                if v.category == category then
-                    return true
-                end
-            end
-        end
-    end
+    -- local query = exports.oxmysql:query_async("SELECT `category` FROM `vips` WHERE `user_id` = @user_id AND `is_active` = true",{ user_id = user_id })
+    -- if #query > 0 then
+    --     if not category then
+    --         return true, query[#query].category
+    --     else
+    --         for k,v in pairs(query) do
+    --             if v.category == category then
+    --                 return true
+    --             end
+    --         end
+    --     end
+    -- end
     return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- checkExpired - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Premium.checkExpired()
-    local query = exports.oxmysql:query_async("SELECT * FROM vips WHERE `is_active` = true AND `expire_time` IS NOT NULL")
-    for k,v in pairs(query) do
-        if os.time() >= v.expire_time then
-            exports.oxmysql:query("UPDATE `vips` SET `is_active` = false, `expire_time` = NULL, `expired_at` = NOW() WHERE `id` = @id",{ id = v.id })
-            vRP.execute('vRP/deletePriority',{ user_id = v.id })
-            print("[^2APPOINTMENTS^7] O pacote "..v.category.." do Usuário "..v.user_id.." expirou. ["..os.date("%d/%m/%y %H:%M:%S").."]")
-        end
-    end
+    -- local query = exports.oxmysql:query_async("SELECT * FROM vips WHERE `is_active` = true AND `expire_time` IS NOT NULL")
+    -- for k,v in pairs(query) do
+    --     if os.time() >= v.expire_time then
+    --         exports.oxmysql:query("UPDATE `vips` SET `is_active` = false, `expire_time` = NULL, `expired_at` = NOW() WHERE `id` = @id",{ id = v.id })
+    --         vRP.execute('vRP/deletePriority',{ user_id = v.id })
+    --         print("[^2APPOINTMENTS^7] O pacote "..v.category.." do Usuário "..v.user_id.." expirou. ["..os.date("%d/%m/%y %H:%M:%S").."]")
+    --     end
+    -- end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- onResourceStart - Function

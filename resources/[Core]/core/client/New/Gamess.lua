@@ -43,51 +43,35 @@ local nearbyItems = {}
 local isHudBuilt = false
 
 local CHEST_MODELS = {
-    OPENEDS = {
-        GRAY = 'xm_prop_x17_chest_open', 
-        YELLOW = 'xm_prop_x17_chest_open', 
-        GREEN = 'xm_prop_x17_chest_open', 
-        ORANGE = 'xm_prop_x17_chest_open', 
-        BEIGE = 'xm_prop_x17_chest_open', 
-        PURPLE = 'xm_prop_x17_chest_open'
-    }, 
-
-    CLOSEDS = {
-        GRAY = 'ba_prop_battle_chest_closed', 
-        YELLOW = 'ba_prop_battle_chest_closed', 
-        GREEN = 'ba_prop_battle_chest_closed', 
-        ORANGE = 'ba_prop_battle_chest_closed', 
-        BEIGE = 'ba_prop_battle_chest_closed', 
-        PURPLE = 'ba_prop_battle_chest_closed'
-    }
+    PURPLE = 'ba_prop_battle_chest_closed',
+    BLUE = 'ba_prop_battle_chest_closed',
+    ORANGE = 'ba_prop_battle_chest_closed',
+    YELLOW = 'ba_prop_battle_chest_closed',
+    GREEN = 'ba_prop_battle_chest_closed',
 }
 
 local AVAILABLE_LOOTS = {
-    'favela', 
-    'municoes', 
-    'municoes2', 
-    'municoes3', 
-    'municoes4', 
-    'municoes5', 
-    'municoes6'
+    'Rifles',
+    'Submachines',
+    'Pistols',
+    'Ammo', 
+    'Life', 
 }
 
 local LOOTS_COLORS_NAMES = {
-    ['favela'] = 'GRAY', 
-    ['municoes'] = 'YELLOW', 
-    ['municoes2'] = 'GREEN', 
-    ['municoes3'] = 'ORANGE', 
-    ['municoes4'] = 'BEIGE', 
-    ['municoes5'] = 'PURPLE'
+    ['Rifles'] = 'PURPLE',
+    ['Submachines'] = 'BLUE',
+    ['Pistols'] = 'ORANGE',
+    ['Ammo'] = 'YELLOW', 
+    ['Life'] = 'GREEN', 
 }
 
 local LOOTS_COLORS = {
-    GRAY = { R = 29, G = 67, B = 101 }, 
-    YELLOW = { R = 181, G = 223, B = 189 }, 
-    GREEN = { R = 158, G = 190, B = 93 }, 
-    ORANGE = { R = 54, G = 57, B = 62 }, 
-    BEIGE = { R = 247, G = 251, B = 254 }, 
-    PURPLE = { R = 211, G = 190, B = 132 }
+    ['PURPLE'] = { R = 211, G = 190, B = 132 },
+    ['BLUE'] = { R = 0, G = 166, B = 255 },
+    ['ORANGE'] = { R = 54, G = 57, B = 62 },
+    ['YELLOW'] = { R = 181, G = 223, B = 189 },
+    ['GREEN'] = { R = 158, G = 190, B = 93 },
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ItemExists - Function
@@ -284,7 +268,6 @@ end)
 -- JumpPlayerFolloWing - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientApiEvents.JumpPlayerFolloWing = function(data) 
-    print("Pulou")
     if inPlane and LocalPlayer.state.IsFollowingTeam then
         local ped = PlayerPedId()
         local playerPed = GetPlayerPed(-1)
@@ -646,6 +629,33 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- Pick - Thread
 -----------------------------------------------------------------------------------------------------------------------------------------
+function toggleChestAnim(inProgress)
+    local ped = PlayerPedId()
+    local player = PlayerId()
+
+    local dict = 'amb@medic@standing@kneel@idle_a'
+    local anim = 'idle_a'
+
+    local hasAnim = IsEntityPlayingAnim(ped, dict, anim, 49)
+
+    if inProgress and not hasAnim then 
+        while not HasAnimDictLoaded(dict) do
+            RequestAnimDict(dict)
+
+            Citizen.Wait(10)
+        end
+
+        TaskPlayAnim(ped, dict, anim, 2.0, 2.0, -1, 49, 0, 0, 0, 0)
+        FreezeEntityPosition(ped, true)
+    elseif not inProgress and hasAnim then 
+        ClearPedTasks(ped)
+        ClearPedSecondaryTask(ped)
+        ClearPedTasksImmediately(ped)
+
+        FreezeEntityPosition(ped, false)
+    end 
+end
+
 CreateThread(function()
     local lastPickupTime = 0
     local pickupDelay = 1
@@ -654,6 +664,8 @@ CreateThread(function()
 
     local isEPressed = false
     local pressTime = 0
+
+    local isKeyboardChestActive = false
 
     while true do
         local sleepTime = 1000
@@ -672,7 +684,7 @@ CreateThread(function()
                         local pickupCoords = vector3(pickup.x, pickup.y, pickup.z)
                         local distance = #(pedCoordinates - pickupCoords)
                         
-                        if distance <= 15.0 then
+                        if distance <= 100.0 then
                             if not closestPickups[i] then
                                 closestPickups[i] = {
                                     handle = pickup.handle,
@@ -701,6 +713,8 @@ CreateThread(function()
                 lastCheckTime = GetGameTimer()
             end
             
+            local isNearOfChest = false 
+
             for k,v in pairs(closestPickups) do
                 if not v.status and not LocalPlayer.state.death and not LocalPlayer.state.agonizing then
                     local distance = #(pedCoordinates - v.pos)
@@ -711,6 +725,8 @@ CreateThread(function()
 
                     if distance <= 1.9 and not IsPedInAnyVehicle(Ped) then
                         if not PickUps[k].handle then
+                            isNearOfChest = true 
+
                             if IsControlJustPressed(0, 38) then
                                 isEPressed = true
                                 pressTime = GetGameTimer()
@@ -722,31 +738,24 @@ CreateThread(function()
                             end
                             
                             if isEPressed and GetGameTimer() - pressTime >= 3000 then
-                                local chestHandle = createObject(CHEST_MODELS.OPENEDS[v.color], vector3(pedCoordinates.x, pedCoordinates.y, pedCoordinates.z + 30.0))
+                                deleteObject(v.chestHandle)
 
-                                if chestHandle then
-                                    deleteObject(v.chestHandle)
+                                local pickupHash = GetHashKey('PICKUP_' .. v.item .. (v.item:find('AMMO_') and 'LUIZ' or ''))
+                                local pickupHandle = CreatePickupRotate(pickupHash, v.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
+                                
+                                SetPickupRegenerationTime(pickupHandle, -1)
 
-                                    SetEntityCoords(chestHandle, v.pos)
-                                    PlaceObjectOnGroundProperly(chestHandle, v.pos)
+                                v.timeout = GetGameTimer() + 550
 
-                                    local pickupHash = GetHashKey('PICKUP_' .. v.item .. (v.item:find('AMMO_') and 'LUIZ' or ''))
-                                    local pickupHandle = CreatePickupRotate(pickupHash, v.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
-                                    
-                                    SetPickupRegenerationTime(pickupHandle, -1)
+                                PickUps[k].handle = pickupHandle
+                                PickUps[k].chestHandle = nil
 
-                                    v.timeout = GetGameTimer() + 550
-
-                                    PickUps[k].handle = pickupHandle
-                                    PickUps[k].chestHandle = chestHandle
-
-                                    PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
-                                    
-                                    isEPressed = false
-                                    pressTime = 0
-        
-                                    break
-                                end
+                                PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+                                
+                                isEPressed = false
+                                pressTime = 0
+    
+                                break
                             end
                         else
                             local currentTime = GetGameTimer()
@@ -785,6 +794,22 @@ CreateThread(function()
                         end
                     end
                 end
+            end
+
+            if isNearOfChest ~= isKeyboardChestActive then 
+                isKeyboardChestActive = isNearOfChest 
+
+                AddKeyboardInfo({
+                    status = isNearOfChest,
+                    key = isNearOfChest and "E" or nil,
+                    text = isNearOfChest and "Abrir baú" or nil
+                })
+            end 
+
+            if not isEPressed or GetGameTimer() - pressTime >= 3000 then
+                toggleChestAnim(false)
+            else 
+                toggleChestAnim(true)
             end
         end
 
@@ -837,15 +862,13 @@ Citizen.CreateThread(function()
                 local distance = #(pedCoordinates - vector3(pickup.x, pickup.y, pickup.z))
                 
                 if not pickup.created and not pickup.coleted then
-                    if distance <= 50 then
+                    if distance <= 100 then
                         local foundZ, cdz = GetGroundZFor_3dCoord(pickup.x, pickup.y, 99990.0, true)
 
                         if foundZ then
-                            local chestHandle = createObject(CHEST_MODELS.CLOSEDS[pickup.color], vector3(pickup.x, pickup.y, cdz))
+                            local chestHandle = createObject(CHEST_MODELS[pickup.color], vector3(pickup.x, pickup.y, cdz))
 
                             if chestHandle then
-                                print('Criou objeto perto', vector3(pickup.x, pickup.y, cdz))
-
                                 pickup.chestHandle = chestHandle
                                 pickup.z = cdz + 0.5
                                 pickup.created = true
@@ -853,7 +876,7 @@ Citizen.CreateThread(function()
                         end
                     end
                 else
-                    if distance > 50 then
+                    if distance > 100 then
                         if DoesEntityExist(pickup.chestHandle) then
                             deleteObject(pickup.chestHandle)
 
@@ -1548,32 +1571,42 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.JoinLobbyGame = function()
     local ped = PlayerPedId()
+
     DoScreenFadeOut(1000)
+
     cooldown = Config.StartTime
     LocalPlayer.state.inDashboard = false
     
-    -- Fechar o lobby
     cam.delete("CAM_LOBBY1")
     cam.delete("CAM_LOBBY2")
+
     toggleNuiFrame(false)
     SetNuiFocus(false,false)
     
     NetworkSetTalkerProximity(0.0)
     NetworkClearVoiceChannel()
     NetworkSetVoiceActive(false)
+
     noDamage()
+
     clientApiEvents.BuildPeds({}, false)
     clientApiEvents.BuildGroup({}, false)
+
     SendReactMessage('buildStatsStatus', true)
     SendReactMessage('buildLogoMidle', true)
+
     AddKeyHelp({ status = false })
 
 
     exports["vrp"]:ResetCrouch()
     FreezeEntityPosition(PlayerPedId(), true)
-    Wait(600)
+
+    Wait(500)
+
     local randomSpawn = math.random(#Config.LobbyGame)
+
     SetEntityCoordsNoOffset(ped, Config.LobbyGame[randomSpawn].x, Config.LobbyGame[randomSpawn].y, Config.LobbyGame[randomSpawn].z+1)
+    
     LocalPlayer.state.inGameLobby = true
     TriggerEvent("duth:ChatStatus", true)
 
@@ -1590,11 +1623,13 @@ clientEvents.JoinLobbyGame = function()
 
     local ped = PlayerPedId()
     local pedId = PlayerId()
+
     SetEntityHealth(ped, 400)
     ClearPlayerWantedLevel(pedId)
     SetCurrentPedWeapon(ped,"WEAPON_UNARMED",true)
     RemoveAllPedWeapons(ped, true)
     ClearPedBloodDamage(ped)
+
     idleGame = 1
     
     if not LobbyTheard1 then
@@ -1604,7 +1639,9 @@ clientEvents.JoinLobbyGame = function()
             while true do
                 if LocalPlayer.state.inGameLobby then
                     idleGame = 1
+
                     SetEntityHealth(PlayerPedId(), 400)
+
                     DisablePlayerFiring(ped,true)            
                     DisableControlAction(2,37,true)
                     DisableControlAction(1,45,true)
@@ -1645,15 +1682,6 @@ clientEvents.JoinLobbyGame = function()
                             timer = false,
                         })
                     end
-
-                    -- if cooldown == 1 then
-                    --     if not StartGame then
-                    --         StartGame = true
-                    --         -- controller.sendServerEvent('StartGameNew', {})
-                    --         -- Wait(500)
-                    --         -- clientEvents.StartGameClient()
-                    --     end
-                    -- end
                 else
                     idleGame = 5000
                 end
@@ -1669,15 +1697,19 @@ end
 clientEvents.ExitLobbyGame = function()
     local ped = PlayerPedId()
     local pedId = PlayerId()
+
     DisablePlayerFiring(PlayerPedId(), false)
+
     exports["vrp"]:ResetCrouch()
+
     Wait(1000)
+
     LocalPlayer.state.inGameLobby = false
     LocalPlayer.state.inDashboard = false
     LocalPlayer.state.Buttons = false
 
     AddAnnouncement({ status = false })
-    -- torna o jogador vulnerável novamente quando sair do lobby
+
     SetEntityInvincible(ped, false)
     SetPedCanSwitchWeapon(ped, true)
 
