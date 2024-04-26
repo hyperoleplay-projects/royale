@@ -1020,23 +1020,23 @@ RegisterKeyMapping("+endGameSpec","Sair da partida.","keyboard","F7")
 -- returnLobby - NUI
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("returnLobby", function(data, cb)
-    if not isReturnLobby and LocalPlayer.state.finishGameUI and LocalPlayer.state.inGame then
-        isReturnLobby = true
-        adrenaline = false
-        reviving = false
-        LocalPlayer.state.Buttons = false
-        LocalPlayer.state.agonizing = false
-        LocalPlayer.state.isReviving = false
-        coordinatesProcessed = 0
-        PickUps = {}
-        allPickups = {}
-        closestPickups = {}
+    -- if not isReturnLobby and LocalPlayer.state.finishGameUI and LocalPlayer.state.inGame then
+    --     isReturnLobby = true
+    --     adrenaline = false
+    --     reviving = false
+    --     LocalPlayer.state.Buttons = false
+    --     LocalPlayer.state.agonizing = false
+    --     LocalPlayer.state.isReviving = false
+    --     coordinatesProcessed = 0
+    --     PickUps = {}
+    --     allPickups = {}
+    --     closestPickups = {}
 
-        controller.sendServerEvent('endGame', { })
-        SetTimeout(5000, function()
-            isReturnLobby = false
-        end)
-    end
+    --     controller.sendServerEvent('endGame', { })
+    --     SetTimeout(5000, function()
+    --         isReturnLobby = false
+    --     end)
+    -- end
     cb("ok")
 end)
 

@@ -853,7 +853,7 @@ ApiController.loadUserData = function(source)
 	local identity = vRP.getIdentity(user_id)
     
     -- States
-    Player(source).state.inDashboard = false
+    Player(source).state.inDashboard = true -- Alterado para true
     Player(source).state.inAimLab = false
     Player(source).state.inQueue = false
     Player(source).state.inGame = false
@@ -879,11 +879,9 @@ ApiController.loadUserData = function(source)
     Player(source).state.userSkins = nil
     Player(source).state.isReviving = false
     
-    -- Lobby
-    local random = math.random(#Config.Maps["LobbyPrincipal"].possibleDimensionsLobby)
-    local lobbyRouting = Config.Maps["LobbyPrincipal"].possibleDimensionsLobby[random]
-    SetPlayerRoutingBucket(source, lobbyRouting)
-    Player(source).state.inLobbyPrincipal = true
+    SetPlayerRoutingBucket(source, user_id+1)
+
+    Player(source).state.inLobbyPrincipal = false -- Alterado para false
     
     ApiController.sendPlayerEvent(source, "setDiscordRich", {
         title = "DUTH",
@@ -891,9 +889,13 @@ ApiController.loadUserData = function(source)
     })
     
     ApiController.sendPlayerEvent(source, "JoinLobby", {})
+
     ApiController.SetupGroup(source, user_id)
+
     -- Setup player
+
     Group.load(user_id, source)
+
     DiscordSync.addGroupBasedRole(user_id, source)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
