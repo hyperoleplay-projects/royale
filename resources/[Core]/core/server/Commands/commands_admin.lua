@@ -1,28 +1,7 @@
 
 local players = {}
 local sources = {}
--- -----------------------------------------------------------------------------------------------------------------------------------------
--- Loja
--- -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("loja", function(source, args, rawCmd) 
-	local user_id = vRP.getUserId(source)
-	if not exports["core"]:Group().hasAccessOrHigher(user_id,"dev") then
-        return
-    end
 
-	clientAPI.SendNUI(source, { status = true, page = "/admin/loja" })
-end)
--- -----------------------------------------------------------------------------------------------------------------------------------------
--- caixa
--- -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("caixa", function(source, args, rawCmd) 
-	local user_id = vRP.getUserId(source)
-	if not exports["core"]:Group().hasAccessOrHigher(user_id,"dev") then
-        return
-    end
-
-	clientAPI.SendNUI(source, { status = true, page = "/admin/drop" })
-end)
 -- -----------------------------------------------------------------------------------------------------------------------------------------
 -- add-vip
 -- -----------------------------------------------------------------------------------------------------------------------------------------
@@ -67,29 +46,7 @@ RegisterCommand("add-vip", function(source, args, rawCmd)
         end
     end
 end)
--- -----------------------------------------------------------------------------------------------------------------------------------------
--- season
--- -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("season", function(source, args, rawCmd) 
-	local user_id = vRP.getUserId(source)
-	if not exports["core"]:Group().hasAccessOrHigher(user_id,"dev") then
-        return
-    end
 
-	clientAPI.SendNUI(source, { status = true, page = "/admin/season" })
-end)
--- -----------------------------------------------------------------------------------------------------------------------------------------
--- Loja
--- -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("games", function(source, args, rawCmd) 
-	local user_id = vRP.getUserId(source)
-	if not exports["core"]:Group().hasPermission(user_id,"staff") then
-        return
-    end
-	clientAPI.clearInfoCache(source, 'partidas')
-
-	clientAPI.SendNUI(source, { status = true, page = "/admin/partidas" })
-end)
 -- -----------------------------------------------------------------------------------------------------------------------------------------
 -- NC
 -- -----------------------------------------------------------------------------------------------------------------------------------------

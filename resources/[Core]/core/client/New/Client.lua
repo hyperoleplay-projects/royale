@@ -171,9 +171,6 @@ end
 -- JoinLobby - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientApiEvents.JoinLobby = function() 
-    -- LocalPlayer.state.inLobbyPrincipal = true
-    -- LocalPlayer.state.Buttons = true
-    -- LocalPlayer.state.inDashboard = true 
     LocalPlayer.state.inGame = false 
     LocalPlayer.state.inGameLobby = false
 
@@ -181,29 +178,8 @@ clientApiEvents.JoinLobby = function()
 
     TriggerEvent("duth:ChatStatus", false)
     SendReactMessage('buildStatsStatus', false)
-    -- SendReactMessage('buildLogoMidle', true)
 
     ResetHud()
-
-    -- NetworkSetTalkerProximity(0.0)
-    -- NetworkClearVoiceChannel()
-    -- NetworkSetVoiceActive(false)
-
-    -- AddKeyHelp({
-    --     id = 1,
-    --     status = true,
-    --     type = 'left',
-    --     key = 'F1',
-    --     text = 'Dashboard'
-    -- })
-
-    -- AddKeyHelp({
-    --     id = 2,
-    --     status = true,
-    --     type = 'left',
-    --     key = 'F2',
-    --     text = 'Loja'
-    -- })
 
     exports["vrp"]:ResetCrouch()
 
@@ -226,101 +202,13 @@ clientApiEvents.JoinLobby = function()
         SetGameplayCamRelativeHeading(15)
 
         DisplayRadar(false)
-
-        -- while LocalPlayer.state.inLobbyPrincipal do
-        --     local wait = 1000
-        --     local ped = PlayerPedId()
-        --     local x,y,z = table.unpack(GetEntityCoords(ped))
-        --     local coords = GetEntityCoords(ped)
-        --     local distance = Vdist(x, y, z, Config.Maps["LobbyPrincipal"].center)
-        --     if distance < Config.Maps["LobbyPrincipal"].radius then
-        --         wait = 1
-        --         SetEntityHealth(PlayerPedId(), 400)
-        --         DisablePlayerFiring(ped,true)      
-        --         SetEntityInvincible(ped, true)
-        --         SetPedCanSwitchWeapon(ped, false)
-
-        --         DisableControlAction(2,37,true)
-        --         DisableControlAction(1,45,true)
-        --         DisableControlAction(2,80,true)
-        --         DisableControlAction(2,140,true)
-        --         DisableControlAction(2,250,true)
-        --         DisableControlAction(2,263,true)
-        --         DisableControlAction(2,310,true)
-        --         DisableControlAction(1,140,true)
-        --         DisableControlAction(1,141,true)
-        --         DisableControlAction(1,142,true)
-        --         DisableControlAction(1,143,true)
-        --         DisableControlAction(0,24,true)
-        --         DisableControlAction(0,25,true)
-        --         DisableControlAction(0,58,true)
-        --         DisableControlAction(0,106,true)      
-        --     end
-        --     for k,v in pairs(Config.peds) do
-        --         local distance = #(coords - vector3(v["coords"][1],v["coords"][2],v["coords"][3]))
-        --         if distance <= v["distance"] then
-        --             if not IsPedInAnyVehicle(ped) then
-        --                 if LuizDev.PedsLobby[k] == nil then
-        --                     local mHash = GetHashKey(v["model"][2])
-
-        --                     RequestModel(mHash)
-        --                     while not HasModelLoaded(mHash) do
-        --                         Citizen.Wait(1)
-        --                     end
-
-        --                     if HasModelLoaded(mHash) then
-
-        --                         LuizDev.PedsLobby[k] = CreatePed(4,v["model"][1],v["coords"][1],v["coords"][2],v["coords"][3] - 1,v["coords"][4],false,true)
-        --                         SetPedArmour(LuizDev.PedsLobby[k],100)
-        --                         SetEntityInvincible(LuizDev.PedsLobby[k],true)
-        --                         FreezeEntityPosition(LuizDev.PedsLobby[k],true)
-        --                         SetBlockingOfNonTemporaryEvents(LuizDev.PedsLobby[k],true)
-    
-        --                         if v["clothes"] and type(v["clothes"]) == "table" then
-        --                             setClothing(LuizDev.PedsLobby[k],v["clothes"])
-        --                         end
-    
-        --                         if v["tattoos"] and type(v["tattoos"]) == "table" then
-        --                             setTattos(LuizDev.PedsLobby[k],v["tattoos"])
-        --                         end
-    
-        --                         SetModelAsNoLongerNeeded(mHash)
-    
-        --                         if v["anim"] then
-        --                             if v["anim"][1] ~= nil then
-        --                                 if v["anim"][1] == "PROP_HUMAN_SEAT_CHAIR_MP_PLAYER" then
-        --                                     TaskStartScenarioAtPosition(LuizDev.PedsLobby[k],"PROP_HUMAN_SEAT_CHAIR_MP_PLAYER",v["coords"][1],v["coords"][2],v["coords"][3],v["coords"][4],-1,1,false)
-        --                                 else
-        --                                     RequestAnimDict(v["anim"][1])
-        --                                     while not HasAnimDictLoaded(v["anim"][1]) do
-        --                                         Citizen.Wait(1)
-        --                                     end
-    
-        --                                     TaskPlayAnim(LuizDev.PedsLobby[k],v["anim"][1],v["anim"][2],8.0,0.0,-1,1,0,0,0,0)
-        --                                 end
-        --                             end
-        --                         end
-        --                     end
-
-        --                 end
-        --             end
-        --         else
-        --             if LuizDev.PedsLobby[k] then
-        --                 DeleteEntity(LuizDev.PedsLobby[k])
-        --                 LuizDev.PedsLobby[k] = nil
-        --             end
-        --         end
-        --     end
-
-        --     Citizen.Wait(wait)
-        -- end
     end)
 
     Wait(1000)
 
     LocalPlayer.state.inDashboard = true
 
-    DeleteEnitys()
+    DeleteEntities()
     
     cam.CreateCamLobby1("CAM_LOBBY1")
     cam.CreateCamLobby("CAM_LOBBY2")
@@ -328,35 +216,36 @@ clientApiEvents.JoinLobby = function()
     clientApiEvents.BuildPeds({}, false)
     clientApiEvents.BuildGroup({}, false)
 
-    toggleNuiFrame(true, '/dashboard/home')
+    updateMenuFrame(true, {
+        isReady = false, 
+        profile = {
+            id = 1, 
+            name = 'Combo Dev',
+            color = 1
+        },
+        guild = {
+            tag = 'ABC'
+        },
+        groupMembers = {
+            {
+                tag = 'ABC',
+                name = 'Combo Dev',
+                color = 1, 
+                isReady = false 
+            },
+        },
+        match = {
+            queue = nil, 
+            mode = 'SOLO',
+            custom = nil,
+        },
+    })
     
     SendReactMessage('buildLogoMidle', false)
 
     AddKeyHelp({ status = false })
     
     DisablePlayerFiring(PlayerPedId(), false)
-
-    -- Citizen.CreateThread(function()
-    --     while LocalPlayer.state.inLobbyPrincipal do
-    --         local idle = 1000
-    --         local ped = PlayerPedId()
-    --         local coords = GetEntityCoords(ped)
-
-    --         for k,v in pairs(Config.peds) do
-    --             local distance = #(coords - vec3(v["coords"][1],v["coords"][2],v["coords"][3]))
-    --             if distance <= 3 then
-    --                 idle = 4
-
-    --                 if IsControlJustPressed(0,38) then
-    --                     if v["tunnel"] == "server" then
-    --                        serverAPI.OpenMenuNUI(v["type"])
-    --                     end
-    --                 end
-    --             end
-    --         end
-    --         Citizen.Wait(idle)
-    --     end
-    -- end)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BuildPeds - Function
@@ -820,72 +709,10 @@ function CreatePlayerBlips()
     end)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- +openDashboard - Command
------------------------------------------------------------------------------------------------------------------------------------------
--- RegisterCommand("+openDashboard", function() 
---     local pedId = PlayerId()
-
---     if LocalPlayer.state.inLobbyPrincipal then
---         LocalPlayer.state.inDashboard = true
---         DeleteEnitys()
-        
---         cam.CreateCamLobby1("CAM_LOBBY1")
---         cam.CreateCamLobby("CAM_LOBBY2")
-        
---         clientApiEvents.BuildPeds({}, false)
---         clientApiEvents.BuildGroup({}, false)
-
---         toggleNuiFrame(true, '/dashboard/home')
-        
---         SendReactMessage('buildLogoMidle', false)
---         AddKeyHelp({ status = false })
-        
---         DisablePlayerFiring(PlayerPedId(), false)
-
---         exports["vrp"]:ResetCrouch()
-
---         controllerApi.sendServerEvent('ExitLobby', { })
---     end
--- end)
--- RegisterKeyMapping("+openDashboard","Abrir dashboard principal.","keyboard","F1")
------------------------------------------------------------------------------------------------------------------------------------------
--- +openLoja - Command
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("+openLoja", function() 
-    local pedId = PlayerId()
-    if LocalPlayer.state.inLobbyPrincipal then
-        LocalPlayer.state.inDashboard = true
-        DeleteEnitys()
-
-        cam.CreateCamLobby1("CAM_LOBBY1")
-        cam.CreateCamLobby("CAM_LOBBY2")
-        clientApiEvents.BuildPeds({}, false)
-        clientApiEvents.BuildGroup({}, false)
-        toggleNuiFrame(true, '/dashboard/loja')
-        
-        SendReactMessage('buildLogoMidle', false)
-        AddKeyHelp({ status = false })
-        
-        DisablePlayerFiring(PlayerPedId(), false)
-        exports["vrp"]:ResetCrouch()
-        controllerApi.sendServerEvent('ExitLobby', { })
-    end
-end)
-RegisterKeyMapping("+openLoja","Abrir loja.","keyboard","F2")
------------------------------------------------------------------------------------------------------------------------------------------
 -- hideFrame - NUI
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback('hideFrame', function(_, cb)
-    -- if LocalPlayer.state.inDashboard and not LocalPlayer.state.inGame and not LocalPlayer.state.inGameLobby and not LocalPlayer.state.inQueue then
-    --     cam.delete("CAM_LOBBY1")
-    --     cam.delete("CAM_LOBBY2")
-
-    --     toggleNuiFrame(false)
-    --     TriggerEvent("duth:ChatStatus", false)
-    --     controllerApi.sendServerEvent('JoinLobby', { })
-    -- end
-
-    cb({})
+    cb({ })
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- events_controllerApi - Function

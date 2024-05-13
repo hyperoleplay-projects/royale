@@ -1,0 +1,15 @@
+<svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="aceitar">
+<g id="Rectangle 67">
+<rect width="26" height="26" rx="4" fill="url(#paint0_linear_1_1164)"/>
+<rect x="0.5" y="0.5" width="25" height="25" rx="3.5" stroke="black" stroke-opacity="0.25"/>
+</g>
+<path id="checkmark" fill-rule="evenodd" clip-rule="evenodd" d="M17.6261 9.37608C17.1275 8.87464 16.3194 8.87464 15.8208 9.37608L11.3073 13.9045L10.1792 12.7724C9.68058 12.274 8.87221 12.274 8.37394 12.7724C7.87535 13.2738 7.87535 14.0859 8.37394 14.5843L10.4049 16.6239C10.9034 17.1254 11.7115 17.1254 12.2101 16.6239L17.6261 11.188C18.1246 10.6866 18.1246 9.87445 17.6261 9.37608Z" fill="white" fill-opacity="0.75"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_1_1164" x1="26" y1="23" x2="1.91423e-07" y2="-1.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F56B1F"/>
+<stop offset="1" stop-color="#8F3E12"/>
+</linearGradient>
+</defs>
+</svg>

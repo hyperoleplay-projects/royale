@@ -43,27 +43,28 @@ main {
   display: flex;
   overflow: hidden;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 inventory {
-  position: relative;
-  width: 550px;
-  height: 285px;
+  position: absolute;
+  right: 35px;
+  width: 304px;
+  height: 267px;
   display: flex;
   flex-direction: column;
-  background: rgba(17, 17, 17, 0.7);
-  border: 0.550609px solid rgba(255, 255, 255, 0.02);
-  border-bottom: 10px solid rgba(255, 255, 255, 0);
-  border-radius: 10px;
+  border-radius: 10.903px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(29, 29, 29, 0.85);
+  box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.25);
 }
 
 inventory .Header {
+  display: flex;
   position: absolute;
   width: 300px;
   height: 50px;
-  left: 15px;
-  top: 10px;
+  top: 19px;
   display: flex;
   flex-direction: column;
 }
@@ -77,45 +78,52 @@ inventory .Header:before {
 	width: .1875rem;
 	height: 60%;
 	border-radius: 1.875rem;
-	background-color: #F5AF00;
+	/* background-color: #F5AF00; */
 	transform: translate(0, -50%);
 }
 
-inventory .Header h1 {
-	position: relative;
-	width: 100%;
-	height: 6.25rem;
-	color: #fff;
-	display: flex;
+inventory .Header span {
+  text-align: center;
+  color: #FFF;
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.25);
+  font-family: Jura;
   font-size: 15px;
-	padding-left: 0.875rem;
-	align-items: center;
-	text-transform: uppercase;
-	justify-content: space-between;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+inventory .Header .bold {
+  color: #288FF2;
+  font-family: Jura;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }
 
 inventory section {
   display: grid;
   grid-gap: 5px;
   overflow: auto;
-  margin-top: 65px;
-  margin-left: 15px;
+  margin-top: 59px;
+  margin-left: 5px;
   max-height: 315px;
-  grid-template-columns: repeat(5, 100px);
+  grid-template-columns: repeat(5, 1fr);
 }
 
 inventory section .item, .ui-draggable {
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   display: flex;
   padding-top: 10px;
-  border-radius: 12px;
   align-items: center;
   flex-direction: column;
   transition: background .2s;
   justify-content: space-between;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3.207px;
+  border: 0.641px solid rgba(255, 255, 255, 0.15);
+  background: rgba(92, 92, 92, 0.20);
   overflow: hidden; /* adicionado */
 }
 
@@ -187,6 +195,18 @@ inventory section .populated {
 inventory section .populated:hover {
   transition: border 1s;
   border: 1px solid rgba(255, 255, 255, 0.521);
+}
+
+inventory .wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+inventory .wrapper img {
+  margin-top: 12px;
+  width: 96px;
+  height: 37px;
 }
 
 /*
@@ -266,50 +286,57 @@ inventory section .populated:hover {
 }
 
 inventoryActions {
-  padding: 5px;
-  width: 100px;
+  margin-top: 15.56px;
+  padding: 0 5px;
+  width: 100%;
   display: flex;
-  margin: 0 30px;
   overflow: hidden;
   border-radius: 5px;
   align-items: center;
-  flex-direction: column;
+  gap: 9px;
   text-transform: uppercase;
-  /* background-color: rgba(15,15,15,.5) */
-  /* border: 2px solid rgba(255, 255, 255, 0.11); */
-  /* border: 1px solid rgba(255, 255, 255, 0.10); */
 }
 
 inventoryActions #inventoryActionsButton {
-  width: 100%;
+  width: 77px;
+  height: 24px;
   display: flex;
   color: #fff;
-  margin-top: 5px;
   font-size: 10px;
   font-weight: 500;
   padding: 10px;
-  border-radius: 2px;
   align-items: center;
   letter-spacing: 1px;
   justify-content: center;
   text-transform: uppercase;
   /* background-color: #848deb; */
-  background: rgba(15,15,15,.5);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(92, 92, 92, 0.20);
+  box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.25);
   /* border: 1px solid rgba(255, 255, 255, 0.10); */
+  cursor: pointer;
+  transition: 500ms;
+}
+
+inventoryActions #inventoryActionsButton:hover {
+  color: rgba(255, 255, 255, 0.50);
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: linear-gradient(90deg, #288FF2 0%, #175EA2 100%);
+  box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.25);
 }
 
 inventoryActions input {
-  width: 100%;
+  width: 120px;
+  height: 25px;
   padding: 5px; 
   outline: none;
   color: #fff;
-  border-radius: 2px;
-  text-align: center;
-  background: rgba(15,15,15,.5);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  border: 0.641px solid rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.25);
   /* border: 1px solid rgba(255, 255, 255, 0.10); */
 }
 

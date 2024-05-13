@@ -310,32 +310,3 @@ RegisterNetEvent("NotifyKeyboardInfo")
 AddEventHandler("NotifyKeyboardInfo", function(data) 
 	AddKeyboardInfo(data)
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- SendNUI - Function
------------------------------------------------------------------------------------------------------------------------------------------
-function src.SendNUI(data) 
-	if LocalPlayer.state.inLobbyPrincipal and data.dashboard then
-		LocalPlayer.state.inDashboard = true
-        DeleteEnitys()
-
-        cam.CreateCamLobby1("CAM_LOBBY1")
-        cam.CreateCamLobby("CAM_LOBBY2")
-		clientApiEvents.BuildPeds({}, false)
-        clientApiEvents.BuildGroup({}, false)
-        toggleNuiFrame(true, data.page)
-        
-        SendReactMessage('buildLogoMidle', false)
-        AddKeyHelp({ status = false })
-		return
-	end
-	
-    SetNuiFocus(data.status, data.status)
-    SendReactMessage('setVisible', data.status)
-    SendNUIMessage({
-        action = "dashBoard",
-        data = {
-            open = data.status,
-            page = data.page
-        },
-    })
-end

@@ -14,92 +14,101 @@ local animActived = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- toggleNuiFrame - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
-function toggleNuiFrame(shouldShow, page)
-    if shouldShow then
-		SetEntityCoords(PlayerPedId(), -3020.49,-851.22,4.92,119.06)
-    	FreezeEntityPosition(PlayerPedId(), true)
-		LuizDev.RequestAndWaitModel(planeModel)
-		local planeEntity = CreateVehicle(GetHashKey(planeModel), -3319.8,-943.97,609.74, false, 0)
-	
-		SetModelAsNoLongerNeeded(GetHashKey(planeModel))
-		SetEntityHeading(planeEntity, 104.89)
-		FreezeEntityPosition(planeEntity, true)
-		SetVehicleLandingGear(planeEntity, 1)
-		Citizen.InvokeNative(0xCFC8BE9A5E1FE575, planeEntity, 0)
-		SetVehicleDoorOpen(planeEntity,2,0,  0)
+local PLAYER_SPAWN_COORDS = vector3(-3020.49, -851.22, 4.92)
+local PLANE_SPAWN_COORDS = vector3(-3319.8, -943.97, 609.74)
 
-        LuizDev.LobbyEnitys[planeEntity] = planeEntity
-		
-        TriggerEvent("duth:ChatStatus", true)
-    end
-    SetNuiFocus(shouldShow, shouldShow)
-    SendReactMessage('setVisible', shouldShow)
-    SendNUIMessage({
-        action = "dashBoard",
-        data = {
-            open = true,
-            page = page
-        },
-    })
-end
+local function setPlayerToLobby()
+  local ped = PlayerPedId()
+
+  SetEntityCoords(ped, PLAYER_SPAWN_COORDS, 120.0)
+  FreezeEntityPosition(ped, true)
+
+  LuizDev.RequestAndWaitModel(planeModel)
+
+  local planeModel = GetHashKey(planeModel)
+  local planeEntity = CreateVehicle(planeModel, PLANE_SPAWN_COORDS, false, 0)
+
+  SetModelAsNoLongerNeeded(planeModel)
+  SetEntityHeading(planeEntity, 104.89)
+  FreezeEntityPosition(planeEntity, true)
+  SetVehicleLandingGear(planeEntity, 1)
+  ControlLandingGear(planeEntity, 0)
+  SetVehicleDoorOpen(planeEntity,2,0,  0)
+
+  LuizDev.LobbyEntities[planeEntity] = planeEntity
+end 
+
+function updateMenuFrame(canShow, dataToUpdate)
+  dataToUpdate = dataToUpdate or {}
+  dataToUpdate.isVisible = canShow
+
+  if canShow then 
+    setPlayerToLobby()
+  end 
+
+  TriggerEvent("duth:ChatStatus", canShow)
+  SetNuiFocus(canShow, canShow)
+
+  SendReactMessage('updateMainMenu', dataToUpdate)
+end 
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- playAnim
 -----------------------------------------------------------------------------------------------------------------------------------------
 function playAnim(animUpper,animSequency,animLoop,ped)
-	local playFlags = 0
+  local playFlags = 0
 
-	if animSequency["task"] then
-		stopAnim(true)
+  if animSequency["task"] then
+    stopAnim(true)
 
-		if animSequency["task"] == "PROP_HUMAN_SEAT_CHAIR_MP_PLAYER" then
-			local coords = GetEntityCoords(ped)
-			TaskStartScenarioAtPosition(ped,animSequency["task"],coords["x"],coords["y"],coords["z"] - 1,GetEntityHeading(ped),0,0,false)
-		else
-			TaskStartScenarioInPlace(ped,animSequency["task"],0,false)
-		end
-	else
-		stopAnim(animUpper)
+    if animSequency["task"] == "PROP_HUMAN_SEAT_CHAIR_MP_PLAYER" then
+      local coords = GetEntityCoords(ped)
+      TaskStartScenarioAtPosition(ped,animSequency["task"],coords["x"],coords["y"],coords["z"] - 1,GetEntityHeading(ped),0,0,false)
+    else
+      TaskStartScenarioInPlace(ped,animSequency["task"],0,false)
+    end
+  else
+    stopAnim(animUpper)
 
-		if animUpper then
-			playFlags = playFlags + 48
-		end
+    if animUpper then
+      playFlags = playFlags + 48
+    end
 
-		if animLoop then
-			playFlags = playFlags + 1
-		end
+    if animLoop then
+      playFlags = playFlags + 1
+    end
 
-		Citizen.CreateThread(function()
-			RequestAnimDict(animSequency[1])
-			while not HasAnimDictLoaded(animSequency[1]) do
-				Citizen.Wait(1)
-			end
+    Citizen.CreateThread(function()
+      RequestAnimDict(animSequency[1])
+      while not HasAnimDictLoaded(animSequency[1]) do
+        Citizen.Wait(1)
+      end
 
-			if HasAnimDictLoaded(animSequency[1]) then
-				animDict = animSequency[1]
-				animName = animSequency[2]
-				animFlags = playFlags
+      if HasAnimDictLoaded(animSequency[1]) then
+        animDict = animSequency[1]
+        animName = animSequency[2]
+        animFlags = playFlags
 
-				if playFlags == 49 then
-					animActived = true
-				end
+        if playFlags == 49 then
+          animActived = true
+        end
 
-				TaskPlayAnim(ped,animSequency[1],animSequency[2],3.0,3.0,-1,playFlags,0,0,0,0)
-			end
-		end)
-	end
+        TaskPlayAnim(ped,animSequency[1],animSequency[2],3.0,3.0,-1,playFlags,0,0,0,0)
+      end
+    end)
+  end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- stopAnim
 -----------------------------------------------------------------------------------------------------------------------------------------
 function stopAnim(animUpper)
-	animActived = false
-	local ped = PlayerPedId()
+  animActived = false
+  local ped = PlayerPedId()
 
-	if animUpper then
-		ClearPedSecondaryTask(ped)
-	else
-		ClearPedTasks(ped)
-	end
+  if animUpper then
+    ClearPedSecondaryTask(ped)
+  else
+    ClearPedTasks(ped)
+  end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- RETURNHEADING
@@ -111,117 +120,117 @@ end
 -- KILLGOD
 -----------------------------------------------------------------------------------------------------------------------------------------
 function src.killGod()
-	local ped = PlayerPedId()
-	SetEntityHealth(PlayerPedId(), 400)
-	SetEntityInvincible(PlayerPedId(),false)
+  local ped = PlayerPedId()
+  SetEntityHealth(PlayerPedId(), 400)
+  SetEntityInvincible(PlayerPedId(),false)
     SetEntityVisible(PlayerPedId(),true)
     SetEntityNoCollisionEntity(PlayerPedId(),true,true)
     ClearPedTasks(PlayerPedId())
     ClearPedBloodDamage(PlayerPedId())
 
-	LocalPlayer.state.death = false
+  LocalPlayer.state.death = false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- killGod - Event
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("killGod")
 AddEventHandler("killGod",function(type, data)
-	local ped = PlayerPedId()
-	SetEntityHealth(PlayerPedId(), 400)
-	SetEntityInvincible(PlayerPedId(),false)
+  local ped = PlayerPedId()
+  SetEntityHealth(PlayerPedId(), 400)
+  SetEntityInvincible(PlayerPedId(),false)
     SetEntityVisible(PlayerPedId(),true)
     SetEntityNoCollisionEntity(PlayerPedId(),true,true)
     ClearPedTasks(PlayerPedId())
     ClearPedBloodDamage(PlayerPedId())
 
-	LocalPlayer.state.death = false
+  LocalPlayer.state.death = false
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- f - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function f(n)
-	n = n + 0.00000
-	return n
+  n = n + 0.00000
+  return n
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- setClothing - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function setClothing(ped,data)
-	if not data then
-		return
-	end
-	
-	SetPedComponentVariation(ped,4,data["pants"]["item"],data["pants"]["texture"],1)
-	SetPedComponentVariation(ped,3,data["arms"]["item"],data["arms"]["texture"],1)
-	SetPedComponentVariation(ped,5,data["backpack"]["item"],data["backpack"]["texture"],1)
-	SetPedComponentVariation(ped,8,data["tshirt"]["item"],data["tshirt"]["texture"],1)
-	SetPedComponentVariation(ped,9,data["vest"]["item"],data["vest"]["texture"],1)
-	SetPedComponentVariation(ped,11,data["torso"]["item"],data["torso"]["texture"],1)
-	SetPedComponentVariation(ped,6,data["shoes"]["item"],data["shoes"]["texture"],1)
-	SetPedComponentVariation(ped,1,data["mask"]["item"],data["mask"]["texture"],1)
-	SetPedComponentVariation(ped,10,data["decals"]["item"],data["decals"]["texture"],1)
-	SetPedComponentVariation(ped,7,data["accessory"]["item"],data["accessory"]["texture"],1)
+  if not data then
+    return
+  end
+  
+  SetPedComponentVariation(ped,4,data["pants"]["item"],data["pants"]["texture"],1)
+  SetPedComponentVariation(ped,3,data["arms"]["item"],data["arms"]["texture"],1)
+  SetPedComponentVariation(ped,5,data["backpack"]["item"],data["backpack"]["texture"],1)
+  SetPedComponentVariation(ped,8,data["tshirt"]["item"],data["tshirt"]["texture"],1)
+  SetPedComponentVariation(ped,9,data["vest"]["item"],data["vest"]["texture"],1)
+  SetPedComponentVariation(ped,11,data["torso"]["item"],data["torso"]["texture"],1)
+  SetPedComponentVariation(ped,6,data["shoes"]["item"],data["shoes"]["texture"],1)
+  SetPedComponentVariation(ped,1,data["mask"]["item"],data["mask"]["texture"],1)
+  SetPedComponentVariation(ped,10,data["decals"]["item"],data["decals"]["texture"],1)
+  SetPedComponentVariation(ped,7,data["accessory"]["item"],data["accessory"]["texture"],1)
 
-	if data["hat"]["item"] ~= -1 and data["hat"]["item"] ~= 0 then
-		SetPedPropIndex(ped,0,data["hat"]["item"],data["hat"]["texture"],1)
-	else
-		ClearPedProp(ped,0)
-	end
+  if data["hat"]["item"] ~= -1 and data["hat"]["item"] ~= 0 then
+    SetPedPropIndex(ped,0,data["hat"]["item"],data["hat"]["texture"],1)
+  else
+    ClearPedProp(ped,0)
+  end
 
-	if data["glass"]["item"] ~= -1 and data["glass"]["item"] ~= 0 then
-		SetPedPropIndex(ped,1,data["glass"]["item"],data["glass"]["texture"],1)
-	else
-		ClearPedProp(ped,1)
-	end
+  if data["glass"]["item"] ~= -1 and data["glass"]["item"] ~= 0 then
+    SetPedPropIndex(ped,1,data["glass"]["item"],data["glass"]["texture"],1)
+  else
+    ClearPedProp(ped,1)
+  end
 
-	if data["ear"]["item"] ~= -1 and data["ear"]["item"] ~= 0 then
-		SetPedPropIndex(ped,2,data["ear"]["item"],data["ear"]["texture"],1)
-	else
-		ClearPedProp(ped,2)
-	end
+  if data["ear"]["item"] ~= -1 and data["ear"]["item"] ~= 0 then
+    SetPedPropIndex(ped,2,data["ear"]["item"],data["ear"]["texture"],1)
+  else
+    ClearPedProp(ped,2)
+  end
 
-	if data["watch"]["item"] ~= -1 and data["watch"]["item"] ~= 0 then
-		SetPedPropIndex(ped,6,data["watch"]["item"],data["watch"]["texture"],1)
-	else
-		ClearPedProp(ped,6)
-	end
+  if data["watch"]["item"] ~= -1 and data["watch"]["item"] ~= 0 then
+    SetPedPropIndex(ped,6,data["watch"]["item"],data["watch"]["texture"],1)
+  else
+    ClearPedProp(ped,6)
+  end
 
-	if data["bracelet"]["item"] ~= -1 and data["bracelet"]["item"] ~= 0 then
-		SetPedPropIndex(ped,7,data["bracelet"]["item"],data["bracelet"]["texture"],1)
-	else
-		ClearPedProp(ped,7)
-	end
+  if data["bracelet"]["item"] ~= -1 and data["bracelet"]["item"] ~= 0 then
+    SetPedPropIndex(ped,7,data["bracelet"]["item"],data["bracelet"]["texture"],1)
+  else
+    ClearPedProp(ped,7)
+  end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- setTattos - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function setTattos(ped, tattos) 
-	if not tattos then
-		return
-	end
-	
-	ClearPedDecorations(ped)
+  if not tattos then
+    return
+  end
+  
+  ClearPedDecorations(ped)
 
-	for k,v in pairs(tattos) do
-		if v["tatto_status"] == "true" then
-			SetPedDecoration(ped,GetHashKey(v["tatto_part"]),GetHashKey(v["tatto_model"]))
-		end
-	end
+  for k,v in pairs(tattos) do
+    if v["tatto_status"] == "true" then
+      SetPedDecoration(ped,GetHashKey(v["tatto_part"]),GetHashKey(v["tatto_model"]))
+    end
+  end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- setTattos - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function src.SetTattos(tattos) 
-	local ped = PlayerPedId()
-	ClearPedDecorations(PlayerPedId())
+  local ped = PlayerPedId()
+  ClearPedDecorations(PlayerPedId())
 
-	for k,v in pairs(tattos) do
-		if v["tatto_status"] == "true" then
-			SetPedDecoration(ped,GetHashKey(v["tatto_part"]),GetHashKey(v["tatto_model"]))
-		end
-	end
+  for k,v in pairs(tattos) do
+    if v["tatto_status"] == "true" then
+      SetPedDecoration(ped,GetHashKey(v["tatto_part"]),GetHashKey(v["tatto_model"]))
+    end
+  end
 
-	TriggerEvent("updateTatuagem", tattos)
+  TriggerEvent("updateTatuagem", tattos)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- setLabelNUI
@@ -270,153 +279,153 @@ end
 -- DrawSquadText
 -----------------------------------------------------------------------------------------------------------------------------------------
 function DrawSquadText(x, y, z, text)
-	local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+  local onScreen, _x, _y = World3dToScreen2d(x, y, z)
   
-	if onScreen then
-	  SetTextScale(0.3, 0.3)
-	  SetTextFont(Inter)
-	  -- SetTextProportional(1)
-	  -- SetTextDropshadow(0, 0, 0, 0, 55)
-	  -- SetTextEdge(2, 0, 0, 0, 150)
-	  -- SetTextDropShadow()
-	  SetTextColour(255, 255, 255, 255)
-	  -- SetTextOutline()
+  if onScreen then
+    SetTextScale(0.3, 0.3)
+    SetTextFont(Inter)
+    -- SetTextProportional(1)
+    -- SetTextDropshadow(0, 0, 0, 0, 55)
+    -- SetTextEdge(2, 0, 0, 0, 150)
+    -- SetTextDropShadow()
+    SetTextColour(255, 255, 255, 255)
+    -- SetTextOutline()
   
-	  -- SetTextColour(253, 255, 133, 255)
+    -- SetTextColour(253, 255, 133, 255)
   
-	  SetTextEntry('STRING')
-	  SetTextCentre(1)
-	  AddTextComponentString(text)
-	  DrawText(_x, _y)
-	end
+    SetTextEntry('STRING')
+    SetTextCentre(1)
+    AddTextComponentString(text)
+    DrawText(_x, _y)
+  end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DrawReadyText
 -----------------------------------------------------------------------------------------------------------------------------------------
 function DrawReadyText(x, y, z, text)
-	local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+  local onScreen, _x, _y = World3dToScreen2d(x, y, z)
   
-	if onScreen then
-	  SetTextScale(0.2, 0.2)
-	  SetTextFont(Inter)
+  if onScreen then
+    SetTextScale(0.2, 0.2)
+    SetTextFont(Inter)
   
-	  if text == 'PRONTO' then
-		SetTextColour(245, 175, 0, 255)
-	  else
-		SetTextColour(212, 212, 212, 255)
-	  end
+    if text == 'PRONTO' then
+    SetTextColour(245, 175, 0, 255)
+    else
+    SetTextColour(212, 212, 212, 255)
+    end
   
-	  SetTextEntry('STRING')
-	  SetTextCentre(1)
-	  AddTextComponentString(text)
-	  DrawText(_x, _y)
-	end
+    SetTextEntry('STRING')
+    SetTextCentre(1)
+    AddTextComponentString(text)
+    DrawText(_x, _y)
+  end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- setDiscordRich
 -----------------------------------------------------------------------------------------------------------------------------------------
 function setDiscordRich(title, description)
     SetDiscordAppId(957851467786645554)
-	SetDiscordRichPresenceAsset("logo")
-	SetRichPresence(description)
-	SetDiscordRichPresenceAssetText(title)
-	SetDiscordRichPresenceAction(0,"Jogar","https://discord.com/servers/duth-632657191366557707")
+  SetDiscordRichPresenceAsset("logo")
+  SetRichPresence(description)
+  SetDiscordRichPresenceAssetText(title)
+  SetDiscordRichPresenceAction(0,"Jogar","https://discord.com/servers/duth-632657191366557707")
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- src.setDiscordRich
 -----------------------------------------------------------------------------------------------------------------------------------------
 function src.setDiscordRich(title, description)
     SetDiscordAppId(957851467786645554)
-	SetDiscordRichPresenceAsset("logo")
-	SetRichPresence(description)
-	SetDiscordRichPresenceAssetText(title)
-	SetDiscordRichPresenceAction(0,"Jogar","https://discord.com/servers/duth-632657191366557707")
+  SetDiscordRichPresenceAsset("logo")
+  SetRichPresence(description)
+  SetDiscordRichPresenceAssetText(title)
+  SetDiscordRichPresenceAction(0,"Jogar","https://discord.com/servers/duth-632657191366557707")
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- src.SetBlipsUsers
 -----------------------------------------------------------------------------------------------------------------------------------------
 function src.SetBlipsUsers(user_id) 
-	local Ped = PlayerPedId()
-	Entity(Ped)["state"]:set("Passport",user_id,true)
+  local Ped = PlayerPedId()
+  Entity(Ped)["state"]:set("Passport",user_id,true)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- createVehicle
 -----------------------------------------------------------------------------------------------------------------------------------------
 function src.createVehicle(vehHash,vehNet,vehPlate,vehEngine,vehBody,vehFuel,vehCustom,vehWindows,vehDoors,vehTyres,vehBrakes)
-	if NetworkDoesNetworkIdExist(vehNet) then
-		local nveh = NetToEnt(vehNet)
+  if NetworkDoesNetworkIdExist(vehNet) then
+    local nveh = NetToEnt(vehNet)
 
-		if DoesEntityExist(nveh) then
-			NetworkRegisterEntityAsNetworked(nveh)
+    if DoesEntityExist(nveh) then
+      NetworkRegisterEntityAsNetworked(nveh)
 
-			while not NetworkGetEntityIsNetworked(nveh) do
-				NetworkRegisterEntityAsNetworked(nveh)
-				Citizen.Wait(1)
-			end
+      while not NetworkGetEntityIsNetworked(nveh) do
+        NetworkRegisterEntityAsNetworked(nveh)
+        Citizen.Wait(1)
+      end
 
-			SetNetworkIdCanMigrate(vehNet,true)
-			NetworkSetNetworkIdDynamic(vehNet,false)
-			SetNetworkIdExistsOnAllMachines(vehNet,true)
-			SetVehicleDirtLevel(nveh,0.0)
+      SetNetworkIdCanMigrate(vehNet,true)
+      NetworkSetNetworkIdDynamic(vehNet,false)
+      SetNetworkIdExistsOnAllMachines(vehNet,true)
+      SetVehicleDirtLevel(nveh,0.0)
 
-			SetVehicleNumberPlateText(nveh,vehPlate)
-			SetEntityAsMissionEntity(nveh,true,true)
-			SetVehicleHasBeenOwnedByPlayer(nveh,true)
-			SetVehicleNeedsToBeHotwired(nveh,false)
-			SetVehRadioStation(nveh,"OFF")
+      SetVehicleNumberPlateText(nveh,vehPlate)
+      SetEntityAsMissionEntity(nveh,true,true)
+      SetVehicleHasBeenOwnedByPlayer(nveh,true)
+      SetVehicleNeedsToBeHotwired(nveh,false)
+      SetVehRadioStation(nveh,"OFF")
 
-			local state = GetResourceState("nation_bennys")
+      local state = GetResourceState("nation_bennys")
 
-			if state == "started" or state == "starting" then
-				TriggerEvent("nation:applymods",nveh,json.decode(vehCustom))
-			end
+      if state == "started" or state == "starting" then
+        TriggerEvent("nation:applymods",nveh,json.decode(vehCustom))
+      end
 
-			SetVehicleHandlingFloat(nveh,"CHandlingData","fBrakeForce",0.90)
-			SetVehicleHandlingFloat(nveh,"CHandlingData","fBrakeBiasFront",0.55)
-			SetVehicleHandlingFloat(nveh,"CHandlingData","fHandBrakeForce",0.75)
+      SetVehicleHandlingFloat(nveh,"CHandlingData","fBrakeForce",0.90)
+      SetVehicleHandlingFloat(nveh,"CHandlingData","fBrakeBiasFront",0.55)
+      SetVehicleHandlingFloat(nveh,"CHandlingData","fHandBrakeForce",0.75)
 
-			SetVehicleEngineHealth(nveh,vehEngine + 0.0)
-			SetVehicleBodyHealth(nveh,vehBody + 0.0)
-			SetVehicleFuelLevel(nveh,vehFuel + 0.0)
-			
-			if vehWindows then
-				if json.decode(vehWindows) ~= nil then
-					for k,v in pairs(json.decode(vehWindows)) do
-						if not v then
-							SmashVehicleWindow(nveh,parseInt(k))
-						end
-					end
-				end
-			end
+      SetVehicleEngineHealth(nveh,vehEngine + 0.0)
+      SetVehicleBodyHealth(nveh,vehBody + 0.0)
+      SetVehicleFuelLevel(nveh,vehFuel + 0.0)
+      
+      if vehWindows then
+        if json.decode(vehWindows) ~= nil then
+          for k,v in pairs(json.decode(vehWindows)) do
+            if not v then
+              SmashVehicleWindow(nveh,parseInt(k))
+            end
+          end
+        end
+      end
 
-			if vehTyres then
-				if json.decode(vehTyres) ~= nil then
-					for k,v in pairs(json.decode(vehTyres)) do
-						if v < 2 then
-							SetVehicleTyreBurst(nveh,parseInt(k),(v == 1),1000.01)
-						end
-					end
-				end
-			end
+      if vehTyres then
+        if json.decode(vehTyres) ~= nil then
+          for k,v in pairs(json.decode(vehTyres)) do
+            if v < 2 then
+              SetVehicleTyreBurst(nveh,parseInt(k),(v == 1),1000.01)
+            end
+          end
+        end
+      end
 
-			if vehDoors then
-				if json.decode(vehDoors) ~= nil then
-					for k,v in pairs(json.decode(vehDoors)) do
-						if v then
-							SetVehicleDoorBroken(nveh,parseInt(k),parseInt(v))
-						end
-					end
-				end
-			end
-		end
-	end
+      if vehDoors then
+        if json.decode(vehDoors) ~= nil then
+          for k,v in pairs(json.decode(vehDoors)) do
+            if v then
+              SetVehicleDoorBroken(nveh,parseInt(k),parseInt(v))
+            end
+          end
+        end
+      end
+    end
+  end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DELETEOBJECT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("player:deleteObject")
 AddEventHandler("player:deleteObject",function(entIndex)
-	if NetworkDoesNetworkIdExist(entIndex) then
+  if NetworkDoesNetworkIdExist(entIndex) then
         local v = NetToPed(entIndex)
         if DoesEntityExist(v) and IsEntityAnObject(v) then
             Citizen.InvokeNative(0xAD738C3085FE7E11,v,true,true)

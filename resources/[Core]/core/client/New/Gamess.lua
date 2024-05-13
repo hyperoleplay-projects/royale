@@ -258,11 +258,10 @@ end
 -- debug - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("debug", function() 
-    -- Fechar o lobby
     cam.delete("CAM_LOBBY1")
     cam.delete("CAM_LOBBY2")
-    toggleNuiFrame(false)
-    SetNuiFocus(false,false)
+
+    updateMenuFrame(false)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- JumpPlayerFolloWing - Function
@@ -331,12 +330,10 @@ clientEvents.StartGameClient = function(data)
     local pedPlayer = PlayerPedId()
     local pedId = PlayerId()
     
-    
-    -- Fechar o lobby
     cam.delete("CAM_LOBBY1")
     cam.delete("CAM_LOBBY2")
-    toggleNuiFrame(false)
-    SetNuiFocus(false,false)
+
+    updateMenuFrame(false)
     
     -- Volta as estações do jogador pro padrão
     DisablePlayerFiring(PlayerPedId(), false)
@@ -916,7 +913,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler('onResourceStop', function(resourceName)
 	if resourceName == GetCurrentResourceName() then
-        DeleteEnitys()
+        DeleteEntities()
 
         for k, v in pairs(Vehicles) do 
             if v["handle"] then
@@ -1580,8 +1577,7 @@ clientEvents.JoinLobbyGame = function()
     cam.delete("CAM_LOBBY1")
     cam.delete("CAM_LOBBY2")
 
-    toggleNuiFrame(false)
-    SetNuiFocus(false,false)
+    updateMenuFrame(false)
     
     NetworkSetTalkerProximity(0.0)
     NetworkClearVoiceChannel()

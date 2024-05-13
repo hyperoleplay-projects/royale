@@ -1,0 +1,15 @@
+<svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="recusar">
+<g id="Rectangle 33">
+<rect width="26" height="26" rx="4" fill="url(#paint0_linear_1_1167)"/>
+<rect x="0.5" y="0.5" width="25" height="25" rx="3.5" stroke="white" stroke-opacity="0.1"/>
+</g>
+<path id="cross" fill-rule="evenodd" clip-rule="evenodd" d="M15.2653 12.998L17.5311 10.7344C18.1563 10.1105 18.1563 9.09478 17.5311 8.47091C16.9052 7.84303 15.8908 7.84303 15.2653 8.47091L12.9998 10.7344L10.7343 8.47091C10.1092 7.84303 9.09484 7.84303 8.46887 8.47091C7.84371 9.09478 7.84371 10.1105 8.46887 10.7344L10.7343 12.998L8.46887 15.2655C7.84371 15.8894 7.84371 16.9052 8.46887 17.5291C9.09484 18.157 10.1092 18.157 10.7343 17.5291L12.9998 15.2655L15.2653 17.5291C15.8908 18.157 16.9052 18.157 17.5311 17.5291C18.1563 16.9052 18.1563 15.8894 17.5311 15.2655L15.2653 12.998Z" fill="white" fill-opacity="0.75"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_1_1167" x1="-7" y1="-9" x2="31.0021" y2="-2.95709" gradientUnits="userSpaceOnUse">
+<stop/>
+<stop offset="1" stop-color="#383838"/>
+</linearGradient>
+</defs>
+</svg>

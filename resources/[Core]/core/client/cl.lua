@@ -17,14 +17,13 @@ vSERVER = Tunnel.getInterface("duth")
 function src.CloseLobby() 
     cam.delete("CAM_LOBBY1")
     cam.delete("CAM_LOBBY2")
-    toggleNuiFrame(false)
     
-    SetNuiFocus(false,false)
+    updateMenuFrame(false)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- DeleteEnitys - Function
+-- DeleteEntities - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
-function DeleteEnitys() 
+function DeleteEntities() 
     for k,v in pairs(LuizDev.PedsLobby) do
         if DoesEntityExist(v) then
             DeleteEntity(v)
@@ -32,10 +31,10 @@ function DeleteEnitys()
         end
     end
 
-    for k,v in pairs(LuizDev.LobbyEnitys) do
+    for k,v in pairs(LuizDev.LobbyEntities) do
 		if DoesEntityExist(v) then
 			DeleteEntity(v)
-            LuizDev.LobbyEnitys = {}
+            LuizDev.LobbyEntities = {}
 		end
 	end
 
@@ -157,6 +156,7 @@ end
 RegisterNUICallback('hideUI', function(data, cb)
     if data.type == "Modal" then
         SetNuiFocus(false, false)
+        
         SendReactMessage('setVisible', false)
     end
 

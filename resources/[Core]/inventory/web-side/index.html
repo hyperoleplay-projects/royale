@@ -4,11 +4,14 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
   <link rel="stylesheet" href="css.css">
 </head>
-<body style="display: flex;">
+<body style="display: none;">
 
   <main>
 
@@ -16,39 +19,44 @@
     <inventory>
 
       <div class="Header">
-        <h1>inventário</h1>
+        <span class="light">use <span class="bold">ESQ </span>ou <span class="bold">TAB </span>para fechar.</span>
       </div>
 
       <section class="invLeft">
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
-        <div class="item empty" data-slot="${ui.draggable.data("slot")}"></div>
+<!--         <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div>
+        <div class="item empty" data-slot="ui.draggable.data('slot')"></div> -->
       </section>
+
+      <inventoryActions>
+        <input class="amount" placeholder="Quantidade" type="number" onKeyPress="if (this.value.length==9) return false;" />
+        <div class="use" id="inventoryActionsButton">Usar</div>
+
+        <div class="send" id="inventoryActionsButton">DROPAR</div>
+      </inventoryActions>
+
+      <div class="wrapper">
+        <img src="./image/hype.png" alt="hype logo">
+      </div>
     </inventory>
 
 
 
-    <inventoryActions>
+<!--     <inventoryActions>
       
       <input class="amount" placeholder="QTD" type="number" onKeyPress="if (this.value.length==9) return false;" />
       <div class="use" id="inventoryActionsButton">Usar</div>
 
       <div class="send" id="inventoryActionsButton">DROPAR</div>
 
-    </inventoryActions>
+    </inventoryActions> -->
 
     <inventory style="display: none;">
       <section class="invRight"></section>

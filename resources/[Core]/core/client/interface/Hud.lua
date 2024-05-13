@@ -9,6 +9,7 @@ local Shortcuts = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hud(status) 
     Display = status
+    
     SendReactMessage('BuildHud', {
         type = "DisplayStatusPlayerStats",
         status = status

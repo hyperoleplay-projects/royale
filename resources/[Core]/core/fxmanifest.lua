@@ -12,7 +12,6 @@ games {
   "rdr3"
 }
 
-
 client_scripts {
     "@api/utils.lua",
     "@vrp/lib/utils.lua",
@@ -50,11 +49,9 @@ server_scripts {
     "server/DataBase/prepares.database.lua",
 }        
 
-
 ui_page 'web/build/index.html'
-
 
 files {
 	'web/build/index.html',
-	'web/build/**/*',
+	'web/build/**/*.*',
 }

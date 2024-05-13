@@ -35,6 +35,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function src.StatusMenuUI(status, camStatus, type) 
 	TriggerEvent("duth:ChatStatus", status)
+    
     SetNuiFocus(status, status)
     SendReactMessage('setVisible', status)
 
