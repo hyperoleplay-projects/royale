@@ -42,12 +42,20 @@ local LuizDev = moduleEE("client")
 local nearbyItems = {}
 local isHudBuilt = false
 
+local LOOTS_COLORS = {
+    PURPLE = { R = 211, G = 190, B = 132 },
+    BLUE = { R = 0, G = 166, B = 255 },
+    ORANGE = { R = 54, G = 57, B = 62 },
+    YELLOW = { R = 181, G = 223, B = 189 },
+    GREEN = { R = 158, G = 190, B = 93 },
+}
+
 local CHEST_MODELS = {
-    PURPLE = 'ba_prop_battle_chest_closed',
-    BLUE = 'ba_prop_battle_chest_closed',
-    ORANGE = 'ba_prop_battle_chest_closed',
-    YELLOW = 'ba_prop_battle_chest_closed',
-    GREEN = 'ba_prop_battle_chest_closed',
+    PURPLE = 'hype_pvpbox02',
+    BLUE = 'hype_pvpbox04',
+    ORANGE = 'hype_pvpbox03',
+    YELLOW = 'hype_pvpbox01',
+    GREEN = 'hype_pvpbox01',
 }
 
 local AVAILABLE_LOOTS = {
@@ -66,13 +74,6 @@ local LOOTS_COLORS_NAMES = {
     ['Life'] = 'GREEN', 
 }
 
-local LOOTS_COLORS = {
-    ['PURPLE'] = { R = 211, G = 190, B = 132 },
-    ['BLUE'] = { R = 0, G = 166, B = 255 },
-    ['ORANGE'] = { R = 54, G = 57, B = 62 },
-    ['YELLOW'] = { R = 181, G = 223, B = 189 },
-    ['GREEN'] = { R = 158, G = 190, B = 93 },
-}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ItemExists - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -537,38 +538,30 @@ AddEventHandler('brv:createPickups', function(seed, mapId)
         math.randomseed(math.floor(seed * 50000))
 
         for i, location in pairs(Config.Maps[mapId].Loots) do
-            local loot = math.random(#Config.lootsCount)
-            
-            for ii = 1, Config.lootsCount[loot] do
-                if coordinatesProcessed >= Config.Maps[mapId].MaxLoots then
-                    break 
-                end
-
-                local index = tonumber(round(math.random()) + 1)
-        
-                PickUps[#PickUps + 1] = {
-                    source = #PickUps + 1,
-                    color = LOOTS_COLORS_NAMES[AVAILABLE_LOOTS[index]], 
-                    lootName = AVAILABLE_LOOTS[index], 
-                    name = getRandomWeapon(AVAILABLE_LOOTS[index]),
-                    x = location.x + (math.random(-8000, 8000) / 1000),
-                    y = location.y + (math.random(-8000, 8000) / 1000),
-                    z = location.z,
-                    created = false,
-                    chestHandle = nil,
-                    handle = nil,
-                    drop = false,
-                    ammout = false,
-                    coleted = false
-                }
-        
-                coordinatesProcessed = coordinatesProcessed + 1
-            end
-        
             if coordinatesProcessed >= Config.Maps[mapId].MaxLoots then
                 break 
             end
-        
+
+            local index = tonumber(round(math.random()) + 1)
+    
+            PickUps[#PickUps + 1] = {
+                source = #PickUps + 1,
+                color = LOOTS_COLORS_NAMES[AVAILABLE_LOOTS[index]], 
+                lootName = AVAILABLE_LOOTS[index], 
+                name = getRandomWeapon(AVAILABLE_LOOTS[index]),
+                x = location.x,
+                y = location.y,
+                z = location.z,
+                created = false,
+                chestHandle = nil,
+                handle = nil,
+                drop = false,
+                ammout = false,
+                coleted = false
+            }
+
+            coordinatesProcessed = coordinatesProcessed + 1
+
             Citizen.Wait(1)
         end
 
