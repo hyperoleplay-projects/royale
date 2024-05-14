@@ -3,21 +3,23 @@
 -- VARIBLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local planeModel = "cargoplane"
+local planeEntity
+
 local buggyModel = "outlaw"
 local travado = false
-local planeEntity
 local pilotModel = "mp_m_freemode_01"
 local animFlags = 0
 local animDict = nil
 local animName = nil
 local animActived = false
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- toggleNuiFrame - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 local PLAYER_SPAWN_COORDS = vector3(-3020.49, -851.22, 4.92)
 local PLANE_SPAWN_COORDS = vector3(-3319.8, -943.97, 609.74)
 
-local function setPlayerToLobby()
+function setPlayerToLobby()
   local ped = PlayerPedId()
 
   SetEntityCoords(ped, PLAYER_SPAWN_COORDS, 120.0)
@@ -38,19 +40,6 @@ local function setPlayerToLobby()
   LuizDev.LobbyEntities[planeEntity] = planeEntity
 end 
 
-function updateMenuFrame(canShow, dataToUpdate)
-  dataToUpdate = dataToUpdate or {}
-  dataToUpdate.isVisible = canShow
-
-  if canShow then 
-    setPlayerToLobby()
-  end 
-
-  TriggerEvent("duth:ChatStatus", canShow)
-  SetNuiFocus(canShow, canShow)
-
-  SendReactMessage('updateMainMenu', dataToUpdate)
-end 
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- playAnim
 -----------------------------------------------------------------------------------------------------------------------------------------

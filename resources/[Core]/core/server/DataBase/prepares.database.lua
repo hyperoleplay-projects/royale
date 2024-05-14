@@ -3,6 +3,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 vRP._prepare("vRP/GetClothes","SELECT * FROM clothes")
 vRP._prepare("vRP/getWeaponsShop","SELECT * FROM weapons")
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- JOGADOR - PLAYER
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -10,10 +11,12 @@ vRP._prepare("vRP/GetInventory","SELECT * FROM inventory WHERE user_id = @user_i
 vRP._prepare("vRP/GetUserGroups","SELECT * FROM users_groups WHERE user_id = @user_id")
 vRP._prepare("vRP/GetUserGroupHas","SELECT * FROM users_groups WHERE `group` = @group AND user_id = @user_id")
 vRP._prepare("vRP/GetUserReports","SELECT * FROM users_reports WHERE id = @user_id")
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- WEAPON - JOGADOR
 -----------------------------------------------------------------------------------------------------------------------------------------
 vRP.prepare('vRP/updateWeaon','UPDATE inventory SET inventory_status = @inventory_status WHERE inventory_id = @inventory_id AND user_id = @user_id')
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADMIN
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -39,6 +42,7 @@ vRP._prepare("vRP/GiveCoins","UPDATE users SET duthCoins = duthCoins + @duthCoin
 -----------------------------------------------------------------------------------------------------------------------------------------
 vRP._prepare("vRP/UpdateDiscord","UPDATE users SET discord = @discord WHERE id = @id")
 vRP._prepare("vRP/RemoveItem","DELETE FROM inventory WHERE user_id = @user_id AND inventory_itemName = @inventory_itemName")
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PASSE DE BATALHA
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -47,3 +51,13 @@ vRP._prepare("vRP/updateXpPasse","UPDATE users SET duthBattleXp = @duthBattleXp 
 vRP._prepare("vRP/updatePasse","UPDATE users SET duthBattlePass = @duthBattlePass WHERE id = @id")
 vRP._prepare("vRP/updateDuthPoints","UPDATE users SET duthPoints = @duthPoints WHERE id = @id")
 vRP._prepare('vRP/set_whitelisted', "UPDATE users SET whitelisted = @whitelisted WHERE id = @user_id")
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- GUILDS
+-----------------------------------------------------------------------------------------------------------------------------------------
+vRP._prepare("vRP/AddGuild","INSERT INTO guilds (tag, name, image_url) VALUES (@tag, @name, @imageURL);")
+vRP._prepare("vRP/RemoveGuild","DELETE FROM guilds WHERE tag = @tag;")
+vRP._prepare("vRP/GetGuilds","SELECT tag, name, image_url as imageURL FROM guilds;")
+vRP._prepare("vRP/AddGuildMember","INSERT INTO guild_members (guild_tag, user_id) VALUES (@tag, @userId);")
+vRP._prepare("vRP/GetGuildMembers","SELECT user_id as userId, role FROM guild_members WHERE `guild_tag` = @tag;")
+vRP._prepare("vRP/RemoveGuildMember","DELETE FROM guild_members WHERE `user_id` = @userId AND `guild_tag` = @tag;")

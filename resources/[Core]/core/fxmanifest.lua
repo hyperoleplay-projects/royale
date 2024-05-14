@@ -39,14 +39,11 @@ server_scripts {
     "server/BattlePass.lua",
     "server/Premium.lua",
     "server/Loja.lua",
-    "server/Commands/commands_admin.lua",
-    "server/Commands/commands_player.lua",
-    "server/Events/Groups.lua",
-    "server/Events/BarbershopInit.lua",
-    "server/Events/BanControl.lua",
-    "server/Events/MenuNUI.lua",
-    "server/Events/DiscordSync.lua",
-    "server/DataBase/prepares.database.lua",
+    
+    "server/Api/*",
+    "server/Commands/*",
+    "server/Events/*",
+    "server/DataBase/*",
 }        
 
 ui_page 'web/build/index.html'

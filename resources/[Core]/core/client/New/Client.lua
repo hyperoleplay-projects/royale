@@ -217,34 +217,16 @@ clientApiEvents.JoinLobby = function()
     clientApiEvents.BuildGroup({}, false)
 
     updateMenuFrame(true, {
-        isReady = false, 
-        profile = {
-            id = 1, 
-            name = 'Combo Dev',
-            color = 1
-        },
-        guild = {
-            tag = 'ABC'
-        },
-        groupMembers = {
-            {
-                tag = 'ABC',
-                name = 'Combo Dev',
-                color = 1, 
-                isReady = false 
-            },
-        },
-        match = {
-            queue = nil, 
-            mode = 'SOLO',
-            custom = nil,
-        },
+        isReady = isPlayerReady(), 
+        profile = getPlayerProfile(),
+        guild = getPlayerGuildTag(),
+        groupMembers = getPlayerGroupMembers(),
+        match = getPlayerQueue(),
     })
     
     SendReactMessage('buildLogoMidle', false)
 
     AddKeyHelp({ status = false })
-    
     DisablePlayerFiring(PlayerPedId(), false)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------

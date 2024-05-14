@@ -6,8 +6,9 @@ src = {}
 Tunnel.bindInterface(GetCurrentResourceName(),src)
 clientAPI = Tunnel.getInterface(GetCurrentResourceName())
 SafeZoneAPI = Tunnel.getInterface("safezone")
-local Groups = {}
-local Invites = {}
+
+Groups = {}
+Invites = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 --  sendPlayerEvent - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -713,6 +714,7 @@ ApiController.InviteGroup = function(source, data)
                 TriggerClientEvent("Notify",source,"negado", "Você não pode se convidar.")
                 return
             end
+
             if player_source and Player(player_source).state.inDashboard and not Player(player_source).state.inQueue and not Player(player_source).state.inGameLobby and not Player(player_source).state.inGame and not Player(player_source).state.inPlane and not Player(player_source).state.inAimLab and not Player(player_source).state.inTeamNoLeader then
                 local identity = vRP.getIdentity(user_id)
                 local player_identity = vRP.getIdentity(parseInt(data.id))
@@ -725,7 +727,7 @@ ApiController.InviteGroup = function(source, data)
                 
                 Invites[parseInt(data.id)].code = Player(source).state.teamCode
     
-                TriggerClientEvent("Request",player_source, identity.username, 8000)
+                TriggerClientEvent("Request", player_source, identity.username, 8000)
                 TriggerClientEvent("Notify",source, "inform", "Você convidou o jogador "..player_identity.username.." para seu grupo.")
             end
         else
@@ -1036,7 +1038,6 @@ ApiController.Play = function(source, data)
             return
         end
     end
-    
 
     if data.type == "JoinEvent" then
         if ApiController.GetPlayersReady(Player(source).state.teamCode) and ApiController.hasLeader(user_id, Player(source).state.teamCode) and not Player(source).state.inQueue and not Player(source).state.inGameLobby and not Player(source).state.inGame and not Player(source).state.inPlane and not Player(source).state.inAimLab then

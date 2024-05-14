@@ -401,8 +401,6 @@ function JoinTeam(playerData, teamCode)
 		if Teams[teamCode].playersCount < Config.TeamMaxPlayers then
 			if Teams[teamCode].playersCount + 1 <= Config.TeamMaxPlayers then
 				table.insert(Teams[teamCode].players, playerData)
-				-- Teams[teamCode].players[playerData.user_id] = 
-
 
 				Teams[teamCode].playersCount = #Teams[teamCode].players
 				Wait(50)
@@ -531,18 +529,21 @@ end
 -- SetReadyTeam - Funciton
 -----------------------------------------------------------------------------------------
 function SetReadyTeam(user_id, teamCode) 
-	if Teams[teamCode] == nil then return end
-    for k,v in pairs(Teams[teamCode].players) do
-        if v.user_id == user_id then
-            if v.ready then 
+	if Teams[teamCode] == nil then 
+		return 
+	end
+
+	for k,v in pairs(Teams[teamCode].players) do
+		if v.user_id == user_id then
+			if v.ready then 
 				v.ready = false
 				Player(v.source).state.ready = false
-            else
+			else
 				v.ready = true
 				Player(v.source).state.ready = true
-            end
-        end
-    end
+			end
+		end
+	end
 end
 -----------------------------------------------------------------------------------------
 -- GetPlayersReady - Funciton
