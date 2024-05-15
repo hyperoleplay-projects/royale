@@ -13,37 +13,38 @@ games {
 }
 
 client_scripts {
-    "@api/utils.lua",
-    "@vrp/lib/utils.lua",
-    "@vrp/lib/itemList.lua",
-    "commonApi/config.lua",
-    "commonApi/index.lua",
-    "commonApi/game/shared.lua",
-    "client/api.lua",
-    "client/**/*",
+  "@api/utils.lua",
+  "@vrp/lib/utils.lua",
+  "@vrp/lib/itemList.lua",
+  "commonApi/config.lua",
+  "commonApi/index.lua",
+  "commonApi/game/shared.lua",
+  "client/api.lua",
+  "client/**/*",
 }
 
 server_scripts {
-    "@vrp/lib/utils.lua",
-    "@vrp/lib/itemList.lua",
-    "commonApi/index.lua",
-    "commonApi/config.lua",
-    "server/Util/function_utils.lua",
-    "commonApi/game/shared.lua",
-    "server/Server.lua",
+  "@vrp/lib/utils.lua",
+  "@vrp/lib/itemList.lua",
+  "commonApi/index.lua",
+  "commonApi/config.lua",
+  "server/Util/function_utils.lua",
+  "commonApi/game/shared.lua",
+  "server/Server.lua",
 
-    "server/Events.lua",
-    "server/Game.lua",
-    "server/Ranking.lua",
-    "server/Inventory.lua",
-    "server/BattlePass.lua",
-    "server/Premium.lua",
-    "server/Loja.lua",
-    
-    "server/Api/*",
-    "server/Commands/*",
-    "server/Events/*",
-    "server/DataBase/*",
+  "server/Events.lua",
+  "server/Game.lua",
+  "server/Guilds.lua",
+  "server/Ranking.lua",
+  "server/Inventory.lua",
+  "server/BattlePass.lua",
+  "server/Premium.lua",
+  "server/Loja.lua",
+  
+  "server/Api/*",
+  "server/Commands/*",
+  "server/Events/*",
+  "server/DataBase/*",
 }        
 
 ui_page 'web/build/index.html'

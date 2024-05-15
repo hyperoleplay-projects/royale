@@ -184,9 +184,8 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.BuildGame = function(data)
     if data.rich then
-        setDiscordRich("DUTH", "Battle Royale - Jogo em andamento "..data.players.." restantes.")
+        setDiscordRich("HYPE", "Battle Royale - Jogo em andamento ".. data.players.. " restantes.")
     end
-
 
     TriggerEvent("BuildGame", { status = data.status, safe = false, kills = data.kills or 0, safeTime = "00:00", players = data.players, updatePlayers = true, updateKills = true })
 end

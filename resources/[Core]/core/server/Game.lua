@@ -287,7 +287,7 @@ GameController.IsFollowingTeam = function(source, data)
 
     if data.type == "Get" then
         if Game.gameType == "duo" or Game.gameType == "squad" then
-            if not Player(source).state.IsFollowingTeam and not ApiController.hasLeader(user_id, Player(source).state.teamCode) then
+            if not Player(source).state.IsFollowingTeam and not isUserLeaderOfGroup(user_id, Player(source).state.teamCode) then
                 Player(source).state.IsFollowingTeam = true
                 Player(source).state.IsFollowingTeamLeaderName = ApiController.GetUserNamehasLeader(Player(source).state.teamCode)
             end
@@ -343,7 +343,7 @@ GameController.StartGameNew = function(source, data)
     Player(source).state.inPlane = true
     
     if Game.gameType == "duo" or Game.gameType == "squad" then
-        if not Player(source).state.IsFollowingTeam and not ApiController.hasLeader(user_id, Player(source).state.teamCode) then
+        if not Player(source).state.IsFollowingTeam and not isUserLeaderOfGroup(user_id, Player(source).state.teamCode) then
             Player(source).state.IsFollowingTeam = true
             Player(source).state.IsFollowingTeamLeaderName = ApiController.GetUserNamehasLeader(Player(source).state.teamCode)
         end
@@ -384,7 +384,7 @@ GameController.PreparesStartGameNew = function(gameId, eventName, eventData)
         TriggerClientEvent('events_controller', player.source, { event = "ExitLobbyGame", data = {} })
 
         if Games[gameId].gameType == "duo" or Games[gameId].gameType == "squad" then
-            if not Player(player.source).state.IsFollowingTeam and not ApiController.hasLeader(player.user_id, Player(player.source).state.teamCode) then
+            if not Player(player.source).state.IsFollowingTeam and not isUserLeaderOfGroup(player.user_id, Player(player.source).state.teamCode) then
                 Player(player.source).state.IsFollowingTeam = true
                 Player(player.source).state.IsFollowingTeamLeaderName = ApiController.GetUserNamehasLeader(Player(player.source).state.teamCode)
             end
@@ -842,7 +842,7 @@ GameController.endGame = function(source)
         })
     
         Player(source).state.gameId = 0
-        ApiController.FinishGroup(source)
+        deleteGroupFromOwnerSource(source)
         return;
     end
 
@@ -883,7 +883,7 @@ GameController.endGame = function(source)
             
             Wait(800)
             Player(source).state.positionGame = 0
-            ApiController.FinishGroup(source)
+            deleteGroupFromOwnerSource(source)
         end
     end
 end
@@ -1094,8 +1094,6 @@ GameController.RegisterKill = function(source, data)
                     killer = nuser_id,
                     killer_name = identity_killer.username,
                     weapon_killer = weapon,
-                    -- nsource = data.nsource,
-                    -- nsource = vRP.getUserSource(nuser_id),
                     nsource = Game.players[nuser_id].source,
                     victim_name = identity.username,
                     headshot = data.hs,
@@ -1533,7 +1531,7 @@ GameController.ExitPlaneDimension = function()
     Player(source).state.inPlane = false
     TriggerClientEvent("NotifyAnnouncement", source, { status = false, timer = false })
 
-    if Game.gameType == "duo" or Game.gameType == "squad" and ApiController.hasLeader(user_id, Player(source).state.teamCode) then
+    if Game.gameType == "duo" or Game.gameType == "squad" and isUserLeaderOfGroup(user_id, Player(source).state.teamCode) then
         ApiController.JumpPlayersFollowing(Player(source).state.teamCode)
     end
     GameController.UpdatePlayersInPlane(Player(source).state.gameId)

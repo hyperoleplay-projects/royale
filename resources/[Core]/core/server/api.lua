@@ -110,9 +110,12 @@ function JoinLobby(source)
 	local user_id = vRP.getUserId(source)
 	local random = math.random(#Config.Maps["LobbyPrincipal"].possibleDimensionsLobby)
 	local lobbyRouting = Config.Maps["LobbyPrincipal"].possibleDimensionsLobby[random]
+
 	SetPlayerRoutingBucket(source, lobbyRouting)
+
 	clientAPI.JoinLobbyPrincipal(source)
-	clientAPI.setDiscordRich(source, "DUTH", "No lobby")
+	clientAPI.setDiscordRich(source, "HYPE", "No lobby")
+
 	Player(source).state.inGame = false
 	Player(source).state.inLobbyPrincipal = true
 	Player(source).state.inDashboard = false
@@ -130,7 +133,9 @@ function JoinLobby(source)
 	Player(source).state.inSpec = false
 	Player(source).state.pointsGame = 0
 	Player(source).state.Buttons = true
+
 	Wait(500)
+
 	clientAPI.UpdateBattlePass(source)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -826,63 +831,65 @@ end
 RegisterCommand("lobby", function(source, args, rawCmd) 
 	local user_id = vRP.getUserId(source)
 	
-	-- if not Player(source).state.UpdateCooldown or os.time() >= Player(source).state.UpdateCooldown+30 then
 	if not Player(source).state.inGame and not Player(source).state.inAimLab and not Player(source).state.inQueue then
 		if not Player(source).state.inDashboard then
-				local identity = vRP.getIdentity(user_id)
-				Player(source).state.inDashboard = true
-		
-				local teamCode = generateStringNumber("LLLD")
-				Player(source).state.teamCode = teamCode
-				Player(source).state.ready = true
-		
-				CreateTeam(source, user_id, teamCode)
-				local infos = extractSteam(source)
-				local steamHex = infos.steam:gsub("steam:", "")
-		
-				
-				if Player(source).state.autoOpenDashboard == "true" then
-					clientAPI.OpenLobby(source, true)
-					Player(source).state.inDashboard = true
-				else
-					clientAPI.OpenLobby(source, false)
-					local random = math.random(#Config.Maps["LobbyPrincipal"].possibleDimensionsLobby)
-					local lobbyRouting = Config.Maps["LobbyPrincipal"].possibleDimensionsLobby[random]
-					SetPlayerRoutingBucket(source, lobbyRouting)
-					clientAPI.JoinLobbyPrincipal(source)
-					clientAPI.setDiscordRich(source, "DUTH", "#"..user_id.." "..identity.username.."")
-					Player(source).state.inLobbyPrincipal = true
-					Player(source).state.inDashboard = false
-				end
-		
-				JoinTeam({
-					source = source,
-					user_id = user_id,
-					username = identity.username,
-					avatar = "https://i.pinimg.com/474x/5c/be/a6/5cbea638934c3a0181790c16a7832179.jpg", 
-					isLeader = true,
-					currentCharacterMode = vRP.getUData(user_id,"Barbershop"),
-					Clothes = vRP.getUData(user_id,"Clothings"),
-					Tatuagens = Player(source).state.userTatuagens,
-					ready = true,
-					pos = 0,
-					state = true,
-					hexlast = steamHex,
-					death = false,
-					agonizing = false,
-					color = nil,
-					positionGame = 0,
-				}, teamCode)
-		
-				TriggerClientEvent("battleNui:update", source)
-			end
-		end
+			local identity = vRP.getIdentity(user_id)
+			Player(source).state.inDashboard = true
+	
+			local teamCode = generateStringNumber("LLLD")
 
-		Wait(500)
-		clientAPI.UpdateBattlePass(source)
-	-- else
-		-- TriggerClientEvent("Notify", source, "negado", "Aguarde "..(30-(os.time()-Player(source).state.UpdateCooldown)).." segundos.", 15000, "normal", "Admin")
-	-- end
+			Player(source).state.teamCode = teamCode
+			Player(source).state.ready = true
+	
+			CreateTeam(source, user_id, teamCode)
+
+			local infos = extractSteam(source)
+			local steamHex = infos.steam:gsub("steam:", "")
+			
+			if Player(source).state.autoOpenDashboard == "true" then
+				clientAPI.OpenLobby(source, true)
+				Player(source).state.inDashboard = true
+			else
+				clientAPI.OpenLobby(source, false)
+
+				local random = math.random(#Config.Maps["LobbyPrincipal"].possibleDimensionsLobby)
+				local lobbyRouting = Config.Maps["LobbyPrincipal"].possibleDimensionsLobby[random]
+
+				SetPlayerRoutingBucket(source, lobbyRouting)
+
+				clientAPI.JoinLobbyPrincipal(source)
+				clientAPI.setDiscordRich(source, "HYPE", "#"..user_id.." "..identity.username.."")
+
+				Player(source).state.inLobbyPrincipal = true
+				Player(source).state.inDashboard = false
+			end
+	
+			JoinTeam({
+				source = source,
+				user_id = user_id,
+				username = identity.username,
+				avatar = "https://i.pinimg.com/474x/5c/be/a6/5cbea638934c3a0181790c16a7832179.jpg", 
+				isLeader = true,
+				currentCharacterMode = vRP.getUData(user_id,"Barbershop"),
+				Clothes = vRP.getUData(user_id,"Clothings"),
+				Tatuagens = Player(source).state.userTatuagens,
+				ready = true,
+				pos = 0,
+				state = true,
+				hexlast = steamHex,
+				death = false,
+				agonizing = false,
+				color = nil,
+				positionGame = 0,
+			}, teamCode)
+	
+			TriggerClientEvent("battleNui:update", source)
+		end
+	end
+
+	Wait(500)
+	
+	clientAPI.UpdateBattlePass(source)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UPDATE - Command
@@ -920,15 +927,21 @@ end
 function src.JoinLobbyPrincipal() 
 	local source = source
 	local user_id = vRP.getUserId(source)
+
 	Player(source).state.inDashboard = false
 	Player(source).state.inAimLab = false
 	Player(source).state.inLobbyPrincipal = true
+
 	local random = math.random(#Config.Maps["LobbyPrincipal"].possibleDimensionsLobby)
 	local lobbyRouting = Config.Maps["LobbyPrincipal"].possibleDimensionsLobby[random]
+
 	SetPlayerRoutingBucket(source, lobbyRouting)
-	clientAPI.setDiscordRich(source, "DUTH", "No lobby")
+
+	clientAPI.setDiscordRich(source, "HYPE", "No lobby")
 	clientAPI.JoinLobbyPrincipal(source)
+
 	Wait(500)
+
 	clientAPI.UpdateBattlePass(source)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1159,76 +1172,9 @@ function SetStatusGames(source)
 	return GamesStatus
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- UPDATE CREATE ACCOUNT - Event
------------------------------------------------------------------------------------------------------------------------------------------
--- RegisterServerEvent("UpdateCreateAccount")
--- AddEventHandler("UpdateCreateAccount", function(typee)
--- 	local source = source
---     local user_id = vRP.getUserId(source)
--- 	local identity = vRP.getIdentity(user_id)
-
--- 	Player(source).state.userData = false
--- 	loadUserData(source, user_id, true)
--- 	Wait(500)
--- 	if not Player(source).state.inDashboard then
--- 		Player(source).state.inDashboard = true
-
--- 		local teamCode = generateStringNumber("LLLD")
--- 		Player(source).state.teamCode = teamCode
--- 		Player(source).state.ready = true
-
--- 		CreateTeam(source, user_id, teamCode)
--- 		local infos = extractSteam(source)
--- 		local steamHex = infos.steam:gsub("steam:", "")
-
-		
--- 		if Player(source).state.autoOpenDashboard == "true" then
--- 			clientAPI.OpenLobby(source, true)
--- 			Player(source).state.inDashboard = true
--- 		else
--- 			clientAPI.OpenLobby(source, false)
--- 			local random = math.random(#Config.Maps["LobbyPrincipal"].possibleDimensionsLobby)
--- 			local lobbyRouting = Config.Maps["LobbyPrincipal"].possibleDimensionsLobby[random]
--- 			SetPlayerRoutingBucket(source, lobbyRouting)
--- 			clientAPI.JoinLobbyPrincipal(source)
--- 			clientAPI.setDiscordRich(source, "DUTH", "#"..user_id.." "..identity.username.."")
--- 			Player(source).state.inLobbyPrincipal = true
--- 			Player(source).state.inDashboard = false
--- 		end
-		
-
--- 		JoinTeam({
--- 			source = source,
--- 			user_id = user_id,
--- 			username = identity.username,
--- 			avatar = "https://i.pinimg.com/474x/5c/be/a6/5cbea638934c3a0181790c16a7832179.jpg", 
--- 			isLeader = true,
--- 			currentCharacterMode = vRP.getUData(user_id,"Barbershop"),
--- 			Clothes = vRP.getUData(user_id,"Clothings"),
--- 			Tatuagens = Player(source).state.userTatuagens,
--- 			ready = true,
--- 			pos = 0,
--- 			state = true,
--- 			hexlast = steamHex,
--- 			death = false,
--- 			agonizing = false,
--- 			color = nil,
--- 			positionGame = 0,
--- 		}, teamCode)
-
--- 		TriggerClientEvent("battleNui:update", source)
--- 	end
--- 	LoadDiscordItems(source, user_id)
-
--- 	Wait(500)
--- 	clientAPI.UpdateBattlePass(source)
--- end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- reMapData - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function reMapData(game_data)
-	-- print(dump(game_data))
-	-- RED
 	local cntRed = 0
 	local _redList = game_data
 	game_data = {}

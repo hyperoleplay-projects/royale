@@ -56,8 +56,12 @@ vRP._prepare('vRP/set_whitelisted', "UPDATE users SET whitelisted = @whitelisted
 -- GUILDS
 -----------------------------------------------------------------------------------------------------------------------------------------
 vRP._prepare("vRP/AddGuild","INSERT INTO guilds (tag, name, image_url) VALUES (@tag, @name, @imageURL);")
+vRP._prepare("vRP/UpdateGuildTag","UPDATE guilds SET `tag` = @newTag WHERE tag = @oldTag;")
+vRP._prepare("vRP/UpdateGuildName","UPDATE guilds SET `name` = @name WHERE tag = @tag;")
+vRP._prepare("vRP/UpdateGuildImage","UPDATE guilds SET `image_url` = @imageURL WHERE tag = @tag;")
 vRP._prepare("vRP/RemoveGuild","DELETE FROM guilds WHERE tag = @tag;")
 vRP._prepare("vRP/GetGuilds","SELECT tag, name, image_url as imageURL FROM guilds;")
-vRP._prepare("vRP/AddGuildMember","INSERT INTO guild_members (guild_tag, user_id) VALUES (@tag, @userId);")
+vRP._prepare("vRP/AddGuildMember","INSERT INTO guild_members (guild_tag, user_id, role) VALUES (@tag, @userId, @role);")
+vRP._prepare("vRP/UpdateGuildMember","UPDATE guild_members SET `role` = @role WHERE `user_id` = @userId AND `guild_tag` = @tag;")
 vRP._prepare("vRP/GetGuildMembers","SELECT user_id as userId, role FROM guild_members WHERE `guild_tag` = @tag;")
 vRP._prepare("vRP/RemoveGuildMember","DELETE FROM guild_members WHERE `user_id` = @userId AND `guild_tag` = @tag;")

@@ -314,21 +314,21 @@ end
 -- setDiscordRich
 -----------------------------------------------------------------------------------------------------------------------------------------
 function setDiscordRich(title, description)
-    SetDiscordAppId(957851467786645554)
+  SetDiscordAppId(957851467786645554)
   SetDiscordRichPresenceAsset("logo")
   SetRichPresence(description)
   SetDiscordRichPresenceAssetText(title)
-  SetDiscordRichPresenceAction(0,"Jogar","https://discord.com/servers/duth-632657191366557707")
+  SetDiscordRichPresenceAction(0, "Jogar", "https://discord.gg/hyperoleplay")
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- src.setDiscordRich
 -----------------------------------------------------------------------------------------------------------------------------------------
 function src.setDiscordRich(title, description)
-    SetDiscordAppId(957851467786645554)
+  SetDiscordAppId(957851467786645554)
   SetDiscordRichPresenceAsset("logo")
   SetRichPresence(description)
   SetDiscordRichPresenceAssetText(title)
-  SetDiscordRichPresenceAction(0,"Jogar","https://discord.com/servers/duth-632657191366557707")
+  SetDiscordRichPresenceAction(0, "Jogar", "https://discord.gg/hyperoleplay")
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- src.SetBlipsUsers

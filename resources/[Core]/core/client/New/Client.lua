@@ -216,6 +216,8 @@ clientApiEvents.JoinLobby = function()
     clientApiEvents.BuildPeds({}, false)
     clientApiEvents.BuildGroup({}, false)
 
+    print('Initial', json.encode({ isReady = isPlayerReady() }))
+
     updateMenuFrame(true, {
         isReady = isPlayerReady(), 
         profile = getPlayerProfile(),

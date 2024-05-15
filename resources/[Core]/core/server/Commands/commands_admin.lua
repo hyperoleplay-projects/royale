@@ -113,7 +113,7 @@ RegisterCommand("forcejoin-player", function(sourceee, args, rawCmd)
         local infos = ApiController.extractSteam(source)
         local steamHex = infos.steam:gsub("steam:", "")
     
-        ApiController.JoinGroup({
+        addPlayerOnGroup({
             source = source,
             user_id = parseInt(args[1]),
             username = identity.username,
