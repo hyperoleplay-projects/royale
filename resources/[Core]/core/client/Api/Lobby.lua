@@ -1,7 +1,7 @@
 local api = {}; Tunnel.bindInterface('core:lobbyApi', api); 
 
 local GUILD_INVITE_MESSAGE = 'Você foi convidado para fazer parte do clã [%s] %s, deseja aceitar?'
-local GROUP_INVITE_MESSAGE = 'Você foi convidado para fazer parte do grupo do(a) %s|%s, deseja aceitar?
+local GROUP_INVITE_MESSAGE = 'Você foi convidado para fazer parte do grupo do(a) %s|%s, deseja aceitar?'
 
 local currentRequestPromise = nil 
 

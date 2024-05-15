@@ -6,6 +6,16 @@ local guildCache = { value = nil, updatedAt = 0 }
 local PLAYER_ID = PlayerId()
 local PLAYER_SOURCE = GetPlayerServerId(PLAYER_ID)
 
+local function RegisterNUICallback(name, callback)
+  _G.RegisterNUICallback(name, function(data, responseTrigger)
+    print('Request '.. name.. ':', json.encode(data))
+    return callback(data, function(responseData)
+      print('Response '.. name.. ':', json.encode(responseData))
+      responseTrigger(responseData)
+    end)
+  end)
+end
+
 function updateMenuFrame(canShow, dataToUpdate)
   dataToUpdate = dataToUpdate or {}
 
@@ -205,7 +215,7 @@ RegisterNetEvent('core:updateQueue', function(queueStatus, modeSelected, customC
   }
 
   updateMenuFrame(nil, { 
-    queue = getPlayerQueue()
+    match = getPlayerQueue()
   })
 end)
 
@@ -284,7 +294,6 @@ RegisterNUICallback('showGuild', function(data, responseTrigger)
     end 
   end 
 
-  print('Guild object', json.encode(guildObject))
   responseTrigger({ status = not not guildObject, data = guildObject  })
 end)
 
@@ -371,15 +380,15 @@ RegisterNUICallback('inviteUserToGuild', function(data, responseTrigger)
 end)
 
 RegisterNUICallback('changeGuildName', function(data, responseTrigger)
-  responseTrigger({ status = lobbyApi.tryChangeGuildName(data.name) })
+  responseTrigger({ status = lobbyApi.tryChangeGuildName(data.value) })
 end)
 
 RegisterNUICallback('changeGuildTag', function(data, responseTrigger)
-  responseTrigger({ status = lobbyApi.tryChangeGuildTag(data.tag) })
+  responseTrigger({ status = lobbyApi.tryChangeGuildTag(data.value) })
 end)
 
 RegisterNUICallback('changeGuildLogo', function(data, responseTrigger)
-  responseTrigger({ status = lobbyApi.tryChangeGuildImage(data.imageURL) })
+  responseTrigger({ status = lobbyApi.tryChangeGuildImage(data.value) })
 end)
 
 RegisterNUICallback('changeMatchMode', function(data, responseTrigger)

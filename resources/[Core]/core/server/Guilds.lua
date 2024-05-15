@@ -11,6 +11,26 @@ ROLES_ENUM = {
   [3] = 'MEMBER'
 }
 
+local function updateGuildToUser(userId, tag)
+  local userSource = vRP.getUserSource(userId)
+
+  if userSource then 
+    TriggerClientEvent('core:updateGuild', userSource, tag)
+  end 
+end 
+
+local function syncGuildTagToMembers(tag)
+  local guildObject = cacheGuilds[tag]  
+
+  if not guildObject then 
+    return 
+  end  
+
+  for _, memberObject in ipairs(guildObject.members) do 
+    updateGuildToUser(memberObject.userId, tag)
+  end
+end
+
 function tryCreateGuild(tag, name, imageURL)
   if cacheGuilds[tag] then 
     return false 
@@ -45,7 +65,8 @@ function tryUpdateGuildTag(oldTag, newTag)
   cacheGuilds[oldTag] = nil 
 
   vRP._execute('vRP/UpdateGuildTag', { oldTag = oldTag, newTag = newTag })
-
+  syncGuildTagToMembers(newTag)
+  
   return true 
 end
 
@@ -82,14 +103,6 @@ function removeGuild(tag)
 
   vRP._execute('vRP/RemoveGuild', { tag = tag })
 end
-
-local function updateGuildToUser(userId, tag)
-  local userSource = vRP.getUserSource(userId)
-
-  if userSource then 
-    TriggerClientEvent('core:updateGuild', userSource, tag)
-  end 
-end 
 
 function addGuildMember(tag, userId, isOwner)
   local guildObject = cacheGuilds[tag]

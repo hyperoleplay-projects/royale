@@ -114,25 +114,25 @@ function api.updateGroupQueue(mode, code)
   if not isQueueDataValid(mode, code) then 
     return 
   end
-
-  local userId = vRP.getUserId(playerSource)
-
-  if not isUserLeaderOfGroup(userId, teamCode) then 
+  
+  local teamCode = Player(playerSource).state.teamCode
+  local playerId = vRP.getUserId(playerSource)
+  
+  if not isUserLeaderOfGroup(playerId, teamCode) then 
     return 
   end 
-
-  local teamCode = Player(playerSource).state.teamCode
+  
   local groupQueue = getGroupQueue(teamCode) 
-
+  
   if not groupQueue then 
     return 
   end
-
+  
   updateGroupQueue(teamCode, {
     mode = mode,
     customCode = code
   })
-
+  
   syncGroupQueue(teamCode, false)
 end 
 
@@ -363,21 +363,21 @@ end
 function api.tryChangeGuildImage(imageURL)
   local playerSource = source 
   local playerId = vRP.getUserId(playerSource)
-
+  
   local playerGuildTag = getUserGuildTag(playerId)
-
+  
   if not playerGuildTag then 
     return false
   end
-
+  
   local playerRoleIndex = getGuildMemberRoleIndex(playerGuildTag, playerId)
-
+  
   if playerRoleIndex ~= ROLES_ENUM.OWNER then 
     return false
   end
-
+  
   updateGuildImage(playerGuildTag, imageURL)
-
+  
   return true
 end 
 

@@ -211,13 +211,13 @@ function isUserLeaderOfGroup(userId, teamCode)
   if Groups[teamCode] == nil then
     return false
   end 
-
+  
   for k,v in pairs(Groups[teamCode].players) do
     if v.user_id == userId then
       return v.isLeader
     end
   end
-
+  
   return false
 end
 
