@@ -103,7 +103,7 @@ function addGuildMember(tag, userId, isOwner)
     role = ROLES_ENUM[1]
   })
 
-  vRP._execute('vRP/AddGuildMember', { tag = tag, userId = userId, role = ROLES_ENUM[isOwner and 3 or 1] })
+  vRP._execute('vRP/AddGuildMember', { tag = tag, userId = userId, role = ROLES_ENUM[isOwner and 1 or 3] })
   updateGuildToUser(userId, tag)
 end 
 
@@ -129,8 +129,8 @@ function tryUpgradeGuildMember(tag, userId)
   end 
   
   for _, memberObject in ipairs(guildObject.members) do 
-    local currentRoleIndex = ROLES_ENUM[memberObject.role] or 1
-    local newRoleIndex = currentRoleIndex + 1
+    local currentRoleIndex = ROLES_ENUM[memberObject.role] or 3
+    local newRoleIndex = currentRoleIndex - 1
 
     local newRole = ROLES_ENUM[newRoleIndex]
 
@@ -153,8 +153,8 @@ function tryDowngradeGuildMember(tag, userId)
   end 
   
   for _, memberObject in ipairs(guildObject.members) do 
-    local currentRoleIndex = ROLES_ENUM[memberObject.role] or 1
-    local newRoleIndex = currentRoleIndex - 1
+    local currentRoleIndex = ROLES_ENUM[memberObject.role] or 3
+    local newRoleIndex = currentRoleIndex + 1
 
     local newRole = ROLES_ENUM[newRoleIndex]
 

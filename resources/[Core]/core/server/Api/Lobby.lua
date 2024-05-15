@@ -196,13 +196,11 @@ function api.upgradeGuildMember(memberId)
 
   local memberRoleIndex = getGuildMemberRoleIndex(playerGuildTag, memberId)
 
-  if not memberRoleIndex or (memberRoleIndex + 1) == playerRoleIndex then 
+  if not memberRoleIndex or (memberRoleIndex - 1) == playerRoleIndex then 
     return
   end
 
-  upgradeGuildMember(playerGuildTag, memberId)
-
-  return getGuildMembersEntriesByTag(playerGuildTag) 
+  return tryUpgradeGuildMember(playerGuildTag, memberId) and getGuildMembersEntriesByTag(playerGuildTag) 
 end 
 
 function api.downgradeGuildMember(memberId)
@@ -227,9 +225,7 @@ function api.downgradeGuildMember(memberId)
     return
   end
 
-  downgradeGuildMember(playerGuildTag, memberId)
-
-  return getGuildMembersEntriesByTag(playerGuildTag) 
+  return tryDowngradeGuildMember(playerGuildTag, memberId) and getGuildMembersEntriesByTag(playerGuildTag) 
 end 
 
 function api.kickGuildMember(memberId)
