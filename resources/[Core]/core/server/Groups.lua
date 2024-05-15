@@ -270,6 +270,12 @@ function syncGroupMembers(teamCode)
 end
 
 function syncGroupQueue(teamCode, status)
+  local groupObject = Groups[teamCode]
+
+  if groupObject == nil then
+    return
+  end 
+  
   local groupQueue = getGroupQueue(teamCode)
 
   if not groupQueue then

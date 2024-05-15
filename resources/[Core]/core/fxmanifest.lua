@@ -34,6 +34,7 @@ server_scripts {
 
   "server/Events.lua",
   "server/Game.lua",
+  "server/Groups.lua",
   "server/Guilds.lua",
   "server/Ranking.lua",
   "server/Inventory.lua",

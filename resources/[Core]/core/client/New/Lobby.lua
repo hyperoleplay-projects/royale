@@ -209,7 +209,7 @@ RegisterNetEvent('core:updateQueue', function(queueStatus, modeSelected, customC
   })
 end)
 
-local function getGuildOfCache()
+function getGuildOfCache()
   local timeNow = GetGameTimer() 
   local isValueValid = (guildCache.updatedAt - timeNow) > 1 * 60 * 1000
 
@@ -220,7 +220,7 @@ local function getGuildOfCache()
   return guildCache.value
 end 
 
-local function setGuildOfCache(guildObject)
+function setGuildOfCache(guildObject)
   local timeNow = GetGameTimer() 
 
   guildCache =  {
@@ -229,7 +229,7 @@ local function setGuildOfCache(guildObject)
   }
 end 
 
-local function getGuildMemberObjectByEntries(guildMemberEntries)
+function getGuildMemberObjectByEntries(guildMemberEntries)
   local memberId, memberName, memberRoleIndex, memberKills, memberDeaths = table.unpack(guildMemberEntries)
 
   return {
@@ -241,9 +241,9 @@ local function getGuildMemberObjectByEntries(guildMemberEntries)
   }
 end 
 
-local function getGuildObjectByEntries(guildEntries)
+function getGuildObjectByEntries(guildEntries)
   local playerProfile = getPlayerProfile()
-  local selfRole = nil 
+  local selfPlayer = nil 
 
   local guildTag, guildName, guildImageURL, guildMembers = table.unpack(guildEntries)
 
@@ -251,13 +251,14 @@ local function getGuildObjectByEntries(guildEntries)
     guildMembers[index] = getGuildMemberObjectByEntries(memberEntries)
 
     if guildMembers[index].id == playerProfile.id then 
-      selfRole = guildMembers[index].role
+      selfPlayer = guildMembers[index]
     end 
   end
 
   return {
     self = {
-      role = selfRoleIndex,
+      id = selfPlayer.id,
+      role = selfPlayer.role,
     }, 
 
     page = {
@@ -283,6 +284,7 @@ RegisterNUICallback('showGuild', function(data, responseTrigger)
     end 
   end 
 
+  print('Guild object', json.encode(guildObject))
   responseTrigger({ status = not not guildObject, data = guildObject  })
 end)
 
