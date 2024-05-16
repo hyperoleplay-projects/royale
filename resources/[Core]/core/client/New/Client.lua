@@ -16,17 +16,6 @@ local NuiRevivePlayer = false
 local AnimationRevive = false
 local Ped
 -----------------------------------------------------------------------------------------------------------------------------------------
--- BuildPlayerState - Function
------------------------------------------------------------------------------------------------------------------------------------------
-clientApiEvents.BuildPlayerState = function(data) 
-    SendReactMessage('BuildPlayerState', {
-        Ready = data.ready,
-        Leader = data.Leader,
-        Match = data.Match,
-        Text = data.Text
-    })
-end
------------------------------------------------------------------------------------------------------------------------------------------
 -- UpdateBlips - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientApiEvents.UpdateBlips = function(data) 
