@@ -257,12 +257,14 @@ clientApiEvents.BuildPeds = function(data)
             local cModelHash = data.skin
     
             RequestModel(cModelHash)
+            
             while not HasModelLoaded(cModelHash) do
                 Citizen.Wait(1)
             end
     
             if HasModelLoaded(cModelHash) then
                 LuizDev.PedsClient[v.user_id] = CreatePed(4,cModelHash, Config.spawnLoc[v.pos].x, Config.spawnLoc[v.pos].y, Config.spawnLoc[v.pos].z, Config.spawnLoc[v.pos].w,false,false)
+                
                 SetEntityInvincible(LuizDev.PedsClient[v.user_id], true)
                 FreezeEntityPosition(LuizDev.PedsClient[v.user_id], true)
                 SetBlockingOfNonTemporaryEvents(LuizDev.PedsClient[v.user_id], true)
@@ -271,8 +273,10 @@ clientApiEvents.BuildPeds = function(data)
                 LuizDev.TaskUpdateSkinOptions(LuizDev.PedsClient[v.user_id], data)
                 LuizDev.TaskUpdateFaceOptions(LuizDev.PedsClient[v.user_id], data)
                 LuizDev.TaskUpdateHeadOptions(LuizDev.PedsClient[v.user_id], data)
+
                 setClothing(LuizDev.PedsClient[v.user_id], json.decode(v.Clothes))
                 setTattos(LuizDev.PedsClient[v.user_id], v.Tatuagens)
+
                 playAnim(false,{ Config.AnimationsPed[v.pos][1], Config.AnimationsPed[v.pos][2] },Config.AnimationsPed[v.pos][3],LuizDev.PedsClient[v.user_id])
             end
             

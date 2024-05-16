@@ -165,7 +165,7 @@ local function isDataValidToCreateGuild(tag, name, imageURL)
   return true 
 end
 
-function api.tryCreateGuild(tag, name, imageURL)
+function api.createGuild(tag, name, imageURL)
   local playerSource = source 
 
   if not isDataValidToCreateGuild(tag, name, imageURL) then 
@@ -174,8 +174,13 @@ function api.tryCreateGuild(tag, name, imageURL)
 
   local playerId = vRP.getUserId(playerSource)
 
-  tryCreateGuild(tag, name, imageURL)
-  addGuildMember(tag, playerId, true)
+  local isCreated = tryCreateGuild(tag, name, imageURL)
+
+  if isCreated then 
+    addGuildMember(tag, playerId, true)
+  
+    return tag
+  end 
 end 
 
 function api.upgradeGuildMember(memberId)
@@ -249,6 +254,19 @@ function api.kickGuildMember(memberId)
   return getGuildMembersEntriesByTag(playerGuildTag) 
 end 
 
+function api.leaveOfCurrentGuild()
+  local playerSource = source 
+  local playerId = vRP.getUserId(playerSource)
+
+  local playerGuildTag = getUserGuildTag(playerId)
+
+  if not playerGuildTag then 
+    return 
+  end
+
+  removeGuildMember(playerGuildTag, playerId)
+end 
+
 function api.getUserAvailableToGuild(targetId)
   local targetGuildTag = getUserGuildTag(targetId)
 
@@ -300,7 +318,7 @@ function api.tryInviteUserToGuild(targetId)
 
   local targetSource = vRP.getUserSource(targetId)
 
-  if not userSource then 
+  if not targetSource then 
     return false
   end
 
@@ -655,10 +673,41 @@ function api.tryReadyToGame()
   end
 end 
 
-function api.inviteUserToGroup(userId)
+function api.inviteUserToGroup(targetId)
   local source = source
 
-  -- TODO: Implement this function
+  local userId = vRP.getUserId(source)
+  local teamCode = Player(source).state.teamCode
+
+  if not isUserLeaderOfGroup(userId, teamCode) then 
+    TriggerClientEvent("Notify", source, "negado", "Apenas o lider do grupo pode convidar jogadores.")
+
+    return 
+  end
+
+  local targetSource = vRP.getUserSource(targetId)
+  local targetIdentity = vRP.getIdentity(targetId)
+  
+  if not targetSource or not targetIdentity then 
+    return 
+  end
+
+  TriggerClientEvent("Notify", source, "inform", "Você convidou o jogador ".. targetIdentity.username.. " para seu grupo.")
+  
+  Citizen.CreateThreadNow(function()
+    inviteUserToGroup(
+      teamCode, 
+      {
+        tag = getUserGuildTag(userId),
+        name = vRP.getIdentity(userId).username,
+      }, 
+      {
+        source = targetSource,
+        userId = targetId,
+        identity = targetIdentity,
+      }
+    )
+  end)
 end
 
 function api.leaveOfCurrentGroup()

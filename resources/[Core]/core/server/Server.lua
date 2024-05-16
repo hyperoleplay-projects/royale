@@ -7,7 +7,6 @@ Tunnel.bindInterface(GetCurrentResourceName(),src)
 clientAPI = Tunnel.getInterface(GetCurrentResourceName())
 SafeZoneAPI = Tunnel.getInterface("safezone")
 
-Invites = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 --  sendPlayerEvent - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -28,9 +27,11 @@ ApiController.playerGroupList = function(source)
 
     for playerId,playerData in pairs(Group.players) do
 		local Ped = GetPlayerPed(playerData.source)
+        
 		if DoesEntityExist(Ped) then
 			playerData["Coords"] = GetEntityCoords(Ped)
 		end
+
         Wait(5)
 	end
 

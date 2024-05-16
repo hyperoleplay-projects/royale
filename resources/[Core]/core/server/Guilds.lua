@@ -11,6 +11,24 @@ ROLES_ENUM = {
   [3] = 'MEMBER'
 }
 
+local function getTeamCodeByUserId(userId)
+  local userSource = vRP.getUserSource(userId)
+
+  if not userSource then 
+    return 
+  end
+
+  return Player(userSource).state.teamCode
+end 
+
+local function syncGroupOfGuildMemberId(userId)
+  local teamCode = getTeamCodeByUserId(userId)
+
+  if teamCode then 
+    syncGroupMembers(teamCode)
+  end
+end
+
 local function updateGuildToUser(userId, tag)
   local userSource = vRP.getUserSource(userId)
 
@@ -26,10 +44,38 @@ local function syncGuildTagToMembers(tag)
     return 
   end  
 
+  local groupsToSync = {}
+
   for _, memberObject in ipairs(guildObject.members) do 
+    local teamCode = getTeamCodeByUserId(userId)
+
+    if teamCode then 
+      groupsToSync[teamCode] = true 
+    end
+
     updateGuildToUser(memberObject.userId, tag)
   end
+
+  for teamCode in pairs(groupsToSync) do 
+    syncGroupMembers(teamCode)
+  end
 end
+
+local function resetGuildMemberCaches(tag)
+  local guildObject = cacheGuilds[tag]
+
+  if not guildObject then 
+    return 
+  end 
+
+  for _, memberObject in ipairs(guildObject.members) do 
+    local userSource = vRP.getUserSource(memberObject.userId)
+
+    if userSource then 
+      TriggerClientEvent('core:resetGuildCache', userSource)
+    end
+  end
+end 
 
 function tryCreateGuild(tag, name, imageURL)
   if cacheGuilds[tag] then 
@@ -79,6 +125,7 @@ function updateGuildName(tag, name)
 
   guildObject.name = name
 
+  resetGuildMemberCaches(tag)
   vRP._execute('vRP/UpdateGuildName', { tag = tag, name = name })
 end
 
@@ -91,6 +138,7 @@ function updateGuildImage(tag, imageURL)
 
   guildObject.imageURL = imageURL
 
+  resetGuildMemberCaches(tag)
   vRP._execute('vRP/UpdateGuildImage', { tag = tag, imageURL = imageURL })
 end
 
@@ -113,11 +161,17 @@ function addGuildMember(tag, userId, isOwner)
 
   table.insert(guildObject.members, {
     userId = userId, 
-    role = ROLES_ENUM[1]
+    role = ROLES_ENUM[ROLES_ENUM.MEMBER]
   })
 
   vRP._execute('vRP/AddGuildMember', { tag = tag, userId = userId, role = ROLES_ENUM[isOwner and 1 or 3] })
-  updateGuildToUser(userId, tag)
+
+  if not isOwner then 
+    updateGuildToUser(userId, tag)
+  end 
+
+  syncGroupOfGuildMemberId(userId)
+  resetGuildMemberCaches(tag)
 end 
 
 function getGuildMemberRoleIndex(tag, userId)
@@ -149,6 +203,8 @@ function tryUpgradeGuildMember(tag, userId)
 
     if newRole then 
       memberObject.role = newRole
+
+      resetGuildMemberCaches(tag)
       vRP._execute('vRP/UpdateGuildMember', { role = newRole, userId = memberObject.userId, tag = tag })
 
       return true 
@@ -173,6 +229,8 @@ function tryDowngradeGuildMember(tag, userId)
 
     if newRole then 
       memberObject.role = newRole
+      resetGuildMemberCaches(tag)
+
       vRP._execute('vRP/UpdateGuildMember', { role = newRole, userId = memberObject.userId, tag = tag })
 
       return true 
@@ -182,6 +240,48 @@ function tryDowngradeGuildMember(tag, userId)
   return false 
 end 
 
+local function tryFinishGuild(tag)
+  local guildObject = cacheGuilds[tag]
+
+  if not guildObject then 
+    return 
+  end 
+
+  if #guildObject.members == 0 then 
+    removeGuild(tag)
+
+    return true 
+  end
+
+  return false
+end 
+
+local function transferOwnerToNextPlayer(tag)
+  local guildObject = cacheGuilds[tag]
+
+  if not guildObject then 
+    return 
+  end 
+
+  local firstMajorPlayer = nil 
+
+  for _, memberObject in ipairs(guildObject.members) do 
+    local memberRoleIndex = ROLES_ENUM[memberObject.role]
+
+    if not firstMajorPlayer or memberRoleIndex < firstMajorPlayer.roleIndex then 
+      firstMajorPlayer = { object = memberObject, roleIndex = memberRoleIndex }
+    end
+  end 
+
+  if firstMajorPlayer and firstMajorPlayer.roleIndex > ROLES_ENUM.OWNER then 
+    local newRole = ROLES_ENUM[ROLES_ENUM.OWNER]
+
+    firstMajorPlayer.object.role = newRole
+
+    vRP._execute('vRP/UpdateGuildMember', { role = newRole, userId = firstMajorPlayer.object.userId, tag = tag })
+  end
+end 
+
 function removeGuildMember(tag, userId)
   local guildObject = cacheGuilds[tag]
 
@@ -189,21 +289,30 @@ function removeGuildMember(tag, userId)
     return 
   end 
 
-  local isRemoved = false
-
-  for memberIndex = #guildObject.members, -1, 1 do 
+  for memberIndex = #guildObject.members, 1, -1 do 
     local memberObject = guildObject.members[memberIndex]
 
     if memberObject.userId == userId then
-      table.remove(memberIndex) 
+      table.remove(guildObject.members, memberIndex) 
+      
+      updateGuildToUser(userId, nil)
+      syncGroupOfGuildMemberId(userId)
 
-      isRemoved = true
+      local wasFinished = tryFinishGuild(tag)
+
+      if not wasFinished then 
+        local isMemberOwner = memberObject.role == ROLES_ENUM[ROLES_ENUM.OWNER]
+        
+        if isMemberOwner then
+          transferOwnerToNextPlayer(tag)
+        end 
+
+        resetGuildMemberCaches(tag)
+        vRP._execute('vRP/RemoveGuildMember', { tag = tag, userId = userId })
+      end
+
+      return 
     end 
-  end 
-
-  if isRemoved then 
-    vRP._execute('vRP/RemoveGuildMember', { tag = tag, userId = userId })
-    updateGuildToUser(userId, nil)
   end 
 end 
 
@@ -263,7 +372,7 @@ function inviteUserToGuild(tag, userId, userSource)
     return 
   end 
 
-  local isAccepted = lobbyApi.requestInvite('GUILD', guildObject.tag, guildObject.name)
+  local isAccepted = lobbyApi.requestInvite(userSource, 'GUILD', guildObject.tag, guildObject.name)
 
   if isAccepted then 
     addGuildMember(tag, userId, false)

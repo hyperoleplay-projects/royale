@@ -281,17 +281,27 @@ end)
 -- SETEVENTO
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("set-dev",function(source,args,rawCmd)
-    local user_id = vRP.getUserId(source)
-    if not vRP.hasPermission(user_id) then 
-        return 
-    end
+    if source ~= 0 then 
+        local user_id = vRP.getUserId(source)
+    
+        if not vRP.hasPermission(user_id) then 
+            return 
+        end
+
+        if not isDevMode then
+            TriggerClientEvent("Notify", source, "sucess", "Sistema de desenvolvedor ativado.", 15000)
+        else
+            TriggerClientEvent("Notify", source, "sucess", "Sistema de desenvolvedor desativado.", 15000)
+        end
+    else 
+        if not isDevMode then
+            print("^2[ DEV ] ^7Sistema de desenvolvedor ativado.")
+        else
+            print("^2[ DEV ] ^7Sistema de desenvolvedor desativado.")
+        end
+    end 
 
     isDevMode = not isDevMode
-    if isDevMode then
-        TriggerClientEvent("Notify", source, "sucess", "Sistema de desenvolvedor ativado.", 15000)
-    else
-        TriggerClientEvent("Notify", source, "sucess", "Sistema de desenvolvedor desativado.", 15000)
-    end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADDWHITELISTEVENTO
@@ -349,11 +359,25 @@ AddEventHandler("Queue:playerConnecting",function(source,ids,deferrals)
     end
 
     local user_id = vRP.getUserByIdentifiers(ids)
+
     if not user_id then
         deferrals.done("Você teve um problema de identidade (user_id).")
 		TriggerEvent("Queue:removeQueue",ids)
+
         return
     end
+
+    if vRP.rusers[user_id] and isDevMode then 
+        deferrals.update("[DEV] Trocando usuário duplicado.")
+
+        local otherIds = {} 
+
+        for i, identifier in pairs(ids) do 
+            otherIds[i] = identifier:gsub('%:', ':0')
+        end 
+
+        user_id = vRP.getUserByIdentifiers(otherIds)
+    end 
 
     deferrals.defer()
     
@@ -376,71 +400,29 @@ AddEventHandler("Queue:playerConnecting",function(source,ids,deferrals)
         return
     end
 
-    if isDevMode and user_id ~= 1 and user_id ~= 2 and user_id ~= 3 and user_id ~= 4 and user_id ~= 1920 then
+    if isDevMode and user_id > 10 then
         deferrals.update("\n\n[ DEV MODE ]\n\nOlá, "..GetPlayerName(source).."! Informamos que nosso servidor está passando por uma atualização rápida para aprimorar a experiência de todos vocês. \nPedimos que fiquem atentos ao nosso Discord para serem notificados assim que a liberação ocorrer. \n\nPrometemos que o processo não irá demorar muito! \n\n\n\nAgradecemos a compreensão de todos e estamos ansiosos para apresentar as melhorias em breve.")
+        
         return
     end
-
     
     -- Data verifys
     local dataRequest = exports.oxmysql:query_async("SELECT whitelisted FROM users WHERE id = ?",{ user_id })
+
     if not dataRequest[1] then
         return
     end
 
     if dataRequest[1].whitelisted == 0 then
-        -- if isClosedBeta then
-        --     local function passwordCardCallback(data, rawData)
-        --         local match = false
-        
-        --         if data then
-        --             local codes = vRP.query("vRP/requestCodes", {})
-        
-        --             for k, v in pairs(codes) do
-        --                 if data.password == v.code and v.used == "false" then
-        --                     match = true
-        --                     vRP.execute("vRP/updateCode", { used = "true", code = data.password })
-        --                     vRP.execute("vRP/updateWhitelist", { id = user_id, whitelisted = true })
-        --                     local discordId = ""
-        --                     for _, id in ipairs(GetPlayerIdentifiers(source)) do
-        --                         if string.match(id, "discord:") then
-        --                             discordId = string.gsub(id, "discord:", "")
-        --                         end
-        --                     end
-
-        --                     vRP.execute("vRP/addBot", { id = user_id, discord = discordId })
-        --                     vRP.updateIdentity(user_id)
-        --                     break  -- Sai do loop assim que encontrar uma correspondência válida
-        --                 end
-        --             end
-        --         end
-        --         Wait(100)
-        
-        --         if not match then
-        --             -- Mostra a tela de codigo novamente
-        --             showPasswordCard(deferrals, passwordCardCallback, true)
-        --         else
-        --             -- O jogador foi autenticado com sucesso
-        --             deferrals.update("\n\n[ CLOSED BETA ]\n\nOlá, "..GetPlayerName(source).."! Temos uma ótima notícia para você! Recentemente, você utilizou um código exclusivo que permite a liberação antecipada no servidor. \nAgradecemos pela sua participação no beta! Para desfrutar de todas as funcionalidades e benefícios dessa versão antecipada, pedimos que você reconecte ao servidor. Assim que fizer isso, sua conta será totalmente liberada e você poderá aproveitar ao máximo a experiência. \nAgradecemos pela sua colaboração e entusiasmo. Caso tenha alguma dúvida ou precise de suporte, nossa equipe estará pronta para ajudar. Divirta-se explorando todas as novidades! 😊")
-        --         end
-        --     end
-        
-        --     deferrals.update("\n\n[ CLOSED BETA ]\n\nOlá, "..GetPlayerName(source).."! 😊 Você ainda não faz parte do Closed Beta do nosso servidor. Caso você não possua nenhum código de liberação, fique de olho em nossas redes sociais, Discord e nos streamers oficiais do servidor. \n Se você tiver um código de liberação, por favor, aguarde enquanto eu o redireciono para a tela de liberação. 👍")
-
-        --     Wait(5000)
-        --     showPasswordCard(deferrals, passwordCardCallback)
-        -- else
-        --     -- Jogador não está na lista de permissões e não é um beta fechado
-        --     deferrals.done("\n\n[ ERRO DE CONEXÃO ]\n\nOlá, "..GetPlayerName(source).."! Você ainda não está liberado para entrar em nosso servidor, mas não se preocupe, para resolver isto basta seguir os passos abaixo.\n\n1: Entre em nosso servidor do discord (discord.gg/Xb3g62fZnC)\n2: Envie seu ID ("..user_id..") no canal de liberação\n3: E pronto! Basta reconectar ao servidor que sua conta já estará liberada =D\n")
-        -- end
-    
         deferrals.done("\n\n[ ERRO DE CONEXÃO ]\n\n Você ainda não está liberado para entrar em nosso servidor, mas não se preocupe, para resolver isto basta seguir os passos abaixo.\n\n1: Entre em nosso servidor do discord (discord.gg/Xb3g62fZnC)\n2: Envie seu ID ("..user_id..") no canal de liberação\n3: E pronto! Basta reconectar ao servidor que sua conta já estará liberada =D\n")
-        -- Remove o jogador da fila de espera
         TriggerEvent("Queue:removeQueue", ids)
+
         return
     end
 
     -- Login
+    print("^2[ CONEXÃO ] ^7"..user_id.." conectou-se ao servidor.")
+    
     if vRP.rusers[user_id] == nil then
         local sdata = vRP.getUData(user_id,"vRP:datatable")
 

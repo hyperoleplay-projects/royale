@@ -1,5 +1,7 @@
 Groups = {}
 
+local lobbyApi = Tunnel.getInterface('core:lobbyApi')
+
 function createGroup(ownerSource, ownerUserId, teamCode) 
   Groups[teamCode] = { 
     TeamId = ApiController.GenerateRandomNumber(), 
@@ -77,7 +79,6 @@ function createGroupToExpelledPlayer(player)
   }, teamCode)
 end 
 
-
 function createInitialGroupToUser(source, userId) 
   local identity = vRP.getIdentity(userId)
   local teamCode = generateStringNumber("LLLD")
@@ -120,20 +121,20 @@ function addPlayerOnGroup(playerData, teamCode)
   end
 
 	if not Player(playerData.source).state.inTeam then
-		if Groups[teamCode].playersCount < Config.TeamMaxPlayers then
-			if Groups[teamCode].playersCount + 1 <= Config.TeamMaxPlayers then
-        Groups[teamCode].players[playerData.user_id] = playerData
+    local isGroupFull = Groups[teamCode].playersCount >= Config.TeamMaxPlayers 
+    
+		if not isGroupFull then
+      Groups[teamCode].players[playerData.user_id] = playerData
+      Groups[teamCode].playersCount = Groups[teamCode].playersCount + 1
 
-				Groups[teamCode].playersCount = Groups[teamCode].playersCount + 1
-				playerData.pos = Groups[teamCode].playersCount
-				playerData.color = Config.ColorsTeam[playerData.pos]
-                
-				Player(playerData.source).state.inTeam = true
-        Player(playerData.source).state.IsFollowingTeam = false
-				Player(playerData.source).state.teamCode = teamCode
-                
-        ApiController.sendEventPlayersEvent(teamCode, "BuildPeds", { tabela = Groups[teamCode], status = true })
-			end
+      playerData.pos = Groups[teamCode].playersCount
+      playerData.color = Config.ColorsTeam[playerData.pos]
+              
+      Player(playerData.source).state.inTeam = true
+      Player(playerData.source).state.IsFollowingTeam = false
+      Player(playerData.source).state.teamCode = teamCode
+              
+      ApiController.sendEventPlayersEvent(teamCode, "BuildPeds", { tabela = Groups[teamCode], status = true })
 		else
       TriggerClientEvent("Notify",playerData.source,"negado", "Esse grupo já está cheio!")
 		end
@@ -184,7 +185,7 @@ function removePlayerOfGroup(playerData)
     Group.players[playerData.user_id] = nil
     Group.playersCount = Group.playersCount - 1
 
-    ApiController.sendEventPlayersEventNotGame(Player(playerData.source).state.teamCode, "BuildPeds", { tabela = Groups[Player(playerData.source).state.teamCode], status = true })
+    ApiController.sendEventPlayersEventNotGame(teamCode, "BuildPeds", { tabela = Groups[Player(playerData.source).state.teamCode], status = true })
   end
 
   syncGroupMembers(teamCode)
@@ -264,6 +265,8 @@ function syncGroupMembers(teamCode)
     })
   end
 
+  print(json.encode(membersEntries, {indent = true}))
+
   for _, player in pairs(groupObject.players) do
     TriggerClientEvent('core:updateGroup', player.source, membersEntries)
   end
@@ -284,5 +287,52 @@ function syncGroupQueue(teamCode, status)
 
   for _, player in pairs(groupObject.players) do
     TriggerClientEvent('core:updateQueue', player.source, false, groupQueue.mode, groupQueue.customCode)
+  end
+end
+
+function inviteUserToGroup(teamCode, inviterObject, targetObject)
+  local groupObject = Groups[teamCode]
+
+  if groupObject == nil then
+    return
+  end 
+
+  local isAccepted = lobbyApi.requestInvite(targetObject.source, 'GROUP', inviterObject.tag, inviterObject.name)
+
+  if isAccepted then 
+    local isInQueue = isGroupInQueue(teamCode)
+
+    if not isInQueue then
+      Player(targetObject.source).state.ready = false
+      Player(targetObject.source).state.inTeam = false
+      Player(targetObject.source).state.inTeamNoLeader = true
+      Player(targetObject.source).state.isLeader = false
+      Player(targetObject.source).state.positionGame = 0
+    
+      local infos = ApiController.extractSteam(targetObject.source)
+      local steamHex = infos.steam:gsub("steam:", "")
+
+      addPlayerOnGroup({
+        source = targetObject.source,
+        user_id = targetObject.userId,
+        username = targetObject.identity.username,
+        avatar = targetObject.identity.avatar, 
+        isLeader = false,
+        currentCharacterMode = vRP.getUData(targetObject.userId, "Barbershop"),
+        Clothes = vRP.getUData(targetObject.userId, "Clothings"),
+        Tatuagens = Player(targetObject.source).state.userTatuagens,
+        ready = false,
+        pos = 0,
+        state = true,
+        hexlast = steamHex,
+        death = false,
+        agonizing = false,
+        color = nil,
+        positionGame = 0,
+        Coords = vec3(0,0,0),
+      }, teamCode)
+    else 
+      TriggerClientEvent("Notify", targetObject.source, "negado", "O grupo que você tentou entrar está em partida.")
+    end
   end
 end

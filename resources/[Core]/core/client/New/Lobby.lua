@@ -68,13 +68,15 @@ function getPlayerGuildTag()
     tryResetGuildCache(lobbyCache.guild.tag)
   end 
 
-  return lobbyCache.guild.tag and lobbyCache.guild or nil
+  return lobbyCache.guild
 end 
 
 RegisterNetEvent('core:updateGuild', function(guildTag)
   lobbyCache.guild = {
     tag = guildTag
   } 
+
+  setGuildOfCache(nil)
 
   updateMenuFrame(nil, { 
     guild = getPlayerGuildTag()
@@ -164,7 +166,7 @@ RegisterNetEvent('core:addGroupMember', function(playerId, entries)
 end)
 
 RegisterNetEvent('core:removeGroupMember', function(playerId)
-  for playerIndex = #lobbyCache.group, -1, 1 do 
+  for playerIndex = #lobbyCache.group, 1, -1 do 
     local playerObject = lobbyCache.group[playerIndex]
 
     if playerObject.id == playerId then 
@@ -239,6 +241,10 @@ function setGuildOfCache(guildObject)
   }
 end 
 
+RegisterNetEvent('core:resetGuildCache', function()
+  setGuildOfCache(nil)
+end)
+
 function getGuildMemberObjectByEntries(guildMemberEntries)
   local memberId, memberName, memberRoleIndex, memberKills, memberDeaths = table.unpack(guildMemberEntries)
 
@@ -264,6 +270,10 @@ function getGuildObjectByEntries(guildEntries)
       selfPlayer = guildMembers[index]
     end 
   end
+
+  table.sort(guildMembers, function(a, b)
+    return a.role < b.role
+  end)
 
   return {
     self = {
@@ -298,9 +308,14 @@ RegisterNUICallback('showGuild', function(data, responseTrigger)
 end)
 
 RegisterNUICallback('createGuild', function(data, responseTrigger)
-  lobbyApi._tryCreateGuild(data.tag, data.name, data.imageURL)
+  local guildTag = lobbyApi.createGuild(data.tag, data.name, data.imageURL)
 
-  responseTrigger({ })
+  responseTrigger({
+    status = not not guildTag,
+    data = guildTag and {
+      tag = guildTag,
+    }
+  })
 end)
 
 local function tryUpdateGuildMembersEntries(guildMembers)
@@ -311,6 +326,10 @@ local function tryUpdateGuildMembersEntries(guildMembers)
   for index, memberEntries in ipairs(guildMembers) do 
     guildMembers[index] = getGuildMemberObjectByEntries(memberEntries)
   end
+
+  table.sort(guildMembers, function(a, b)
+    return a.role < b.role
+  end)
 
   local guildObject = getGuildOfCache()
 
@@ -327,7 +346,9 @@ RegisterNUICallback('upgradeGuildMemberRole', function(data, responseTrigger)
 
   responseTrigger({
     status = not not guildMembers,
-    data = guildMembers
+    data = guildMembers and {
+      members = guildMembers
+    }
   })
 end)
 
@@ -337,7 +358,9 @@ RegisterNUICallback('downgradeGuildMemberRole', function(data, responseTrigger)
 
   responseTrigger({
     status = not not guildMembers,
-    data = guildMembers
+    data = guildMembers and {
+      members = guildMembers
+    }
   })
 end)
 
@@ -347,8 +370,17 @@ RegisterNUICallback('kickGuildMember', function(data, responseTrigger)
 
   responseTrigger({
     status = not not guildMembers,
-    data = guildMembers
+    data = guildMembers and {
+      members = guildMembers
+    }
   })
+end)
+
+RegisterNUICallback('leftOfGuild', function(data, responseTrigger)
+  lobbyApi.leaveOfCurrentGuild()
+  setGuildOfCache(nil)
+
+  responseTrigger({ status = true })
 end)
 
 RegisterNUICallback('searchUserToGuildInvite', function(data, responseTrigger)
@@ -380,15 +412,21 @@ RegisterNUICallback('inviteUserToGuild', function(data, responseTrigger)
 end)
 
 RegisterNUICallback('changeGuildName', function(data, responseTrigger)
-  responseTrigger({ status = lobbyApi.tryChangeGuildName(data.value) })
+  local isChanged = lobbyApi.tryChangeGuildName(data.value) 
+
+  responseTrigger({ status = isChanged })
 end)
 
 RegisterNUICallback('changeGuildTag', function(data, responseTrigger)
-  responseTrigger({ status = lobbyApi.tryChangeGuildTag(data.value) })
+  local isChanged = lobbyApi.tryChangeGuildTag(data.value) 
+
+  responseTrigger({ status = isChanged })
 end)
 
 RegisterNUICallback('changeGuildLogo', function(data, responseTrigger)
-  responseTrigger({ status = lobbyApi.tryChangeGuildImage(data.value) })
+  local isChanged = lobbyApi.tryChangeGuildImage(data.value) 
+
+  responseTrigger({ status = isChanged })
 end)
 
 RegisterNUICallback('changeMatchMode', function(data, responseTrigger)
@@ -398,8 +436,7 @@ RegisterNUICallback('changeMatchMode', function(data, responseTrigger)
 end)
 
 RegisterNUICallback('inviteUserToGroup', function(data, responseTrigger)
-  -- TODO: Implement this function
-  -- data.id - number
+  lobbyApi.inviteUserToGroup(data.id)
 
   responseTrigger({ status = true })
 end)
