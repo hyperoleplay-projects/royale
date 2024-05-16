@@ -6,16 +6,6 @@ local guildCache = { value = nil, updatedAt = 0 }
 local PLAYER_ID = PlayerId()
 local PLAYER_SOURCE = GetPlayerServerId(PLAYER_ID)
 
-local function RegisterNUICallback(name, callback)
-  _G.RegisterNUICallback(name, function(data, responseTrigger)
-    print('Request '.. name.. ':', json.encode(data))
-    return callback(data, function(responseData)
-      print('Response '.. name.. ':', json.encode(responseData))
-      responseTrigger(responseData)
-    end)
-  end)
-end
-
 function updateMenuFrame(canShow, dataToUpdate)
   dataToUpdate = dataToUpdate or {}
 
@@ -41,7 +31,6 @@ AddStateBagChangeHandler(
   'ready', 
   'player:'.. PLAYER_SOURCE, 
   function(bagName, keyName, bagValue)
-    print('State bag change', json.encode({ isReady = bagValue }))
     updateMenuFrame(nil, { isReady = bagValue })
   end
 )

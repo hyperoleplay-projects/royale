@@ -265,8 +265,6 @@ function syncGroupMembers(teamCode)
     })
   end
 
-  print(json.encode(membersEntries, {indent = true}))
-
   for _, player in pairs(groupObject.players) do
     TriggerClientEvent('core:updateGroup', player.source, membersEntries)
   end

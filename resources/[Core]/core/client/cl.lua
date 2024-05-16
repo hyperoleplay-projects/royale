@@ -132,7 +132,6 @@ end)
 -- executeEvent - NUI
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("executeEvent",function(data, cb)
-    -- print('EXECUTE EVENT: '..json.encode(data))
     return cb(vSERVER.requestData(data.name, data))
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -192,13 +191,10 @@ end)
 
 RegisterCommand("addSafe", function() 
     local x,y,z = table.unpack(GetEntityCoords(PlayerPedId()))
-    
-    
     local blip = AddBlipForRadius(x,y,z, 2400.0)
+    
     SetBlipSprite(blip, 10)
     SetBlipDisplay(blip, 8)
     SetBlipColour(blip, 75)
     SetBlipAlpha(blip, 75)
-
-    print(x,y,z)
 end)
