@@ -1,5 +1,5 @@
 Config = {}
-Config.MinPlayers = 64
+Config.MinPlayers = 2
 Config.StartTime = 15
 
 Config.gamemodesList = {

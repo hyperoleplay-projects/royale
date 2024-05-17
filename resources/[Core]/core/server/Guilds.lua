@@ -159,12 +159,14 @@ function addGuildMember(tag, userId, isOwner)
     return 
   end 
 
+  local roleIndex = isOwner and ROLES_ENUM.OWNER or ROLES_ENUM.MEMBER
+
   table.insert(guildObject.members, {
     userId = userId, 
-    role = ROLES_ENUM[ROLES_ENUM.MEMBER]
+    role = ROLES_ENUM[roleIndex]
   })
 
-  vRP._execute('vRP/AddGuildMember', { tag = tag, userId = userId, role = ROLES_ENUM[isOwner and 1 or 3] })
+  vRP._execute('vRP/AddGuildMember', { tag = tag, userId = userId, role = ROLES_ENUM[roleIndex] })
 
   if not isOwner then 
     updateGuildToUser(userId, tag)

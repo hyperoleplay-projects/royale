@@ -548,42 +548,42 @@ function api.tryStartGame()
   
   if isInQueue then
     removeOfQueueGame(source, userId)
-
+    
     return 
   end
-
+  
   local teamCode = Player(source).state.teamCode
-
+  
   local isSolo = Groups[teamCode].playerCount == 1
   local teamPlayers = Groups[teamCode].players
-
+  
   for k,v in pairs(isSolo and teamPlayers or {}) do
     v.death = false
     v.agonizing = false
     v.isReviving = false
-
+    
     Player(v.source).state.death = false
     Player(v.source).state.agonizing = false
     Player(v.source).state.isReviving = false
   end
-
+  
   local isTeamReady = ApiController.GetPlayersReady(teamCode)
-
+  
   if not isTeamReady then
     TriggerClientEvent("Notify", source, "negado", "É necessário que todos os jogadores do grupo estejam prontos para começar!")
     
     return
   end
 
-  local canStartGame = isTeamReady and isUserLeaderOfGroup(user_id, teamCode) and not Player(source).state.inQueue and not Player(source).state.inGameLobby and not Player(source).state.inGame and not Player(source).state.inPlane and not Player(source).state.inAimLab
-
+  local canStartGame = isTeamReady and isUserLeaderOfGroup(userId, teamCode) and not Player(source).state.inQueue and not Player(source).state.inGameLobby and not Player(source).state.inGame and not Player(source).state.inPlane and not Player(source).state.inAimLab
+  
   if not canStartGame then
     return 
   end 
-
+  
   local groupQueue = getGroupQueue(teamCode)
   local gameModeLower = groupQueue.mode:lower()
-
+  
   if groupQueue.mode == 'SOLO' then
     local isSolo = Groups[teamCode].playersCount == 1
 
@@ -601,13 +601,13 @@ function api.tryStartGame()
   end
   
   local gameId = GameController.GetGamesForType(gameModeLower)
-
+  
   if not gameId then
     gameId = GameController.HostGame(gameModeLower, 'player').gameId
     
     for _, player in pairs(teamPlayers) do
       local isInserted = Player(player.source).state.inQueue or Player(player.source).state.inGame
-
+      
       if not isInserted then
         Player(player.source).state.inQueue = true
         Player(player.source).state.gameId = gameId
@@ -622,10 +622,10 @@ function api.tryStartGame()
     end
 
     syncGroupQueue(teamCode, true)
-
+    
     return 
   end 
-
+  
   for k,v in pairs(teamPlayers) do
     local isInserted = Player(v.source).state.inQueue or Player(v.source).state.inGame
 

@@ -179,6 +179,9 @@ function removePlayerOfGroup(playerData)
   end
 
   if Group.players[playerData.user_id] ~= nil then
+    local playerDataGroup = Group.players[playerData.user_id]
+    createGroupToExpelledPlayer(playerDataGroup)
+
     Group.players[playerData.user_id].death = true
     Group.players[playerData.user_id].agonizing = true
 
@@ -280,11 +283,11 @@ function syncGroupQueue(teamCode, status)
   local groupQueue = getGroupQueue(teamCode)
 
   if not groupQueue then
-      return
+    return
   end
 
   for _, player in pairs(groupObject.players) do
-    TriggerClientEvent('core:updateQueue', player.source, false, groupQueue.mode, groupQueue.customCode)
+    TriggerClientEvent('core:updateQueue', player.source, status, groupQueue.mode, groupQueue.customCode)
   end
 end
 
@@ -298,39 +301,49 @@ function inviteUserToGroup(teamCode, inviterObject, targetObject)
   local isAccepted = lobbyApi.requestInvite(targetObject.source, 'GROUP', inviterObject.tag, inviterObject.name)
 
   if isAccepted then 
+    local currentTeamCode = Player(targetObject.source).state.teamCode
+
+    if currentTeamCode == teamCode then
+      TriggerClientEvent("Notify", targetObject.source, "negado", "Você já está nesse grupo!")
+
+      return
+    end
+
     local isInQueue = isGroupInQueue(teamCode)
 
-    if not isInQueue then
-      Player(targetObject.source).state.ready = false
-      Player(targetObject.source).state.inTeam = false
-      Player(targetObject.source).state.inTeamNoLeader = true
-      Player(targetObject.source).state.isLeader = false
-      Player(targetObject.source).state.positionGame = 0
-    
-      local infos = ApiController.extractSteam(targetObject.source)
-      local steamHex = infos.steam:gsub("steam:", "")
-
-      addPlayerOnGroup({
-        source = targetObject.source,
-        user_id = targetObject.userId,
-        username = targetObject.identity.username,
-        avatar = targetObject.identity.avatar, 
-        isLeader = false,
-        currentCharacterMode = vRP.getUData(targetObject.userId, "Barbershop"),
-        Clothes = vRP.getUData(targetObject.userId, "Clothings"),
-        Tatuagens = Player(targetObject.source).state.userTatuagens,
-        ready = false,
-        pos = 0,
-        state = true,
-        hexlast = steamHex,
-        death = false,
-        agonizing = false,
-        color = nil,
-        positionGame = 0,
-        Coords = vec3(0,0,0),
-      }, teamCode)
-    else 
+    if isInQueue then
       TriggerClientEvent("Notify", targetObject.source, "negado", "O grupo que você tentou entrar está em partida.")
+
+      return 
     end
+
+    Player(targetObject.source).state.ready = false
+    Player(targetObject.source).state.inTeam = false
+    Player(targetObject.source).state.inTeamNoLeader = true
+    Player(targetObject.source).state.isLeader = false
+    Player(targetObject.source).state.positionGame = 0
+  
+    local infos = ApiController.extractSteam(targetObject.source)
+    local steamHex = infos.steam:gsub("steam:", "")
+
+    addPlayerOnGroup({
+      source = targetObject.source,
+      user_id = targetObject.userId,
+      username = targetObject.identity.username,
+      avatar = targetObject.identity.avatar, 
+      isLeader = false,
+      currentCharacterMode = vRP.getUData(targetObject.userId, "Barbershop"),
+      Clothes = vRP.getUData(targetObject.userId, "Clothings"),
+      Tatuagens = Player(targetObject.source).state.userTatuagens,
+      ready = false,
+      pos = 0,
+      state = true,
+      hexlast = steamHex,
+      death = false,
+      agonizing = false,
+      color = nil,
+      positionGame = 0,
+      Coords = vec3(0,0,0),
+    }, teamCode)
   end
 end

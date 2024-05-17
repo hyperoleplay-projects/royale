@@ -1,4 +1,25 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- IDS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local sourcesIds = {}
+local playerCount = 0 
+
+AddEventHandler('playerJoining', function(oldSource)
+    local source = source 
+
+    source = tostring(source)
+    oldSource = tostring(oldSource)
+
+    if sourcesIds[oldSource] then
+        sourcesIds[source] = sourcesIds[oldSource]
+        sourcesIds[oldSource] = nil
+    end
+end)
+
+local function GetPlayerIdentifiers(source)
+    return sourcesIds[tostring(source)]
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- VRP
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Proxy = module("lib/Proxy")
@@ -346,17 +367,29 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- QUEUECONNECTING
 -----------------------------------------------------------------------------------------------------------------------------------------
+
 AddEventHandler("Queue:playerConnecting",function(source,ids,deferrals)
 	deferrals.defer()
+
 	local source = source
-    local identifiers = GetPlayerIdentifiers(source)
-	local ids = ids
+    local ids = ids
 
     if ids == nil or #ids <= 0 then
         deferrals.done("Você teve um problema de identidade (ids).")
 		TriggerEvent("Queue:removeQueue",ids)
+        
         return
     end
+
+    if isDevMode then 
+        playerCount = playerCount + 1 
+
+        for i in pairs(ids) do 
+            ids[i] = ids[i]:gsub(":", ":".. playerCount.. ":")
+        end 
+    end 
+
+    sourcesIds[tostring(source)] = ids
 
     local user_id = vRP.getUserByIdentifiers(ids)
 
@@ -366,18 +399,6 @@ AddEventHandler("Queue:playerConnecting",function(source,ids,deferrals)
 
         return
     end
-
-    if vRP.rusers[user_id] and isDevMode then 
-        deferrals.update("[DEV] Trocando usuário duplicado.")
-
-        local otherIds = {} 
-
-        for i, identifier in pairs(ids) do 
-            otherIds[i] = identifier:gsub('%:', ':0')
-        end 
-
-        user_id = vRP.getUserByIdentifiers(otherIds)
-    end 
 
     deferrals.defer()
     

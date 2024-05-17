@@ -189,7 +189,7 @@ function getPlayerQueue()
     local queueStatus, modeSelected, customCode = lobbyApi.getPlayerQueue()
 
     lobbyCache.queue = {
-      queue = queueStatus and 'Buscando partida...',
+      queue = queueStatus and 'BUSCANDO...',
       mode = modeSelected, 
       custom = customCode and { code = customCode }
     }
@@ -200,7 +200,7 @@ end
 
 RegisterNetEvent('core:updateQueue', function(queueStatus, modeSelected, customCode)
   lobbyCache.queue = {
-    queue = queueStatus and 'Aguardando',
+    queue = queueStatus and 'BUSCANDO...',
     mode = modeSelected, 
     custom = customCode and { code = customCode }
   }
