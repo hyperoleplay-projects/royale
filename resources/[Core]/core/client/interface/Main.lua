@@ -227,35 +227,22 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- NotifyKill - Event
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("NotifyKill")
-AddEventHandler("NotifyKill",function(dataNotify)
+RegisterNetEvent('NotifyKill')
+AddEventHandler('NotifyKill', function(dataEntries)
 	local weaponImage = 'skull'
-	if dataNotify.weapon_killer then
-		if weaponList[dataNotify.weapon_killer] ~= nil then
-			weaponImage = weaponList[dataNotify.weapon_killer]
-		end
+	local weaponIndex, victimId, victimName, victimGuildTag, killerId, killerName, killerGuildTag = table.unpack(dataEntries)
+
+	if weaponIndex and weaponList[weaponIndex] then
+		weaponImage = weaponList[weaponIndex]
 	end
 
-    SendReactMessage('NotifyKill', {
-        action = "NotifyKill",
-        notifyBody = {
-            open = true,
-            weapon = weaponImage,
-            headshot = dataNotify.headshot and dataNotify.headshot or false, 
-            agonizing = dataNotify.agonizing,
-            timer = 1000
-        },
-        notify = {
-            killer = { 
-                name = dataNotify.killer_name,
-                user_id = dataNotify.killer,
-            }, 
-            victim = { 
-                name = dataNotify.victim_name,
-                user_id = dataNotify.victim,
-            }, 
-        }
-    })
+	SendReactMessage('showKillfeed', {
+		killerName = killerName or 'Indefinido', 
+		victimName = victimName or 'Indefinido', 
+		victimTag = victimGuildTag,
+		killerTag = killerGuildTag,
+		weapon = weaponImage
+	})
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BuildProfileCard - Function

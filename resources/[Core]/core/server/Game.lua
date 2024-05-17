@@ -562,6 +562,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.BuildGameUI = function(gameId, eventData)
     local game = Games[gameId]
+    
     if not game then
         return
     end
@@ -569,16 +570,16 @@ GameController.BuildGameUI = function(gameId, eventData)
     for playerId, player in pairs(game.players) do
         if player.source and (game.players[player.user_id] ~= nil) then
             local kills = Player(player.source).state.kills
+
             eventData.kills = kills
+
             TriggerClientEvent('events_controller', player.source, {
                 event = "BuildGame",
                 data = eventData
             })
-            
         else
             print("Invalid player source for player ID:", playerId)
         end
-        Wait(1)
     end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -629,8 +630,6 @@ GameController.StartGame = function(gameId)
                     source = player.source,
                     user_id = playerId,
                 })
-
-                print("Invalid player source for player ID:", playerId)
             end
         end
 
@@ -900,11 +899,33 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.SendKillGame = function(gameId, killData)
     local Game = Games[gameId]
-    if Game == nil then return end
+
+    if Game == nil then 
+        return 
+    end
+
+    local victimId = killData.victim
+    local killerId = killData.killer
+
+    local killfeedEntries = {
+        killData.weapon_killer,
+        victimId,
+        killData.victim_name,
+        getUserGuildTag(victimId), 
+        killerId,
+        killerId and killData.killer_name,
+        killerId and getUserGuildTag(killerId)
+    }
 
     for _, player in pairs(Game.players) do
-        if player.source and Player(player.source) and not Player(player.source).state.finishGameUI and Player(player.source).state.isNotifyKill and GetPlayerRoutingBucket(player.source) == Game.routing then
-            TriggerClientEvent("NotifyKill", player.source, killData)
+        local isInGame = player.source and Player(player.source) and not Player(player.source).state.finishGameUI and Player(player.source).state.isNotifyKill and GetPlayerRoutingBucket(player.source) == Game.routing
+
+        if isInGame then
+            TriggerClientEvent(
+                "NotifyKill", 
+                player.source, 
+                killfeedEntries
+            )
         end
     end
 end
@@ -961,7 +982,9 @@ GameController.FinishAllPlayers = function(source, players)
             })
 
             -- GameController.checkEndGame(Kills[player.user_id].nsource, gameId)
+
             GameController.SendKillGame(gameId, killData)
+
             Kills[player.user_id] = nil
         end
         Wait(1)
@@ -973,6 +996,7 @@ end
 GameController.RegisterKill = function(source, data)
     local user_id = vRP.getUserId(source)
     local Game = Games[data.gameId]
+
     if Game == nil then return end
     if source == nil then return end
     if Game.finished then return end
@@ -1025,16 +1049,12 @@ GameController.RegisterKill = function(source, data)
         killData.agonizing = Kill.agonizing
 
         if not Kill.agonizing and Kills[user_id] and Game.players[user_id] and source and user_id then
-
             if Kills[user_id].weapon_killer and Kills[user_id].killer and Kills[user_id].killer_name then
                 killData.headshot = Kills[user_id].headshot or false
                 killData.weapon_killer = Kills[user_id].weapon_killer or GetHashKey("WEAPON_UNARMED")
                 killData.killer = Kills[user_id].killer or "Bug"
                 killData.killer_name = Kills[user_id].killer_name or "Bug"
             end
-            -- if Kills[user_id].nsource ~= source then
-            --     Player(Kills[user_id].nsource or source).state.kills = Player(Kills[user_id].nsource or source).state.kills + 1
-            -- end
 
             if Kills[user_id] and Kills[user_id].nsource ~= source then
                 local player = Player(Kills[user_id].nsource or source)
@@ -1055,32 +1075,21 @@ GameController.RegisterKill = function(source, data)
                 ApiController.FinishAgonizing({ source = source })
             end
 
-            -- local killsData = Kills[user_id]
-            -- local killsCount = 0
-
-            -- if killsData and killsData.nsource then
-            --     killsCount = Player(killsData.nsource).state.kills or 0
-            -- end
-
-            -- GameController.BuildGameUI(data.gameId, {
-            --     status = true,
-            --     kills = killsCount,
-            --     players = GameController.GetPlayersCountGame(data.gameId),
-            --     rich = true,
-            -- })
-            -- GameController.checkEndGame(source, data.gameId)
-            
             Kills[user_id] = nil
         end
+
         GameController.SendKillGame(data.gameId, killData)
+
         GameController.BuildGameUI(data.gameId, {
             status = true,
             players = GameController.GetPlayersCountGame(data.gameId),
             rich = true,
         })
+
         GameController.DropInventoryItems(data.gameId, inventory, Coords)
     else
         local nuser_id = vRP.getUserId(data.nsource) 
+        
         if nuser_id then 
             local identity = vRP.getIdentity(user_id)
             local inventory = vRP.userInventory(source, user_id)
@@ -1112,9 +1121,6 @@ GameController.RegisterKill = function(source, data)
                 positionGame = GameController.GetPlayersCountGame(data.gameId),
                 agonizing = false
             }
-
-            -- source && user_id = Quem morreu
-            -- data.nsource && nuser_id = Quem matou
 
             if weapon and identity then
                 local Kill = ApiController.VerifyKillTeam(killData, GameController.GetPlayersCountGame(data.gameId), Game.Gamemode, data.gameId, Game.players, Game.gameType)
@@ -1168,12 +1174,15 @@ GameController.RegisterKill = function(source, data)
 
                     Kills[user_id] = nil
                 end
+
                 GameController.SendKillGame(data.gameId, killData)
+
                 GameController.BuildGameUI(data.gameId, {
                     status = true,
                     players = GameController.GetPlayersCountGame(data.gameId),
                     rich = true,
                 })
+
                 GameController.DropInventoryItems(data.gameId, inventory, Coords)
             end
         end

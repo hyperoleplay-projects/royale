@@ -10,10 +10,11 @@ local Shortcuts = {}
 function Hud(status) 
     Display = status
     
-    SendReactMessage('BuildHud', {
-        type = "DisplayStatusPlayerStats",
-        status = status
-    })
+    if Display then 
+        SendReactMessage('showHud', {})
+    else 
+        SendReactMessage('hideHud', {})
+    end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- Hud - Command
@@ -34,61 +35,60 @@ LuizDev.Thread(function ()
     local delay = 200
     local ped = PlayerPedId()
     
-    if Display then
-        if not LocalPlayer.state.inSpec then
-            local vida = (GetEntityHealth(ped) - 100 ) / 3
-            -- local vida = (100*GetEntityHealth(ped)/GetEntityMaxHealth(ped))
-            local armour = GetPedArmour(ped)
+    if Display and not LocalPlayer.state.inSpec then
+        local maxHealthAmount = GetPedMaxHealth(ped) - 100
+        local healthAmount = GetEntityHealth(ped) - 100
 
-            SendReactMessage('BuildHud', {
-                type = "StatusPlayerStats",
-                armour = armour,
-                health = vida,
-                shorts = Shortcuts
-            })
+        local healthAmount = math.floor(healthAmount / maxHealthAmount * 100)
+        local armourAmount = GetPedArmour(ped)
 
-            if armour > 0 and not isWearingColete then
-                if GetEntityModel(ped) == GetHashKey("mp_m_freemode_01") then
-                    SetPedComponentVariation(ped, 9, 16, 0, 1)
-                    SetPedComponentVariation(ped, 9, GetPedDrawableVariation(ped, 9), 2, 1)
-                elseif GetEntityModel(ped) == GetHashKey("mp_f_freemode_01") then
-                    SetPedComponentVariation(ped, 9, 17, 0, 1)
-                    SetPedComponentVariation(ped, 9, GetPedDrawableVariation(ped, 9), 2, 1)
-                end
-                isWearingColete = true
-            elseif armour == 0 and isWearingColete then
-                SetPedComponentVariation(ped, 9, 0, 0, 1)
-                isWearingColete = false
+        SendReactMessage('showLifeStatus', {
+            health = healthAmount,
+            shield = armourAmount,
+        })
+
+        if armourAmount > 0 and not isWearingColete then
+            local isMale = GetEntityModel(ped) == GetHashKey("mp_m_freemode_01")
+            local isFemale = GetEntityModel(ped) == GetHashKey("mp_f_freemode_01")
+
+            if isMale then
+                SetPedComponentVariation(ped, 9, 16, 0, 1)
+                SetPedComponentVariation(ped, 9, GetPedDrawableVariation(ped, 9), 2, 1)
+            elseif isFemale then
+                SetPedComponentVariation(ped, 9, 17, 0, 1)
+                SetPedComponentVariation(ped, 9, GetPedDrawableVariation(ped, 9), 2, 1)
             end
-            
-            local weapon = GetSelectedPedWeapon(ped)
-    
-            if weapon ~= -1569615261 then
-                local _, weaponammoinclip = GetAmmoInClip(ped, weapon)
-                local weaponammo = GetAmmoInPedWeapon(ped, weapon) - weaponammoinclip
-                SendReactMessage('BuildHud', {
-                    type = "DisplayWeapon",
-                    status = true,
-                })
-                
-                for k, v in pairs(Config.weapon_types) do
-                  if weapon == GetHashKey(v) then
 
-                    SendReactMessage('BuildHud', {
-                        type = "WeaponHud",
-                        ModelName = itemName(v),
-                        WeaponAmmo = weaponammo,
-                        WeaponAmmoClip = weaponammoinclip
+            isWearingColete = true
+        elseif armourAmount == 0 and isWearingColete then
+            SetPedComponentVariation(ped, 9, 0, 0, 1)
+
+            isWearingColete = false
+        end
+        
+        local weaponHash = GetSelectedPedWeapon(ped)
+        local unarmedHash = GetHashKey('WEAPON_UNARMED') 
+
+        if weapon ~= unarmedHash then
+            local _, weaponAmmoInClip = GetAmmoInClip(ped, weaponHash)
+            local weaponAmmo = GetAmmoInPedWeapon(ped, weaponHash) - weaponAmmoInClip
+
+            for k, v in pairs(Config.weapon_types) do
+                local isWeaponEquipped = weaponHash == GetHashKey(v) 
+
+                if isWeaponEquipped then
+                    local weaponName = itemName(v) 
+
+                    SendReactMessage('showWeaponHud', {
+                        weaponIndex = weaponName,
+                        weaponName = weaponName,
+                        ammoEquipped = weaponAmmoInClip, 
+                        ammoInClip = weaponAmmo
                     })
-                  end 
-                end
-            else
-                SendReactMessage('BuildHud', {
-                    type = "DisplayWeapon",
-                    status = false,
-                })
+                end 
             end
-
+        else
+            SendReactMessage('hideWeaponHud', {})
         end
     end
 
@@ -101,6 +101,7 @@ Citizen.CreateThread(function()
 	DisplayRadar(false)
 
 	RequestStreamedTextureDict("circlemap",false)
+    
 	while not HasStreamedTextureDictLoaded("circlemap") do
 		Citizen.Wait(100)
 	end
@@ -113,8 +114,11 @@ Citizen.CreateThread(function()
 	SetMinimapComponentPosition("minimap_blur","L","B",0.0095,0.015,0.229,0.311)
 
     local minimap = RequestScaleformMovie("minimap")
+
     SetRadarBigmapEnabled(true, false)
+
     Wait(5)
+
     SetRadarBigmapEnabled(false, false)
 
     while true do
