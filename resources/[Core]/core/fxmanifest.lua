@@ -54,3 +54,5 @@ files {
 	'web/build/index.html',
 	'web/build/**/*.*',
 }
+
+data_file 'DLC_ITYP_REQUEST' 'stream/pasta1/hype_boxpvp.ytyp'
