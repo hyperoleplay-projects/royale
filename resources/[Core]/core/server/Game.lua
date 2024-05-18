@@ -216,19 +216,20 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.SetupSafe = function(gameId) 
     local Game = Games[gameId]
-    if Game == nil then return end
+    
+    if Game == nil then 
+        return 
+    end
 
     for _, playerInGame in pairs(Game.players) do 
         if playerInGame.source then
             Player(playerInGame.source).state.gameId = gameId
+
             TriggerClientEvent("SafeZone:StartEvent", playerInGame.source, 3, {
-                
                 safeZone = VectorToTable(vector3(Config.Maps[Game.map].center.x, Config.Maps[Game.map].center.y, 50.0)),
                 radius = Config.Maps[Game.map].radius,
-                Game = Game
             })
         end
-        Wait(1)
     end
     
     TriggerEvent("battle-CreateSafe", Game, vector3(Config.Maps[Game.map].center.x, Config.Maps[Game.map].center.y, 50.0))
@@ -918,7 +919,7 @@ GameController.SendKillGame = function(gameId, killData)
     }
 
     for _, player in pairs(Game.players) do
-        local isInGame = player.source and Player(player.source) and not Player(player.source).state.finishGameUI and Player(player.source).state.isNotifyKill and GetPlayerRoutingBucket(player.source) == Game.routing
+        local isInGame = player.source and Player(player.source) and not Player(player.source).state.finishGameUI and GetPlayerRoutingBucket(player.source) == Game.routing
 
         if isInGame then
             TriggerClientEvent(

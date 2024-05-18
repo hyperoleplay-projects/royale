@@ -64,15 +64,17 @@ function api.getPlayerGroupMembers()
   local groupMemberEntries = {} 
 
   for _, playerObject in ipairs(group.players) do 
-    local playerId = playerObject.user_id
-    local playerTag = getUserGuildTag(playerId)
+    local playerSource = playerObject.source
+
+    local playerTag = getUserGuildTag(playerObject.user_id)
+
     local playerName = tostring(playerObject.username)
     local playerColor = playerObject.pos
     local isPlayerReady = playerObject.ready
     local isPlayerLeader = playerObject.isLeader and true or nil
 
     table.insert(groupMemberEntries, {
-      playerId,
+      playerSource,
       playerTag,
       playerName,
       playerColor,  

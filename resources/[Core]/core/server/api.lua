@@ -357,12 +357,12 @@ function RegisterKilTeam(data, playersGameCount, Gamemode, gameId, Players, game
 
 	for _, player in pairs(Players) do 
 		if player.source and Player(player.source) and (Players[player.user_id] ~= nil) then
-            clientAPI.BuildGame(player.source, {
-                status = true,
-                players = GameController.GetPlayersCountGame(gameId),
-                rich = true,
-            })
-        end
+				clientAPI.BuildGame(player.source, {
+						status = true,
+						players = GameController.GetPlayersCountGame(gameId),
+						rich = true,
+				})
+		end
 
 		if #Team.players > 1 and not allPlayersDead then
 			if Player(player.source).state.inSpec then

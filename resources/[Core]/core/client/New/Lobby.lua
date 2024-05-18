@@ -84,10 +84,10 @@ local function replaceGroupMembersEntries(membersEntries)
   lobbyCache.group = {} 
 
   for index, entries in ipairs(membersEntries) do 
-    local playerId, playerTag, playerName, playerColor, isReady, isOwner = table.unpack(entries)
+    local playerSource, playerTag, playerName, playerColor, isReady, isOwner = table.unpack(entries)
 
     lobbyCache.group[index] = {
-      id = playerId,
+      source = playerSource,
       tag = playerTag,
       name = playerName,
       color = playerColor, 
@@ -123,6 +123,27 @@ function getPlayerGroupMembers()
   return resultGroupMembers
 end 
 
+function getPlayerGroupCards()
+  local resultGroupMembers = {} 
+
+  if not lobbyCache.group then 
+    local membersEntries = lobbyApi.getPlayerGroupMembers()
+
+    replaceGroupMembersEntries(membersEntries)
+  end 
+
+  for memberIndex, member in ipairs(lobbyCache.group) do 
+    table.insert(resultGroupMembers, {
+      source = member.source,
+      tag = member.tag,
+      name = member.name,
+      color = member.color,
+    })
+  end 
+
+  return resultGroupMembers
+end 
+
 RegisterNetEvent('core:updateGroup', function(membersEntries)
   replaceGroupMembersEntries(membersEntries)
 
@@ -131,48 +152,9 @@ RegisterNetEvent('core:updateGroup', function(membersEntries)
   })
 end)
 
-RegisterNetEvent('core:addGroupMember', function(playerId, entries)
-  local playerTag, playerName, playerColor, isReady, isOwner = table.unpack(entries)
-
-  lobbyCache.group = lobbyCache.group or {}
-
-  table.insert(lobbyCache.group, {
-    id = playerId,
-    tag = playerTag,
-    name = playerName,
-    color = playerColor, 
-    isReady = isReady,
-    isOwner = not not isOwner
-  })
-
-  table.sort(lobbyCache.group, function(a, b)
-    return a.color < b.color
-  end)
-
-  updateMenuFrame(nil, { 
-    groupMembers = getPlayerGroupMembers()
-  })
-end)
-
-RegisterNetEvent('core:removeGroupMember', function(playerId)
-  for playerIndex = #lobbyCache.group, 1, -1 do 
-    local playerObject = lobbyCache.group[playerIndex]
-
-    if playerObject.id == playerId then 
-      table.remove(lobbyCache.group, playerIndex)
-    else 
-      playerObject.color = playerObject.color - 1
-    end 
-  end 
-
-  updateMenuFrame(nil, { 
-    groupMembers = getPlayerGroupMembers()
-  })
-end)
-
-RegisterNetEvent('core:updateGroupMember', function(playerId, payload)
+RegisterNetEvent('core:updateGroupMember', function(playerSource, payload)
   for _, playerObject in ipairs(lobbyCache.group) do 
-    if playerObject.id == playerId then 
+    if playerObject.source == playerSource then 
       for key, value in pairs(payload) do
         playerObject[key] = value
       end 

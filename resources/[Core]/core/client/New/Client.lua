@@ -205,8 +205,6 @@ clientApiEvents.JoinLobby = function()
     clientApiEvents.BuildPeds({}, false)
     clientApiEvents.BuildGroup({}, false)
 
-    print('Initial', json.encode({ isReady = isPlayerReady() }))
-
     updateMenuFrame(true, {
         isReady = isPlayerReady(), 
         profile = getPlayerProfile(),
@@ -215,8 +213,6 @@ clientApiEvents.JoinLobby = function()
         match = getPlayerQueue(),
     })
     
-    SendReactMessage('buildLogoMidle', false)
-
     AddKeyHelp({ status = false })
     DisablePlayerFiring(PlayerPedId(), false)
 end

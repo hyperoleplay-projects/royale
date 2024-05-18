@@ -552,7 +552,6 @@ ApiController.loadUserData = function(source)
     Player(source).state.inTeam = false
     Player(source).state.inTeamNoLeader = false
     Player(source).state.finishGameUI = false
-    Player(source).state.isNotifyKill = true
 
     Player(source).state.agonizing = false
     Player(source).state.Compass = false

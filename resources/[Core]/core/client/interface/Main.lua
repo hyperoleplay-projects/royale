@@ -3,39 +3,6 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local itens = {}
 local ProfileCard = false
-local itemsInfos = {
-	["Safezone"] = {
-		type = "Safezone",
-		id = 3,
-		icon = 'fa-solid fa-cloud',
-		status = false,
-		text = nil
-	},
-
-	["Plane"] = {
-		type = "Plane",
-		id = 4,
-		icon = 'fa-solid fa-plane',
-		status = false,
-		text = nil
-	},
-
-	["Players"] = {
-		type = "Players",
-		id = 2,
-		icon = 'fa-solid fa-users',
-		status = true,
-		text = nil
-	},
-
-	["Kills"] = {
-		type = "Kills",
-		id = 1,
-		icon = 'fa-solid fa-crosshairs',
-		status = true,
-		text = 0,
-	},
-}
 
 local weaponList = {
 	[GetHashKey("WEAPON_ASSAULTSMG")] = "assaultsmg",
@@ -102,47 +69,52 @@ local weaponList = {
 	[GetHashKey("WEAPON_SPECIALCARBINESKIN6")] = "sigsauer556",
 	[GetHashKey("WEAPON_SPECIALCARBINESKIN7")] = "sigsauer556",
 }
------------------------------------------------------------------------------------------------------------------------------------------
--- ResetHud - Function
------------------------------------------------------------------------------------------------------------------------------------------
-function ResetHud()
-	itemsInfos["Safezone"].status = false
-	itemsInfos["Safezone"].text = nil
-	itemsInfos["Plane"].text = nil
-	itemsInfos["Plane"].status = false
-	itemsInfos["Players"].status = true
-	itemsInfos["Players"].text = nil
-	itemsInfos["Kills"].status = true
-	itemsInfos["Kills"].text = nil
 
-	SendReactMessage('BuildHud', { type = "DisplayWeapon", status = false })
-	SendReactMessage('BuildHud', { type = "ItemDrop", status = false })
-end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BuildGame - Event
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent('BuildGame')
-AddEventHandler('BuildGame', function(data)
-	if data.updatePlayers then
-		itemsInfos["Players"].text = data.players
+local cacheHud = {}
+
+function ResetHud()
+	cacheHud = {}
+
+	SendReactMessage('hideGameStatus', {})
+end
+
+RegisterNetEvent('BuildGame', function(data)
+	local hasGameStatus = tonumber(data.players) and tonumber(data.kills)
+
+	if hasGameStatus then 
+		local newPlayers = data.players or 0
+		local newKills = data.kills or 0
+
+		if newPlayers ~= cacheHud.players or newKills ~= cacheHud.kills then 
+			cacheHud.players = newPlayers
+			cacheHud.kills = newKills
+
+			SendReactMessage('showGameStatus', {
+				alives = cacheHud.players,
+				killed = cacheHud.kills
+			})
+		end
+	end 
+
+	local hasSafe = data.safeRemaining and data.safeTime
+	
+	if hasSafe then 
+		local newSafeRemaining = math.floor(data.safeRemaining * 100) or 0
+		local newSafeTime = data.safeTime or 0
+
+		if newSafeRemaining ~= cacheHud.safeRemaining or newSafeTime ~= cacheHud.safeTime then 
+			cacheHud.safeRemaining = newSafeRemaining
+			cacheHud.safeTime = newSafeTime
+
+			SendReactMessage('updateCloud', {
+				timeInSeconds = data.safeTime,
+				safeProgress = cacheHud.safeRemaining,
+			})
+		end
 	end
-
-	if data.safe then
-		itemsInfos["Safezone"].text = data.safeTime
-		itemsInfos["Safezone"].status = data.safe
-	end
-
-
-	if data.updateKills then
-		itemsInfos["Kills"].text = data.kills
-	end
-
-
-    SendReactMessage('BuildHud', {
-        type = "ItensInfos",
-        status = data.status,
-		items = LuizDev.reMapData(itemsInfos)
-    })
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- Notify - Event
@@ -252,25 +224,35 @@ function src.BuildProfileCard(data)
 		type = "ProfileCard",
 		status = true,
 	})
+	
 	SendReactMessage('Profile-Card', data)
 	
-    SetTimeout(3000, function() 
+	SetTimeout(3000, function() 
 		SendReactMessage('BuildHud', {
 			type = "ProfileCard",
 			status = false,
 		})
-    end)
+	end)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- AddAnnouncement - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function AddAnnouncement(data) 
-	SendReactMessage('BuildHud', {
-		type = "Announcement",
-		status = data.status,
-		text = data.text,
-		timer = data.timer
-	})
+	if data.status then 
+		SendReactMessage('showAnnounceMessage', {
+			text = data.text,
+		})
+
+		if data.timer then 
+			data.time = data.time or 8000 
+	
+			SetTimeout(data.time, function() 
+				AddAnnouncement({ status = false }) 
+			end)
+		end 
+	else
+		SendReactMessage('hideAnnounceMessage', {})
+	end 
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- AddKeyboardInfo - Function

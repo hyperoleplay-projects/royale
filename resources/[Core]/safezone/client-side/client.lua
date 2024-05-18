@@ -26,7 +26,7 @@ end
 
 RegisterNetEvent("SafeZone:StartEvent")
 AddEventHandler("SafeZone:StartEvent", function(eventID, tabela)
-    if eventID == 3 then
+	if eventID == 3 then
 		BR:ResetGame()
 
 		tabela.safeZone = vector3(tabela.safeZone.x, tabela.safeZone.y, tabela.safeZone.z)
@@ -45,7 +45,7 @@ AddEventHandler("SafeZone:StartEvent", function(eventID, tabela)
 		multiDano = multiDano + 1
 
 		BR:StartZoneTimer(tabela)
-    end
+	end
 end)
 
 RegisterCommand("safe", function()
@@ -95,6 +95,9 @@ end
 function BR:StartZoneTimer(zoneTime)
 	BR.ZoneTimer[LocalPlayer.state.gameId] = zoneTime
 	BR.ZoneTime[LocalPlayer.state.gameId] = GetGameTimer() + BR.ZoneTimer[LocalPlayer.state.gameId] * 1000
+
+	local remainingPercent = math.max(0, BR.ZoneTime[LocalPlayer.state.gameId] - GetGameTimer()) / (BR.ZoneTimer[LocalPlayer.state.gameId] * 1000)
+	TriggerEvent("BuildGame", { safe = true, safeRemaining = remainingPercent, safeTime = math.floor(remainingPercent * BR.ZoneTimer[LocalPlayer.state.gameId]), players = 0, updatePlayers = false })
 end
 
 function BR:GameTick(ped)
@@ -111,7 +114,7 @@ function BR:GameTick(ped)
 						zoneRadius = math.max(BR.ZoneRadius[LocalPlayer.state.gameId], BR.ZoneRadius[LocalPlayer.state.gameId] + (BR.FormerZoneRadius[LocalPlayer.state.gameId] - BR.ZoneRadius[LocalPlayer.state.gameId]) * remaining)
 						
 						if remaining > 0 and not LocalPlayer.state.finishGameUI then
-							TriggerEvent("BuildGame", { status = true, safe = true, kills = LocalPlayer.state.kills, updateKills = false, safeTime = LuizDev.SecondsToClock(math.floor(remaining * BR.ZoneTimer[LocalPlayer.state.gameId])), players = 0, updatePlayers = false })
+							TriggerEvent("BuildGame", { status = true, safe = true, kills = LocalPlayer.state.kills, updateKills = false, safeRemaining = remaining, safeTime = math.floor(remaining * BR.ZoneTimer[LocalPlayer.state.gameId]), players = 0, updatePlayers = false })
 						end
 		
 						if Blips["safezone"] and DoesBlipExist(Blips["safezone"]) then

@@ -251,15 +251,17 @@ function syncGroupMembers(teamCode)
   local membersEntries = {}
 
   for _, player in pairs(groupObject.players) do
-    local playerId = player.user_id
-    local playerTag = getUserGuildTag(playerId)
+    local playerSource = player.source
+
+    local playerTag = getUserGuildTag(player.user_id)
+
     local playerName = player.username
     local playerColor = player.pos
     local isReady = player.ready
     local isOwner = player.isLeader
 
     table.insert(membersEntries, {
-      playerId, 
+      playerSource, 
       playerTag, 
       playerName, 
       playerColor, 

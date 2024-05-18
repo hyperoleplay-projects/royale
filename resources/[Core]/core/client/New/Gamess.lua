@@ -176,7 +176,7 @@ clientEvents.BuildGame = function(data)
         setDiscordRich("HYPE", "Battle Royale - Jogo em andamento ".. data.players.. " restantes.")
     end
 
-    TriggerEvent("BuildGame", { status = data.status, safe = false, kills = data.kills or 0, safeTime = "00:00", players = data.players, updatePlayers = true, updateKills = true })
+    TriggerEvent("BuildGame", { status = data.status, safe = false, kills = data.kills or 0, safeTime = 0, players = data.players, updatePlayers = true, updateKills = true })
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- StopPlane - Function
@@ -699,7 +699,9 @@ CreateThread(function()
                     
                     local color = LOOTS_COLORS[v.color]
 
-                    DrawLightWithRange(v.pos, color.R, color.G, color.B, 1.0, 300.0)
+                    if color then 
+                        DrawLightWithRange(v.pos, color.R, color.G, color.B, 1.0, 300.0)
+                    end 
 
                     if distance <= 1.9 and not IsPedInAnyVehicle(Ped) then
                         if not PickUps[k].handle then
