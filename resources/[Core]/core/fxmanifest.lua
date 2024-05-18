@@ -55,4 +55,4 @@ files {
 	'web/build/**/*.*',
 }
 
-data_file 'DLC_ITYP_REQUEST' 'stream/pasta1/hype_boxpvp.ytyp'
+data_file 'DLC_ITYP_REQUEST' 'stream/hype_boxpvp.ytyp'
