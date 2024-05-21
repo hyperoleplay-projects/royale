@@ -1025,7 +1025,7 @@ end)
 AddEventHandler('gameEventTriggered',function(event,args)
     if event == 'CEventNetworkEntityDamage' then
         local ped = PlayerPedId()
-        
+
         if ped == args[1] and GetEntityHealth(args[1]) <= 101 and (not LocalPlayer.state.death) and not LocalPlayer.state.inSpec and not LocalPlayer.state.finishGameUI then
             local index = NetworkGetPlayerIndexFromPed(args[2])
             local killer = GetPlayerServerId(index)
@@ -1525,6 +1525,18 @@ Citizen.CreateThread(function()
         if LocalPlayer.state.inGameLobby then
             if cooldown > 0 then
                 cooldown = cooldown - 1
+
+                AddAnnouncement({
+                    status = true,
+                    text = "A partida começará em <b>".. LuizDev.SecondsToClock(cooldown).."</b> segundos",
+                    timer = false,
+                })
+            else 
+                AddAnnouncement({
+                    status = true,
+                    text = "A partida começará em <b>instantes</b> aguarde...",
+                    timer = false,
+                })
             end
         end
     end
@@ -1538,10 +1550,12 @@ Citizen.CreateThread(function()
                 if cooldown == 0 then
                     vRP.playSound("Oneshot_Final","MP_MISSION_COUNTDOWN_SOUNDSET")
                     local time = 100
+
                     while time > 0 do
                         LocalPlayer.state.inGameLobby = false
-                        time = time-1
+                        time = time - 1
                     end
+
                     cooldown = -1
                 end
             end
@@ -1590,7 +1604,8 @@ clientEvents.JoinLobbyGame = function()
     
     LocalPlayer.state.inGameLobby = true
     TriggerEvent("duth:ChatStatus", true)
-
+    
+    Hud(true)
     DisplayRadar(false)
 
     Wait(1500)
@@ -1641,28 +1656,6 @@ clientEvents.JoinLobbyGame = function()
                     DisableControlAction(0,106,true)
                     SetEntityInvincible(ped, true)
                     SetPedCanSwitchWeapon(ped, false)
-        
-                    local timeValue = cooldown
-                    local isSeconds = true
-                    
-                    if timeValue >= 60 then
-                        timeValue = timeValue / 60
-                        isSeconds = false
-                    end
-
-                    if isSeconds then
-                        AddAnnouncement({
-                            status = true,
-                            text = "A partida começará em <b>".. LuizDev.SecondsToClock(timeValue).."</b> segundos",
-                            timer = false,
-                        })
-                    else
-                        AddAnnouncement({
-                            status = true,
-                            text = "A partida começará em <b>instantes</b> aguarde...",
-                            timer = false,
-                        })
-                    end
                 else
                     idleGame = 5000
                 end
