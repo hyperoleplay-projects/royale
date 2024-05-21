@@ -999,31 +999,33 @@ RegisterKeyMapping("+endGameSpec","Sair da partida.","keyboard","F7")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- returnLobby - NUI
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("returnLobby", function(data, cb)
-    -- if not isReturnLobby and LocalPlayer.state.finishGameUI and LocalPlayer.state.inGame then
-    --     isReturnLobby = true
-    --     adrenaline = false
-    --     reviving = false
-    --     LocalPlayer.state.Buttons = false
-    --     LocalPlayer.state.agonizing = false
-    --     LocalPlayer.state.isReviving = false
-    --     coordinatesProcessed = 0
-    --     PickUps = {}
-    --     allPickups = {}
-    --     closestPickups = {}
+RegisterNUICallback("returnToLobby", function(data, cb)
+    if not isReturnLobby and LocalPlayer.state.finishGameUI and LocalPlayer.state.inGame then
+        isReturnLobby = true
+        adrenaline = false
+        reviving = false
+        LocalPlayer.state.Buttons = false
+        LocalPlayer.state.agonizing = false
+        LocalPlayer.state.isReviving = false
+        coordinatesProcessed = 0
+        PickUps = {}
+        allPickups = {}
+        closestPickups = {}
 
-    --     controller.sendServerEvent('endGame', { })
-    --     SetTimeout(5000, function()
-    --         isReturnLobby = false
-    --     end)
-    -- end
-    cb("ok")
+        controller.sendServerEvent('endGame', { })
+
+        SetTimeout(5000, function()
+            isReturnLobby = false
+        end)
+    end
+
+    cb({ status = true })
 end)
 
 AddEventHandler('gameEventTriggered',function(event,args)
     if event == 'CEventNetworkEntityDamage' then
         local ped = PlayerPedId()
-        -- print(GetEntityHealth(args[1]))
+        
         if ped == args[1] and GetEntityHealth(args[1]) <= 101 and (not LocalPlayer.state.death) and not LocalPlayer.state.inSpec and not LocalPlayer.state.finishGameUI then
             local index = NetworkGetPlayerIndexFromPed(args[2])
             local killer = GetPlayerServerId(index)

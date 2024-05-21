@@ -117,24 +117,18 @@ clientApiEvents.CheckOut = function(data)
         SetNuiFocus(true, true)
         
         if data.type == "Lose" then
-            SendReactMessage('BuildHud', {
-                type = "Checkout",
-                status = true,
-                title = "MAIS SORTE DA PRÓXIMA VEZ!",
-                pos = data.pos,
-                maxPlayers = data.maxPlayers,
-                showButtons = true
+            SendReactMessage('showSummaryScreen', {
+                isWinner = false, 
+                position = data.pos.. '/'.. data.maxPlayers,
             })
+
             playAnim(false,{ "random@car_thief@agitated@idle_a", "agitated_idle_a" },true,Ped)
         else
-            SendReactMessage('BuildHud', {
-                type = "Checkout",
-                status = true,
-                title = "VITÓRIA!",
-                pos = data.pos,
-                maxPlayers = data.maxPlayers,
-                showButtons = true
+            SendReactMessage('showSummaryScreen', {
+                isWinner = true, 
+                position = data.pos.. '/'.. data.maxPlayers,
             })
+
             playAnim(false,{ "rcm_barry2", "clown_idle_6" },true,Ped)
         end
     else
@@ -142,7 +136,7 @@ clientApiEvents.CheckOut = function(data)
             DeleteEntity(Ped)
         end
         SetNuiFocus(false, false)
-        SendReactMessage('BuildHud', { type = "Checkout", status = false })
+        SendReactMessage('hideSummaryScreen', {})
         cam.delete("CAM_CHECKOUT")
     end
 end
