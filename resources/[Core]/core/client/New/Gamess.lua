@@ -1,3 +1,5 @@
+local gameApi = Tunnel.getInterface('core:gameApi')
+
 ----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIBLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1229,9 +1231,14 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- setSpectatorTarget - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
+local cardCache = {}
+
 function setSpectatorTarget(key, coords)
     local targetPlayer = spectatingPlayers[key]
-    if targetPlayer == nil then return nil end
+
+    if targetPlayer == nil then 
+        return nil 
+    end
 
     DoScreenFadeOut(1000)
     local newSpectateCoords = calculateSpectatorCoords(coords)
@@ -1242,43 +1249,54 @@ function setSpectatorTarget(key, coords)
 
     if DoesEntityExist(targetEntity) then
         local ped = PlayerPedId()
+
         NetworkSetInSpectatorMode(true, targetEntity)
         SetPlayerInvincible(ped, true)
         SetEntityNoCollisionEntity(ped, targetEntity, false) -- DESATIVAR COLISÕES ENTRE OS JOGADORES
         NetworkOverrideSendRestrictions(targetEntity, false) -- DESATIVAR VOIP ENTRE OS JOGADORES
-        AddAnnouncement({
-            status = true,
-            text = "Assistindo <b>"..targetPlayer.username.."</b> <b2>#"..targetPlayer.user_id.."</b2>",
-            timer = false,
-        })
 
         spectatingPlayer = targetPlayer
     end
 
     Wait(1500)
     DoScreenFadeIn(1000)
+
     if not SpecTheard then
         SpecTheard = true
+
+        local playerSpectateEntries = gameApi.getPlayerToSpectate(targetPlayer.source)
+
         CreateThread(function()
             while true do
                 Wait(100)
+
                 if spectatingPlayer ~= nil and LocalPlayer.state.inSpec then
                     local pid = GetPlayerFromServerId(spectatingPlayer.source)
                     local targetEntity = GetPlayerPed(pid)
                     local newSpectateCoords = calculateSpectatorCoords(GetEntityCoords(targetEntity))
+
                     SetEntityCoords(PlayerPedId(), newSpectateCoords.x, newSpectateCoords.y, newSpectateCoords.z, 0, 0, 0, false)
         
-                    local nowhp = parseInt((100*GetEntityHealth(targetEntity)/GetEntityMaxHealth(targetEntity)))
+                    local nowhp = (GetEntityHealth(targetEntity) - 100) / (GetPedMaxHealth(targetEntity) - 100) * 100
                     local nowarmour = GetPedArmour(targetEntity)
+
                     local newSpectateCoords = calculateSpectatorCoords(GetEntityCoords(targetEntity))
+
                     NetworkSetInSpectatorMode(true, targetEntity)
 
-                    SendReactMessage('BuildHud', {
-                        type = "StatusPlayerStats",
-                        armour = nowarmour,
-                        health = nowhp,
-                        shorts = {}
-                    })
+                    if playerSpectateEntries then 
+                        local playerTag, playerName, playerColor, playerKills, playerTeamKills = table.unpack(playerSpectateEntries)
+
+                        SendReactMessage('showSpectator', {
+                            tag = playerTag,
+                            name = playerName,
+                            color = playerColor, 
+                            health = nowhp,
+                            armour = nowarmour,
+                            kills = playerKills,
+                            teamKills = playerTeamKills
+                        })
+                    end 
                 end
             end
         end)
@@ -1304,6 +1322,9 @@ function src.stopSpectatorMode()
         Cursor = false
 
         spectatingPlayers = nil
+
+        SendReactMessage('hideSpectator', {})
+
         AddAnnouncement({ status = false})
         AddKeyHelp({ status = false })
     end

@@ -278,28 +278,24 @@ ApiController.OpenWinner = function(data)
 
             if Player(v.source).state.inSpec then
                 clientAPI.stopSpectatorMode(v.source)
+
                 Player(v.source).state.inSpec = false
             end
 
-            -- SetTimeout(3000, function() -- tunnel/proxy delay
-                ApiController.sendPlayerEvent(v.source, "CheckOut", { 
-                    status = true,
-                    type = "Win",
-                    pos = 1,
-                    maxPlayers = GameController.GetMaxPlayersGame(data.gameId),
-                })
-                SetPlayerRoutingBucket(v.source, v.user_id+1)
+            ApiController.sendPlayerEvent(v.source, "CheckOut", { 
+                status = true,
+                type = "Win",
+                pos = 1,
+                maxPlayers = GameController.GetMaxPlayersGame(data.gameId),
+            })
 
-                Player(v.source).state.typeCheckOut = "Win"
-                Player(v.source).state.finishGameUI = true
-            -- end)
+            SetPlayerRoutingBucket(v.source, v.user_id+1)
+
+            Player(v.source).state.typeCheckOut = "Win"
+            Player(v.source).state.finishGameUI = true
         end
         Wait(1)
 	end
-
-    -- SetTimeout(8000, function() -- tunnel/proxy delay
-    --     deleteGroupFromOwnerSource(source)
-    -- end)
 end
 -----------------------------------------------------------------------------------------
 -- RegisterKillGame - Funciton
@@ -341,6 +337,7 @@ ApiController.RegisterKillGame = function(data)
 
                     if Player(v.source).state.inSpec then
 						clientAPI.stopSpectatorMode(v.source)
+
 						Player(v.source).state.inSpec = false
 					end
 
@@ -350,6 +347,7 @@ ApiController.RegisterKillGame = function(data)
                         pos = data.positionGame,
                         maxPlayers = GameController.GetMaxPlayersGame(data.gameId),
                     })
+
                     SetPlayerRoutingBucket(v.source, v.user_id+1)
                     Player(v.source).state.typeCheckOut = "Lose"
                     Player(v.source).state.finishGameUI = true
@@ -375,10 +373,12 @@ ApiController.RegisterKillGame = function(data)
 		if Player(data.source).state.death then
             if GameController.GetPlayersCountGame(data.gameId) > 1 then
                 Player(data.source).state.inSpec = true
+
                 GameController.RequestSpectator(data, true)
             else
                 if Player(data.source).state.inSpec then
                     clientAPI.stopSpectatorMode(data.source)
+
                     Player(data.source).state.inSpec = false
                 end
     
@@ -390,18 +390,10 @@ ApiController.RegisterKillGame = function(data)
                 })
     
                 SetPlayerRoutingBucket(data.source, user_id+1)
+
                 Player(data.source).state.typeCheckOut = "Lose"
                 Player(data.source).state.finishGameUI = true
             end
-
-
-            -- -- Atualiza a tabela do spec
-            -- for _,player in pairs(Group.players) do
-            --     if Player(player.source).state.inSpec then
-            --         GameController.RequestSpectator({ source = player.source }, false)
-            --     end
-            --     Wait(1)
-            -- end
 		end
     end
 end

@@ -805,12 +805,15 @@ GameController.endGame = function(source)
             ApiController.sendPlayerEvent(source, "CheckOut", { status = false })
             Player(source).state.finishGameUI = false
         end
+
         TriggerClientEvent("favela-core:killPlayer", source)
         TriggerEvent("inventory:StopInventory", user_id)
+
         Player(source).state.positionGame = 0
 
         if Player(source).state.inSpec then
             clientAPI.stopSpectatorMode(source)
+
             Player(source).state.inSpec = false
         end
     
@@ -819,6 +822,7 @@ GameController.endGame = function(source)
         Player(source).state.agonizing = false
         Player(source).state.death = false
         Player(source).state.isReviving = false
+
         SafeZoneAPI.StopSafezone(source)
         GameController.sendPlayerEvent(source, "StopLoots", {})
         
@@ -930,6 +934,7 @@ GameController.SendKillGame = function(gameId, killData)
         end
     end
 end
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- FinishAllPlayers - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1460,6 +1465,7 @@ GameController.LeaveGame = function(playerData)
 
     if Player(playerData.source).state.inSpec then
         clientAPI.stopSpectatorMode(playerData.source)
+        
         Player(playerData.source).state.inSpec = false
     end
 

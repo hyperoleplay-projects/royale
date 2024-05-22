@@ -7,7 +7,7 @@ function api.getPlayerGuildTag()
   return getUserGuildTag(playerId)
 end 
 
-local function getPlayerColor(playerSource, playerId)
+function getPlayerColor(playerSource, playerId)
   local teamCode = Player(playerSource).state.teamCode
   local group = Groups[teamCode]
 
