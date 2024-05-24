@@ -593,24 +593,12 @@ function vRP.invUpdate(user_id,slot,target,amount)
 
 			if inventory[targetSlot] then
 				if inventory[selectSlot] and inventory[targetSlot] then
-					if nameItem == inventory[targetSlot]["item"] then
-						if parseInt(inventory[selectSlot]["amount"]) >= amount then
-							inventory[selectSlot]["amount"] = parseInt(inventory[selectSlot]["amount"]) - amount
-							inventory[targetSlot]["amount"] = parseInt(inventory[targetSlot]["amount"]) + amount
+					local temporary = inventory[selectSlot]
+					
+					inventory[selectSlot] = inventory[targetSlot]
+					inventory[targetSlot] = temporary
 
-							if parseInt(inventory[selectSlot]["amount"]) <= 0 then
-								inventory[selectSlot] = nil
-							end
-
-							selfReturn[user_id] = false
-						end
-					else
-						local temporary = inventory[selectSlot]
-						inventory[selectSlot] = inventory[targetSlot]
-						inventory[targetSlot] = temporary
-
-						selfReturn[user_id] = false
-					end
+					selfReturn[user_id] = false
 				end
 			else
 				if inventory[selectSlot] then

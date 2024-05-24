@@ -22,20 +22,6 @@ clientApiEvents.UpdateBlips = function(data)
     PlayersBlips = data.players
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- randomSpawnPlayer - Function
------------------------------------------------------------------------------------------------------------------------------------------
-local function randomSpawnPlayer()
-    local ped = PlayerPedId()
-    local randomSpawn = math.random(#Config.Maps["LobbyPrincipal"].spawns)
-    SetEntityCoordsNoOffset(ped, Config.Maps["LobbyPrincipal"].spawns[randomSpawn].x, Config.Maps["LobbyPrincipal"].spawns[randomSpawn].y, Config.Maps["LobbyPrincipal"].spawns[randomSpawn].z+1)
-    FreezeEntityPosition(ped, true)
-    SetEntityHeading(ped, Config.Maps["LobbyPrincipal"].spawns[randomSpawn].w)
-
-	SetTimeout(200,function()
-        FreezeEntityPosition(ped, false)
-	end)
-end
------------------------------------------------------------------------------------------------------------------------------------------
 -- sendServerEvent - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 controllerApi.sendServerEvent = function(eventName, eventData)
@@ -82,20 +68,27 @@ clientApiEvents.CheckOut = function(data)
     
     if data.status then
         Hud(false)
+
         SendReactMessage('buildStatsStatus', false)
         SendReactMessage('buildLogoMidle', false)
+
         AddKeyHelp({ status = false })
         DisplayRadar(false)
+
         DoScreenFadeOut(1000)
+
         SetEntityVisible(PlayerPedId(),false)
         SetEntityNoCollisionEntity(PlayerPedId(),false,false)
         SetEntityCoords(PlayerPedId(), 119.02,-748.49,253.81,65.2)
         SetEntityHealth(PlayerPedId(), 400)
+
         ClearPedTasks(PlayerPedId())
         ClearPedBloodDamage(PlayerPedId())
         
         Wait(2500)
+
         DoScreenFadeIn(1000)
+
         cam.CreateCamCheckout("CAM_CHECKOUT")
     
         cam.setActive("CAM_CHECKOUT")
@@ -107,6 +100,7 @@ clientApiEvents.CheckOut = function(data)
         end
 
         Wait(100)
+
         if not Ped then
             Ped = ClonePed(PlayerPedId(), GetEntityHeading(PlayerPedId(-1)), true, false)
             SetEntityCoords(Ped, 122.89,-741.15,254.15-1,65.2)
@@ -137,6 +131,7 @@ clientApiEvents.CheckOut = function(data)
         end
         SetNuiFocus(false, false)
         SendReactMessage('hideSummaryScreen', {})
+
         cam.delete("CAM_CHECKOUT")
     end
 end
@@ -167,10 +162,9 @@ clientApiEvents.JoinLobby = function()
     exports["vrp"]:ResetCrouch()
 
     Citizen.CreateThread(function()
-        randomSpawnPlayer()
-
         local ped = PlayerPedId()
         local pedId = PlayerId()
+
         SetEntityHealth(ped, 400)
         ClearPlayerWantedLevel(pedId)
         SetCurrentPedWeapon(ped,"WEAPON_UNARMED",true)

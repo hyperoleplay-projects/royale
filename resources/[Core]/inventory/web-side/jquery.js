@@ -18,7 +18,7 @@ $(document).ready(function(){
 	});
 
 	document.onkeyup = data => {
-		if (data["key"] === "Escape"){
+		if (data["key"] == "Escape"){
 			$.post("http://inventory/invClose");
 			$(".invRight").html("");
 			$(".invLeft").html("");
@@ -308,31 +308,6 @@ const updateDrag = () => {
 
 	$(".populated").tooltip({
 		create: function(event,ui){
-			// var serial = $(this).attr("data-serial");
-			// var economy = $(this).attr("data-economy");
-			// var desc = $(this).attr("data-description");
-			// var amounts = $(this).attr("data-amount");
-			// var name = $(this).attr("data-name-key");
-			// var weight = $(this).attr("data-peso");
-			// var type = $(this).attr("data-type");
-			// var max = $(this).attr("data-max");
-			// var myLeg = "center top-20";
-
-			// if (desc !== "undefined"){
-			// 	myLeg = "center top-20";
-			// }
-
-			// $(this).tooltip({
-			// 	content: `
-      //   			<div class='tooltip'>
-      //   			    <div class='tooltip-title'>
-      //   			        <li>${name}</li>
-      //   			    </div>
-      //   			</div>`,
-			// 	position: { my: myLeg, at: "left" },
-			// 	show: { duration: 10 },
-			// 	hide: { duration: 10 }
-			// })
 		}
 	});
 }

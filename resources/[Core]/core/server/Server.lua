@@ -591,6 +591,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 ApiController.JoinLobby = function(source) 
 	local user_id = vRP.getUserId(source)
+    
 	Player(source).state.inDashboard = false
 	Player(source).state.inAimLab = false
 	Player(source).state.inLobbyPrincipal = true

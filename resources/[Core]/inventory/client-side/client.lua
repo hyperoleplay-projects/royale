@@ -200,9 +200,9 @@ AddEventHandler("inventory:preventWeapon",function(storeWeapons)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- OPENBACKPACK
+-- openBackpack
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("openBackpack",function(source,args,rawCommand)
+local function openBackpack(source,args,rawCommand)
 	if GetEntityHealth(PlayerPedId()) > 101 and not LocalPlayer["state"]["Buttons"] then
 		if not LocalPlayer["state"]["Commands"] and not LocalPlayer["state"]["Handcuff"] and not IsPlayerFreeAiming(PlayerId()) then
 			if not Backpack then
@@ -227,41 +227,17 @@ RegisterCommand("openBackpack",function(source,args,rawCommand)
 			end
 		end
 	end
+end
+
+Citizen.CreateThread(function()
+	while true do 
+		if IsControlJustPressed(0, 37) or IsDisabledControlJustPressed(0, 37) then 
+			openBackpack()
+		end 
+
+		Citizen.Wait(not Backpack and 0 or 500)
+	end 
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- openBackpack2
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("openBackpack2",function(source,args,rawCommand)
-	if GetEntityHealth(PlayerPedId()) > 101 and not LocalPlayer["state"]["Buttons"] then
-		if not LocalPlayer["state"]["Commands"] and not LocalPlayer["state"]["Handcuff"] and not IsPlayerFreeAiming(PlayerId()) then
-			if not Backpack then
-				Backpack = true
-				TriggerEvent("luiz:compassStatus", false)
-				SetNuiFocus(true,true)
-				SetNuiFocusKeepInput(true)
-				SetCursorLocation(0.5,0.5)
-				TriggerEvent("hideHud")
-				DisplayRadar(false)
-				SendNUIMessage({ action = "showMenu" })
-				DisablePlayerFiring(PlayerPedId(),false)
-			else
-				TriggerEvent("luiz:compassStatus", true)
-				SetNuiFocusKeepInput(false)
-				SetNuiFocus(false,false)
-				SetCursorLocation(0.5,0.5)
-				TriggerEvent("showHud")
-				DisplayRadar(true)
-				SendNUIMessage({ action = "hideMenu" })
-				Backpack = false
-			end
-		end
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- KEYMAPPING
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterKeyMapping("openBackpack","Manusear a mochila.","keyboard","OEM_3")
-RegisterKeyMapping("openBackpack2","Manusear a mochila tab.","keyboard","TAB")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PARACHUTECOLORS
 -----------------------------------------------------------------------------------------------------------------------------------------

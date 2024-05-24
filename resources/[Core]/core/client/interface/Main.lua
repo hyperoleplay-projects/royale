@@ -79,6 +79,11 @@ function ResetHud()
 	cacheHud = {}
 
 	SendReactMessage('hideGameStatus', {})
+
+	SendReactMessage('updateCloud', {
+		timeInSeconds = 0, 
+		safeProgress = 0
+	})
 end
 
 RegisterNetEvent('BuildGame', function(data)
@@ -92,10 +97,12 @@ RegisterNetEvent('BuildGame', function(data)
 			cacheHud.players = newPlayers
 			cacheHud.kills = newKills
 
-			SendReactMessage('showGameStatus', {
-				alives = cacheHud.players,
-				killed = cacheHud.kills
-			})
+			if not LocalPlayer.state.inSpec then 
+				SendReactMessage('showGameStatus', {
+					alives = cacheHud.players,
+					killed = cacheHud.kills
+				})
+			end 
 		end
 	end 
 

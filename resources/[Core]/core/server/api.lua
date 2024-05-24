@@ -489,22 +489,21 @@ function LeaveTeam(playerData, teamCode)
 		local playerCount = #Teams[Player(playerData.source).state.teamCode].players
 		if playerCount > 1 then
 			for k,v in pairs(Teams[Player(playerData.source).state.teamCode].players) do
-				clientAPI.setLabelNUI(v.source, false, "a")
-
 				GameController.LeaveGame({
 					source = v.source,
 					user_id = v.user_id,
 				}, Player(v.source).state.gameId)
+
 				Player(v.source).state.gameId = 0
 				Player(v.source).state.inQueue = false
 				Player(v.source).state.death = false
 			end
 		else
-			clientAPI.setLabelNUI(playerData.source, false, "a")
 			GameController.LeaveGame({
 				source = playerData.source,
 				user_id = playerData.user_id,
 			}, Player(playerData.source).state.gameId)
+
 			Player(playerData.source).state.gameId = 0
 			Player(playerData.source).state.inQueue = false
 			Player(playerData.source).state.death = false
@@ -652,8 +651,6 @@ function src.exitTeam()
 			local playerCount = #Teams[Player(source).state.teamCode].players
 			if playerCount > 1 and not GameController.GetGameStatus(Player(source).state.gameId) then
 				for k,v in pairs(Teams[Player(source).state.teamCode].players) do
-					clientAPI.setLabelNUI(v.source, false, "a")
-	
 					GameController.LeaveGame({
 						source = v.source,
 						user_id = v.user_id,
@@ -663,13 +660,13 @@ function src.exitTeam()
 						pos = 0,
 						state = false,
 					}, Player(v.source).state.gameId)
+
 					Player(v.source).state.gameId = 0
 					Player(v.source).state.inQueue = false
 					Player(v.source).state.death = false
 				end
 			else
 				if not GameController.GetGameStatus(Player(source).state.gameId) then
-					clientAPI.setLabelNUI(source, false, "a")
 					GameController.LeaveGame({
 						source = source,
 						user_id = user_id,
@@ -679,6 +676,7 @@ function src.exitTeam()
 						pos = 0,
 						state = false,
 					}, Player(source).state.gameId)
+
 					Player(source).state.gameId = 0
 					Player(source).state.inQueue = false
 					Player(source).state.death = false
@@ -716,7 +714,6 @@ function src.exitTeam()
 			positionGame = 0,
 		}
 		JoinTeam(joinData, newTeamCode)
-		clientAPI.setLabelNUI(source, false, "a")
 	else
 		TriggerClientEvent("Notify",source,"negado", "Aguarde " .. (15 - (os.time() - player.state.ExitCooldown)) .. " segundos.")
 	end
@@ -935,12 +932,11 @@ function src.PlayMatchTeam(gameModeR)
 				local playerCount = #Teams[Player(source).state.teamCode].players
 				if playerCount > 1 and not GameController.GetGameStatus(Player(source).state.gameId) then
 					for k,v in pairs(Teams[Player(source).state.teamCode].players) do
-						clientAPI.setLabelNUI(v.source, false, "a")
-		
 						GameController.LeaveGame({
 							source = v.source,
 							user_id = v.user_id,
 						}, Player(v.source).state.gameId)
+
 						Player(v.source).state.gameId = 0
 						Player(v.source).state.inQueue = false
 						Player(v.source).state.death = false
@@ -949,11 +945,11 @@ function src.PlayMatchTeam(gameModeR)
 					return
 				else
 					if not GameController.GetGameStatus(Player(source).state.gameId) then
-						clientAPI.setLabelNUI(source, false, "a")
 						GameController.LeaveGame({
 							source = source,
 							user_id = userId,
 						}, Player(source).state.gameId)
+						
 						Player(source).state.gameId = 0
 						Player(source).state.inQueue = false
 						Player(source).state.death = false

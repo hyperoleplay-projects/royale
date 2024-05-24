@@ -45,11 +45,11 @@ local nearbyItems = {}
 local isHudBuilt = false
 
 local LOOTS_COLORS = {
-    PURPLE = { R = 211, G = 190, B = 132 },
+    PURPLE = { R = 160, G = 32, B = 240 },
     BLUE = { R = 0, G = 166, B = 255 },
-    ORANGE = { R = 54, G = 57, B = 62 },
-    YELLOW = { R = 181, G = 223, B = 189 },
-    GREEN = { R = 158, G = 190, B = 93 },
+    ORANGE = { R = 255, G = 109, B = 10 },
+    YELLOW = { R = 255, G = 255, B = 0 },
+    GREEN = { R = 0, G = 128, B = 0 },
 }
 
 local CHEST_MODELS = {
@@ -193,12 +193,20 @@ clientEvents.StopPlane = function()
     NetworkRequestControlOfEntity(plane)
     NetworkRequestControlOfEntity(driver)
     NetworkRequestControlOfEntity(driver2)
-    while not NetworkHasControlOfDoor(plane) do print("wait") Citizen.Wait(0) end
+
+    while not NetworkHasControlOfDoor(plane) do 
+        print("wait") 
+
+        Citizen.Wait(0)
+    end
+
     DeleteEntity(driver)
     DeleteEntity(driver2)
+
     if plane then
         DeleteEntity(plane)
     end
+
     plane = false
 
     if inPlane then
@@ -220,10 +228,11 @@ clientEvents.StopPlane = function()
 
         inPlane = false
         controller.sendServerEvent('ExitPlaneDimension', {})
+
         AddKeyboardInfo({ status = false })
         AddAnnouncement({ status = false })
-        inPlaneMessage = false
 
+        inPlaneMessage = false
 
         NetworkSetTalkerProximity(2.0)
         NetworkClearVoiceChannel()
@@ -232,10 +241,13 @@ clientEvents.StopPlane = function()
         local ped = PlayerPedId()
         local height = GetEntityHeightAboveGround(ped)
         local waitingFall = true
+
         while waitingFall do
             height = GetEntityHeightAboveGround(ped)
+
             if height < 80 then
                 ForcePedToOpenParachute(ped)
+
                 if GetPedParachuteState(ped) == -1 and not IsPedInParachuteFreeFall(ped) then
                     waitingFall = false
                 end
@@ -326,8 +338,8 @@ clientEvents.StartGameClient = function(data)
 
     updateMenuFrame(false)
     
-    -- Volta as estações do jogador pro padrão
     DisablePlayerFiring(PlayerPedId(), false)
+
     exports["vrp"]:ResetCrouch()
     SendReactMessage('buildLogoMidle', true)
     
@@ -338,7 +350,6 @@ clientEvents.StartGameClient = function(data)
     LocalPlayer.state.inGameLobby = false
     LocalPlayer.state.inLobbyPrincipal = false
 
-    -- Da god no jogador
 	FreezeEntityPosition(PlayerPedId(), false)
 	SetEntityHealth(PlayerPedId(),400);
     SetEntityMaxHealth(PlayerPedId(),400)
@@ -444,9 +455,6 @@ clientEvents.StartGameClient = function(data)
                 if inPlane then
                     idle = 1
                     if not inPlaneMessage then
-                        -- controller.sendServerEvent('IsFollowingTeam', { type = "Get" })
-                        
-                        -- Wait(300)
                         if LocalPlayer.state.IsFollowingTeam then
                             AddKeyboardInfo({
                                 status = true,
@@ -480,8 +488,10 @@ clientEvents.StartGameClient = function(data)
                             RemoveAllPedWeapons(playerPed, false)
         
                             local coords = GetEntityCoords(playerPed)
+
                             SetPedGadget(playerPed, GetHashKey("GADGET_PARACHUTE"), true)
                             GiveWeaponToPed(playerPed, "GADGET_PARACHUTE", 1, false, false)
+
                             SetEntityCoordsNoOffset(playerPed, coords.x, coords.y, coords.z-5.5, true, true, true) 
         
                             inPlane = false
@@ -499,10 +509,13 @@ clientEvents.StartGameClient = function(data)
                             local ped = PlayerPedId()
                             local height = GetEntityHeightAboveGround(ped)
                             local waitingFall = true
+
                             while waitingFall do
                                 height = GetEntityHeightAboveGround(ped)
+
                                 if height < 80 then
                                     ForcePedToOpenParachute(ped)
+
                                     if GetPedParachuteState(ped) == -1 and not IsPedInParachuteFreeFall(ped) then
                                         waitingFall = false
                                     end
@@ -510,6 +523,16 @@ clientEvents.StartGameClient = function(data)
                         
                                 Wait(20)
                             end
+
+                            SetEntityAsMissionEntity(plane, true, true)
+
+                            while DoesEntityExist(plane) do 
+                                DeleteEntity(plane)
+                            end 
+
+                            while DoesBlipExist(planeBlip) do 
+                                RemoveBlip(planeBlip)
+                            end 
                         end
                     end
                 else 
@@ -520,45 +543,39 @@ clientEvents.StartGameClient = function(data)
     end
 end
 
-RegisterNetEvent('brv:createPickups')
-AddEventHandler('brv:createPickups', function(seed, mapId)
-    Citizen.CreateThread(function()
-        local rand = math.random() * 50000 -- Saves a client sided rand
+RegisterNetEvent('brv:createPickups', function(seed, mapId)
+    local rand = math.random() * 50000 -- Saves a client sided rand
 
-        math.randomseed(math.floor(seed * 50000))
+    math.randomseed(math.floor(seed * 50000))
 
-        for i, location in pairs(Config.Maps[mapId].Loots) do
-            if coordinatesProcessed >= Config.Maps[mapId].MaxLoots then
-                break 
-            end
-
-            local index = tonumber(round(math.random()) + 1)
-    
-            PickUps[#PickUps + 1] = {
-                source = #PickUps + 1,
-                color = LOOTS_COLORS_NAMES[AVAILABLE_LOOTS[index]], 
-                lootName = AVAILABLE_LOOTS[index], 
-                name = getRandomWeapon(AVAILABLE_LOOTS[index]),
-                x = location.x,
-                y = location.y,
-                z = location.z,
-                created = false,
-                chestHandle = nil,
-                handle = nil,
-                drop = false,
-                ammout = false,
-                coleted = false
-            }
-
-            coordinatesProcessed = coordinatesProcessed + 1
-
-            Citizen.Wait(1)
+    for i, location in pairs(Config.Maps[mapId].Loots) do
+        if coordinatesProcessed >= Config.Maps[mapId].MaxLoots then
+            break 
         end
 
-        math.randomseed(math.floor(rand))
-        
-        print("Quantidade de loots: "..#PickUps.."")
-    end)
+        local randomIndex = math.random(#AVAILABLE_LOOTS)
+
+        local lootType = AVAILABLE_LOOTS[randomIndex]
+        local lootColor = LOOTS_COLORS_NAMES[lootType]
+
+        PickUps[#PickUps + 1] = {
+            source = #PickUps + 1,
+            color = lootColor, 
+            lootName = lootType, 
+            name = getRandomWeapon(lootType),
+            x = location.x,
+            y = location.y,
+            z = location.z,
+            created = false,
+            chestHandle = nil,
+            handle = nil,
+            drop = false,
+            ammout = false,
+            coleted = false
+        }
+
+        coordinatesProcessed = coordinatesProcessed + 1
+    end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- count - Function
@@ -613,10 +630,10 @@ function toggleChestAnim(inProgress)
     local ped = PlayerPedId()
     local player = PlayerId()
 
-    local dict = 'amb@medic@standing@kneel@idle_a'
-    local anim = 'idle_a'
+    local dict = 'amb@medic@standing@kneel@base'
+    local anim = 'base'
 
-    local hasAnim = IsEntityPlayingAnim(ped, dict, anim, 49)
+    local hasAnim = IsEntityPlayingAnim(ped, dict, anim, 1)
 
     if inProgress and not hasAnim then 
         while not HasAnimDictLoaded(dict) do
@@ -625,7 +642,7 @@ function toggleChestAnim(inProgress)
             Citizen.Wait(10)
         end
 
-        TaskPlayAnim(ped, dict, anim, 2.0, 2.0, -1, 49, 0, 0, 0, 0)
+        TaskPlayAnim(ped, dict, anim, 2.0, 2.0, -1, 1, 0, 0, 0, 0)
         FreezeEntityPosition(ped, true)
     elseif not inProgress and hasAnim then 
         ClearPedTasks(ped)
@@ -702,7 +719,7 @@ CreateThread(function()
                     local color = LOOTS_COLORS[v.color]
 
                     if color then 
-                        DrawLightWithRange(v.pos, color.R, color.G, color.B, 1.0, 300.0)
+                        DrawLightWithRange(v.pos.x, v.pos.y, v.pos.z, color.R, color.G, color.B, 1.0, 300.0)
                     end 
 
                     if distance <= 1.9 and not IsPedInAnyVehicle(Ped) then
@@ -1006,10 +1023,13 @@ RegisterNUICallback("returnToLobby", function(data, cb)
         isReturnLobby = true
         adrenaline = false
         reviving = false
+
         LocalPlayer.state.Buttons = false
         LocalPlayer.state.agonizing = false
         LocalPlayer.state.isReviving = false
+
         coordinatesProcessed = 0
+
         PickUps = {}
         allPickups = {}
         closestPickups = {}
@@ -1265,12 +1285,13 @@ function setSpectatorTarget(key, coords)
         SpecTheard = true
 
         local playerSpectateEntries = gameApi.getPlayerToSpectate(targetPlayer.source)
+        local spectatingSource = spectatingPlayer.source
 
         CreateThread(function()
-            while true do
-                Wait(100)
+            while spectatingPlayer and spectatingSource == spectatingPlayer.source do
+                local inSpec = LocalPlayer.state.inSpec 
 
-                if spectatingPlayer ~= nil and LocalPlayer.state.inSpec then
+                if inSpec then
                     local pid = GetPlayerFromServerId(spectatingPlayer.source)
                     local targetEntity = GetPlayerPed(pid)
                     local newSpectateCoords = calculateSpectatorCoords(GetEntityCoords(targetEntity))
@@ -1298,6 +1319,8 @@ function setSpectatorTarget(key, coords)
                         })
                     end 
                 end
+
+                Wait(100)
             end
         end)
     end

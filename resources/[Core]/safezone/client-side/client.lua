@@ -33,13 +33,10 @@ AddEventHandler("SafeZone:StartEvent", function(eventID, tabela)
 
 		BR:CreateZone(tabela.safeZone, tabela.radius)
 	elseif eventID == 5 then
-		-- create next zone
 		tabela.Zone = vector3(tabela.Zone.x, tabela.Zone.y, tabela.Zone.z)
 
 		BR:CreateZone(tabela.Zone, tabela.ZoneRadius)
 	elseif eventID == 6 then
-		-- start zone timer
-		
 		PlaySoundFrontend(-1, "ATM_WINDOW", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 		
 		multiDano = multiDano + 1
@@ -140,32 +137,38 @@ function BR:GameTick(ped)
 end
 
 function BR:GameTimer(ped)
-    if LocalPlayer.state.inGame then
-        local plyPos = GetEntityCoords(ped)
-        local zoneRadius = BR.FormerZoneRadius[LocalPlayer.state.gameId]
-       
+	if LocalPlayer.state.inGame then
+		local plyPos = GetEntityCoords(ped)
+		local zoneRadius = BR.FormerZoneRadius[LocalPlayer.state.gameId]
+			
 		if BR.ZoneTime[LocalPlayer.state.gameId] and BR.ZoneTime[LocalPlayer.state.gameId] ~= 0 and BR.Zone[LocalPlayer.state.gameId] then
-            local remaining = math.max(0, BR.ZoneTime[LocalPlayer.state.gameId] - GetGameTimer()) / (BR.ZoneTimer[LocalPlayer.state.gameId] * 1000)
-            
+			local remaining = math.max(0, BR.ZoneTime[LocalPlayer.state.gameId] - GetGameTimer()) / (BR.ZoneTimer[LocalPlayer.state.gameId] * 1000)
+						
 			zoneRadius = math.max(BR.ZoneRadius[LocalPlayer.state.gameId], BR.ZoneRadius[LocalPlayer.state.gameId] + (BR.FormerZoneRadius[LocalPlayer.state.gameId] - BR.ZoneRadius[LocalPlayer.state.gameId]) * remaining)
-        end
+		end
 
 		local coords = GetEntityCoords(GetPlayerPed(PlayerId()))
 		local safe = GetBlipCoords(Blips["safezone"])
 		local distance = #(coords - vector3(safe.x, safe.y,coords.z))
-    
-        -- local playerPos = GetEntityCoords(GetPlayerPed(PlayerId()))
-        -- local distance = math.abs(GetDistanceBetweenCoords(playerPos.x, playerPos.y, 0, safe.x, safe.y, 0, false))
 
-        if zoneRadius and distance > zoneRadius and not LocalPlayer.state.death then
-            local peddd = GetPlayerPed(-1)
-            local vida = GetEntityHealth(peddd)
+		if zoneRadius and distance > zoneRadius and not LocalPlayer.state.death then
+			local peddd = GetPlayerPed(-1)
+			local vida = GetEntityHealth(peddd)
 
-            -- SetEntityHealth(peddd, vida - 1)
+			if not AnimpostfxIsRunning('ChopVision') then 
+				AnimpostfxPlay("ChopVision")
+			end 
+
+			ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.005)
+
 			ApplyDamageToPed(peddd,2)
-        else
-            morto = false
-        end
+		else
+			if AnimpostfxIsRunning('ChopVision') then 
+				AnimpostfxStop("ChopVision")
+			end 
+
+			morto = false
+		end
 	end
 end
 

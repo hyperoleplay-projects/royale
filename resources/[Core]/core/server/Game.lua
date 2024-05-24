@@ -479,18 +479,16 @@ GameController.SetupLoots = function(gameId)
             TriggerClientEvent('brv:createPickups', playerInGame.source, seed, Game.map)
         end
     end
-          
-    local timwWithoutSafe = (Config.StartTime - 2)
     
-    SetTimeout(timwWithoutSafe * 1000, function() 
-        GameController.SetupSafe(gameId)
-
-        Citizen.Wait(2 * 1000)
-
+    SetTimeout((Config.StartTime - 2) * 1000, function() 
         GameController.PreparesStartGameNew(gameId, "StartGameClient", {
             map = Game.map,
             planePos = Game.planePos
         })
+
+        Citizen.Wait(Config.StartSafe * 1000)
+
+        GameController.SetupSafe(gameId)
     end)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -800,7 +798,13 @@ end
 GameController.endGame = function(source) 
     local user_id = vRP.getUserId(source)
     local Game = Games[Player(source).state.gameId]
+
     if Game == nil then
+        if Player(source).state.inSpec then
+            clientAPI.stopSpectatorMode(source)
+            Player(source).state.inSpec = false
+        end
+
         if Player(source).state.finishGameUI then
             ApiController.sendPlayerEvent(source, "CheckOut", { status = false })
             Player(source).state.finishGameUI = false
@@ -811,12 +815,6 @@ GameController.endGame = function(source)
 
         Player(source).state.positionGame = 0
 
-        if Player(source).state.inSpec then
-            clientAPI.stopSpectatorMode(source)
-
-            Player(source).state.inSpec = false
-        end
-    
         Player(source).state.inQueue = false
         Player(source).state.inGame = false
         Player(source).state.agonizing = false
@@ -833,20 +831,15 @@ GameController.endGame = function(source)
 
         if not Player(source).state.PlaneStatus then
             GameController.sendPlayerEvent(source, "StopPlane", {})
+            
             Player(source).state.PlaneStatus = true
         end
         
         ApiController.JoinLobby(source)
-
-        GameController.sendPlayerEvent(source, "setLabelNUI", {
-            ready = Player(source).state.ready,
-            Leader = Player(source).state.isLeader,
-            Match = false,
-            Text = ""
-        })
     
         Player(source).state.gameId = 0
         deleteGroupFromOwnerSource(source)
+
         return;
     end
 
@@ -1428,17 +1421,10 @@ GameController.JoinGame = function(gameId, playerData)
     Player(playerData.source).state.death = false
 
     Wait(500)
-    if Player(playerData.source).state.inQueue then
-        if not Game.started then
-            GameController.sendEventPlayersEvent(gameId, "setLabelNUI", {
-                ready = Player(playerData.source).state.ready,
-                Leader = Player(playerData.source).state.isLeader,
-                Match = true,
-                Text = ""..GameController.GetPlayersCountGame(gameId).."/"..Game.MinPlayers.."..."
-            })
-        end
 
+    if Player(playerData.source).state.inQueue then
         Wait(500)
+
         if GameController.GetPlayersCountGame(Game.gameId) >= Game.MinPlayers and not Game.started and not Game.finished then
             GameController.StartGame(Game.gameId)
         end
@@ -1490,7 +1476,6 @@ GameController.LeaveGame = function(playerData)
 
     TriggerEvent("inventory:StopInventory", playerData.user_id)
 
-
     if not Player(playerData.source).state.inDashboard then
         SafeZoneAPI.StopSafezone(playerData.source)
         GameController.sendPlayerEvent(playerData.source, "StopLoots", {})
@@ -1508,25 +1493,9 @@ GameController.LeaveGame = function(playerData)
         ApiController.JoinLobby(playerData.source)
     end
 
-    GameController.sendPlayerEvent(playerData.source, "setLabelNUI", {
-        ready = Player(playerData.source).state.ready,
-        Leader = Player(playerData.source).state.isLeader,
-        Match = false,
-        Text = ""
-    })
-
     -- Atualiza os jogadores da safe
     TriggerEvent("battle-UpdatePlayersSafe", Games[gameId])
     Player(playerData.source).state.gameId = 0
-
-    if not Game.started then
-        GameController.sendEventPlayersEvent(gameId, "setLabelNUI", {
-            ready = Player(playerData.source).state.ready,
-            Leader = Player(playerData.source).state.isLeader,
-            Match = true,
-            Text = ""..GameController.GetPlayersCountGame(gameId).."/"..Game.MinPlayers.."..."
-        })
-    end
 
     if GameController.GetPlayersCountGame(Game.gameId) >= Game.MinPlayers and not Game.started and not Game.finished then
         GameController.StartGame(Game.gameId)

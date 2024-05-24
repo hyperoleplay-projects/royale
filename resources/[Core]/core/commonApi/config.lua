@@ -1,6 +1,7 @@
 Config = {}
-Config.MinPlayers = 3
+Config.MinPlayers = 2
 Config.StartTime = 15
+Config.StartSafe = 60
 
 Config.gamemodesList = {
     ["solo"] = {
@@ -444,14 +445,6 @@ Config.weapons = {
         "ARMOUR_STANDARD",
 		"HEALTH_STANDARD",
 	},
-}
-
-Config.lootsCount = {
-    1,
-    3,
-    5,
-    8,
-    14
 }
 
 Config.Cars = {
