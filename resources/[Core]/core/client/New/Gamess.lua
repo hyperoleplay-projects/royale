@@ -644,12 +644,16 @@ function toggleChestAnim(inProgress)
 
         TaskPlayAnim(ped, dict, anim, 2.0, 2.0, -1, 1, 0, 0, 0, 0)
         FreezeEntityPosition(ped, true)
+
+        exports.progressbar:createProgressBar(2000, "Abrindo baú")
     elseif not inProgress and hasAnim then 
         ClearPedTasks(ped)
         ClearPedSecondaryTask(ped)
         ClearPedTasksImmediately(ped)
 
         FreezeEntityPosition(ped, false)
+
+        exports.progressbar:removeProgressBar()
     end 
 end
 
@@ -736,10 +740,15 @@ CreateThread(function()
                                 pressTime = 0
                             end
                             
-                            if isEPressed and GetGameTimer() - pressTime >= 3000 then
+                            if isEPressed and GetGameTimer() - pressTime >= 2000 then
                                 deleteObject(v.chestHandle)
 
-                                local pickupHash = GetHashKey('PICKUP_' .. v.item .. (v.item:find('AMMO_') and 'LUIZ' or ''))
+                                local pickupHash = GetHashKey('PICKUP_' .. v.item)
+
+                                if v.item:find('AMMO_') then
+                                    pickupHash = GetHashKey('PICKUP_AMMO_BULLET_MP')
+                                end
+
                                 local pickupHandle = CreatePickupRotate(pickupHash, v.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
                                 
                                 SetPickupRegenerationTime(pickupHandle, -1)
@@ -805,7 +814,7 @@ CreateThread(function()
                 })
             end 
 
-            if not isEPressed or GetGameTimer() - pressTime >= 3000 then
+            if not isEPressed or GetGameTimer() - pressTime >= 2000 then
                 toggleChestAnim(false)
             else 
                 toggleChestAnim(true)

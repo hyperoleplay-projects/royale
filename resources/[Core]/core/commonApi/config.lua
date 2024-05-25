@@ -786,7 +786,7 @@ Config.Maps = {
         radius = 2400.0,
 
         MaxLoots = 25000,
-        MaxCars = 64,
+        MaxCars = 256,
         isBoats = false,
         MaxBoats = 45,
 

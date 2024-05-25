@@ -111,20 +111,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("inventory:MuniLuiz")
 AddEventHandler("inventory:MuniLuiz",function(nameItem, Slot, Amount, user_idJogador)
-    local source = vRP.getUserSource(user_idJogador)
-
-	if nameItem ~= "WEAPON_KNIFE" then
-		if itemType(nameItem) == "Armamento" then
-			if WeaponPrimary[user_idJogador] == nil then
-				WeaponPrimary[user_idJogador] = false
-			end
-			
-			if not WeaponPrimary[user_idJogador] then
-				vRP.generateItem(user_idJogador,itemAmmo(nameItem),30,true)
-				WeaponPrimary[user_idJogador] = true
-			end
-		end
-	end
+	local source = vRP.getUserSource(user_idJogador)
 
 	if itemType(nameItem) == "Munição" then
 		local Weapon,Hash,Ammo = vCLIENT.rechargeCheck(source,nameItem)
@@ -559,10 +546,12 @@ function cRP.OpenAirSuplement()
 	if itens then
 		for _, item in pairs(itens) do 
 			vRP.generateItem(user_id,itemSpawnName(item.spawnName),1,true)
+
 			TriggerClientEvent("inventory:Update", source,"updateMochila")
+
 			exports["duth"]:AirDrop().ClearAirDrop(source)
+
 			vServerBatlleRoyale.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
-			Wait(1)
 		end
 	end
 end

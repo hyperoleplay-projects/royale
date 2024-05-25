@@ -171,6 +171,8 @@ function api.createGuild(tag, name, imageURL)
   local playerSource = source 
 
   if not isDataValidToCreateGuild(tag, name, imageURL) then 
+    TriggerClientEvent("Notify", playerSource, "negado", "Dados inválidos para criar um clã.", 5000)
+
     return false
   end
 
@@ -180,8 +182,12 @@ function api.createGuild(tag, name, imageURL)
 
   if isCreated then 
     addGuildMember(tag, playerId, true)
+
+    TriggerClientEvent("Notify", playerSource, "sucess", "Clã criada com sucesso!", 5000)
   
     return tag
+  else 
+    TriggerClientEvent("Notify", playerSource, "negado", "Clã já existe.", 5000)
   end 
 end 
 

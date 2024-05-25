@@ -3,73 +3,6 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local itens = {}
 local ProfileCard = false
-
-local weaponList = {
-	[GetHashKey("WEAPON_ASSAULTSMG")] = "assaultsmg",
-	[GetHashKey("WEAPON_HEAVYSNIPER_MK2")] = "heavysnipermk2",
-	[GetHashKey("WEAPON_PUMPSHOTGUN_MK2")] = "pumpshotgunmk2",
-	[GetHashKey("WEAPON_MG")] = "mg",
-	[GetHashKey("WEAPON_MARKSMANRIFLE_MK2")] = "marksmanrifle",
-	[GetHashKey("WEAPON_SAWNOFFSHOTGUN")] = "sawnoffshotgun",
-	[GetHashKey("WEAPON_COMBATMG_MK2")] = "combatmgmk2",
-	[GetHashKey("WEAPON_MICROSMG")] = "microsmg",
-	[GetHashKey("WEAPON_HEAVYSNIPER")] = "heavysniper",
-	[GetHashKey("WEAPON_PUMPSHOTGUN")] = "pumpshotgun",
-	[GetHashKey("WEAPON_COMBATMG")] = "combatmg",
-	[GetHashKey("WEAPON_DOUBLEACTION")] = "doubleaction",
-	[GetHashKey("WEAPON_APPISTOL")] = "appistol",
-	[GetHashKey("WEAPON_SNSPISTOL_MK2")] = "snspistolmk2",
-	[GetHashKey("WEAPON_MINIGUN")] = "minigun",
-
-	[GetHashKey("WEAPON_UNARMED")] = "soco",
-	[GetHashKey("WEAPON_KNUCKLE")] = "soco2",
-	[GetHashKey("WEAPON_BOTTLE")] = "garrafa",
-	[GetHashKey("WEAPON_POOLCUE")] = "taco",
-	[GetHashKey("WEAPON_BAT")] = "taco2",
-	[GetHashKey("WEAPON_STONE_HATCHET")] = "machado",
-	[GetHashKey("WEAPON_PISTOL_MK2")] = "fiveseven",
-	[GetHashKey("WEAPON_REVOLVER_MK2")] = "revolver",
-	[GetHashKey("WEAPON_CROWBAR")] = "pecabra",
-	
-	[GetHashKey("WEAPON_COMBATPISTOL")] = "glock",
-	[GetHashKey("WEAPON_SNSPISTOL")] = "snspistol",
-	[GetHashKey("WEAPON_HEAVYPISTOL")] = "heavypistol",
-	[GetHashKey("WEAPON_SWITCHBLADE")] = "switchblade",
-	[GetHashKey("WEAPON_KNIFE")] = "knife",
-	[GetHashKey("WEAPON_MACHETE")] = "machete",
-	[GetHashKey("WEAPON_DAGGER")] = "dagger",
-
-	[GetHashKey("WEAPON_COMBATPDW")] = "combatpdw",
-	[GetHashKey("WEAPON_MACHINEPISTOL")] = "machinepistol",
-	[GetHashKey("WEAPON_SMG_MK2")] = "smgmk2",
-
-	[GetHashKey("WEAPON_ADVANCEDRIFLE")] = "carbineriflemk2",
-	[GetHashKey("WEAPON_CARBINERIFLE")] = "carbineriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLE")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLE_MK2")] = "assaultriflemk2",
-	-- Skins
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN1")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN2")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN3")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN4")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN5")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN6")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN7")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN8")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN9")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_ASSAULTRIFLESKIN10")] = "assaultriflemk2",
-	[GetHashKey("WEAPON_CARBINERIFLE_MK2")] = "carbineriflemk2",
-
-	[GetHashKey("WEAPON_SPECIALCARBINE")] = "sigsauer556",
-	[GetHashKey("WEAPON_SPECIALCARBINESKIN1")] = "sigsauer556",
-	[GetHashKey("WEAPON_SPECIALCARBINESKIN2")] = "sigsauer556",
-	[GetHashKey("WEAPON_SPECIALCARBINESKIN3")] = "sigsauer556",
-	[GetHashKey("WEAPON_SPECIALCARBINESKIN4")] = "sigsauer556",
-	[GetHashKey("WEAPON_SPECIALCARBINESKIN5")] = "sigsauer556",
-	[GetHashKey("WEAPON_SPECIALCARBINESKIN6")] = "sigsauer556",
-	[GetHashKey("WEAPON_SPECIALCARBINESKIN7")] = "sigsauer556",
-}
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BuildGame - Event
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -143,43 +76,6 @@ AddEventHandler("Notify",function(css,mensagem,timer)
     })
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- Request - Event
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("Request")
-AddEventHandler("Request",function(mensagem,timer)
-	if not timer or timer == "" then
-		timer = 8000
-	end
-
-    SendNUIMessage({
-        action = "Request",
-        data = {
-            open = true,
-            text = mensagem,
-            timer = timer
-        },
-    })
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- NotifyItem - Event
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("NotifyItem")
-AddEventHandler("NotifyItem",function(mensagem,image,timer)
-	if not timer or timer == "" then
-		timer = 3500
-	end
-
-    SendNUIMessage({
-        action = "NotifyItem",
-        data = {
-            open = true,
-            text = mensagem,
-            image = image,
-            timer = timer
-        },
-    })
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- AddKeyHelp - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function AddKeyHelp(data) 
@@ -208,18 +104,14 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent('NotifyKill')
 AddEventHandler('NotifyKill', function(dataEntries)
-	local weaponImage = 'skull'
-	local weaponIndex, victimId, victimName, victimGuildTag, killerId, killerName, killerGuildTag = table.unpack(dataEntries)
-
-	if weaponIndex and weaponList[weaponIndex] then
-		weaponImage = weaponList[weaponIndex]
-	end
+	local weaponHash, victimId, victimName, victimGuildTag, killerId, killerName, killerGuildTag = table.unpack(dataEntries)
+	local weaponImage = indexByHash(weaponHash)
 
 	SendReactMessage('showKillfeed', {
-		killerName = killerName or 'Indefinido', 
+		killerName = killerName or victimName, 
 		victimName = victimName or 'Indefinido', 
 		victimTag = victimGuildTag,
-		killerTag = killerGuildTag,
+		killerTag = killerGuildTag or victimGuildTag,
 		weapon = weaponImage
 	})
 end)

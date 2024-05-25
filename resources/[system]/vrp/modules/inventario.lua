@@ -125,15 +125,15 @@ function vRP.preventWeapon(Item,Ammo)
 	if user_id then
 		local wHash = itemAmmo(Item)
 
-		-- if wHash ~= nil then
-		-- 	if Ammos[user_id][wHash] then
-		-- 		if Ammo > 0 then
-		-- 			Ammos[user_id][wHash] = Ammo
-		-- 		else
-		-- 			Ammos[user_id][wHash] = nil
-		-- 		end
-		-- 	end
-		-- end
+		if wHash ~= nil then
+			if Ammos[user_id][wHash] then
+				if Ammo > 0 then
+					Ammos[user_id][wHash] = Ammo
+				else
+					Ammos[user_id][wHash] = nil
+				end
+			end
+		end
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -338,93 +338,97 @@ end
 -- GENERATEITEM
 -----------------------------------------------------------------------------------------------------------------------------------------
 function vRP.generateItem(user_id, nameItem, amount, notify, slot)
-    if tonumber(amount) > 0 then
-        local amount = tonumber(amount)
-        local source = vRP.getUserSource(user_id)
-        local nomeDoItem = ""
-		local SkinsData = {}
+	if tonumber(amount) > 0 then
+			local amount = tonumber(amount)
+			local source = vRP.getUserSource(user_id)
+			local nomeDoItem = ""
+			local SkinsData = {}
 
-        for k, v in pairs(itemSkins(nameItem)) do
-			if not Player(source).state.userSkins then
-				local userInventory = vRP.query("vRP/getInventory", { user_id = user_id })
-				for k, v in pairs(userInventory) do
-					if v.inventory_itemType == "skin" then
-						local item = exports["core"]:Config().Skins[v.inventory_itemName]
-						if item then
-							SkinsData[item.skin_spawnName] = {
-								skin_id = v.inventory_id,
-								skin_spawnName = item.skin_spawnName,
-								skin_name = item.skin_name,
-								skin_category = item.skin_category,
-								skin_model = item.skin_model,
-								skin_image = item.skin_image,
-								skin_status = v.inventory_itemStatus,
-							}
-						end
+			for k, v in pairs(itemSkins(nameItem)) do
+					if not Player(source).state.userSkins then
+							local userInventory = vRP.query("vRP/getInventory", {user_id = user_id})
+							for k, v in pairs(userInventory) do
+									if v.inventory_itemType == "skin" then
+											local item = exports["core"]:Config().Skins[v.inventory_itemName]
+											if item then
+													SkinsData[item.skin_spawnName] = {
+															skin_id = v.inventory_id,
+															skin_spawnName = item.skin_spawnName,
+															skin_name = item.skin_name,
+															skin_category = item.skin_category,
+															skin_model = item.skin_model,
+															skin_image = item.skin_image,
+															skin_status = v.inventory_itemStatus
+													}
+											end
+									end
+							end
 					end
-				end
+
+					Player(source).state.userSkins = SkinsData
+					Wait(300)
+
+					if Player(source).state.userSkins then
+							for kk, vv in pairs(Player(source).state.userSkins) do
+									if vv.skin_model == v.name then
+											if vv.skin_status == "true" then
+													nomeDoItem = vv.skin_model
+											end
+									end
+							end
+					end
 			end
 
-			Player(source).state.userSkins = SkinsData
-			Wait(300)
+			if nomeDoItem == "" then
+					nomeDoItem = nameItem
+			end
 
-            if Player(source).state.userSkins then
-                for kk, vv in pairs(Player(source).state.userSkins) do
-                    if vv.skin_model == v.name then
-                        if vv.skin_status == "true" then
-                            nomeDoItem = vv.skin_model
-                        end
-                    end
-                end
-            end
-        end
+			local inventory = vRP.userInventory(source, user_id)
 
-        if nomeDoItem == "" then
-            nomeDoItem = nameItem
-        end
+			if not slot then
+					local initial = 0
+					if itemType(nomeDoItem) ~= "Munição" then
+							repeat
+									initial = initial + 1
+							until inventory[tostring(initial)] == nil or
+									(inventory[tostring(initial)] and inventory[tostring(initial)]["item"] == nomeDoItem) or
+									initial > vRP.getWeight(user_id)
+					else
+							initial = 5
+							repeat
+									initial = initial + 1
+							until inventory[tostring(initial)] == nil or
+									(inventory[tostring(initial)] and inventory[tostring(initial)]["item"] == nomeDoItem) or
+									initial > vRP.getWeight(user_id)
+					end
 
-        local inventory = vRP.userInventory(source, user_id)
+					if initial <= vRP.getWeight(user_id) then
+							initial = tostring(initial)
 
-        if not slot then
-            local initial = 0
-            if itemType(nomeDoItem) ~= "Munição" then
-                repeat
-                    initial = initial + 1
-                until inventory[tostring(initial)] == nil or (inventory[tostring(initial)] and inventory[tostring(initial)]["item"] == nomeDoItem) or initial > vRP.getWeight(user_id)
-            else
-                initial = 5
-                repeat
-                    initial = initial + 1
-                until inventory[tostring(initial)] == nil or (inventory[tostring(initial)] and inventory[tostring(initial)]["item"] == nomeDoItem) or initial > vRP.getWeight(user_id)
-            end
+							if inventory[initial] == nil then
+									inventory[initial] = {item = nomeDoItem, amount = amount}
+							elseif inventory[initial] and inventory[initial]["item"] == nomeDoItem then
+									inventory[initial]["amount"] = tonumber(inventory[initial]["amount"]) + amount
+							end
 
-            if initial <= vRP.getWeight(user_id) then
-                initial = tostring(initial)
+							TriggerEvent("inventory:MuniLuiz", nomeDoItem, initial, amount, user_id)
 
-                if inventory[initial] == nil then
-                    inventory[initial] = { item = nomeDoItem, amount = amount }
-                elseif inventory[initial] and inventory[initial]["item"] == nomeDoItem then
-                    inventory[initial]["amount"] = tonumber(inventory[initial]["amount"]) + amount
-                end
+							TesteInventory[user_id] = inventory
+					end
+			else
+					local selectSlot = tostring(slot)
 
-                TriggerEvent("inventory:MuniLuiz", nomeDoItem, initial, amount, user_id)
+					if inventory[selectSlot] then
+							if inventory[selectSlot]["item"] == nomeDoItem then
+									inventory[selectSlot]["amount"] = tonumber(inventory[selectSlot]["amount"]) + amount
+							end
+					else
+							inventory[selectSlot] = {item = nomeDoItem, amount = amount}
+					end
 
-                TesteInventory[user_id] = inventory
-            end
-        else
-            local selectSlot = tostring(slot)
-
-            if inventory[selectSlot] then
-                if inventory[selectSlot]["item"] == nomeDoItem then
-                    inventory[selectSlot]["amount"] = tonumber(inventory[selectSlot]["amount"]) + amount
-                end
-            else
-                inventory[selectSlot] = { item = nomeDoItem, amount = amount }
-            end
-
-            TriggerEvent("inventory:MuniLuiz", nomeDoItem, initial, amount, user_id)
-        end
-    end
+					TriggerEvent("inventory:MuniLuiz", nomeDoItem, initial, amount, user_id)
+			end
+	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKMAXITENS
@@ -597,8 +601,6 @@ function vRP.invUpdate(user_id,slot,target,amount)
 					
 					inventory[selectSlot] = inventory[targetSlot]
 					inventory[targetSlot] = temporary
-
-					selfReturn[user_id] = false
 				end
 			else
 				if inventory[selectSlot] then
@@ -609,13 +611,13 @@ function vRP.invUpdate(user_id,slot,target,amount)
 						if parseInt(inventory[selectSlot]["amount"]) <= 0 then
 							inventory[selectSlot] = nil
 						end
-
-						selfReturn[user_id] = false
 					end
 				end
 			end
 
 			actived[user_id] = nil
+		else 
+			selfReturn[user_id] = false
 		end
 	end
 

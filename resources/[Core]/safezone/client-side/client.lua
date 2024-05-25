@@ -126,7 +126,7 @@ function BR:GameTick(ped)
 					end
 				
 					if zoneRadius then
-						DrawMarker(28, GetBlipCoords(Blips["safezone"]), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, zoneRadius, zoneRadius, 1000.0, 255, 0, 0, 155, 0, 0, 0, 0, 0, 0, 0)
+						DrawMarker(28, GetBlipCoords(Blips["safezone"]), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, zoneRadius, zoneRadius, 1000.0, 255, 165, 0, 155, 0, 0, 0, 0, 0, 0, 0)
 					end
 				end
 

@@ -166,7 +166,7 @@ LuizDev.Thread(function ()
                     local weaponName = itemName(v) 
 
                     SendReactMessage('showWeaponHud', {
-                        weaponIndex = weaponName,
+                        weaponIndex = indexByHash(weaponHash),
                         weaponName = weaponName,
                         ammoEquipped = weaponAmmoInClip, 
                         ammoInClip = weaponAmmo

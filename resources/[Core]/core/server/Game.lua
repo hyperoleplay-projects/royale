@@ -1016,8 +1016,6 @@ GameController.RegisterKill = function(source, data)
         local Coords = GetEntityCoords(Ped)
 
         if not Kills[user_id] and Game.players[user_id] and identity then
-            -- local sourcePlayer = Game.players[user_id].source
-        
             if source then
                 Kills[user_id] = {
                     headshot = data.hs,
@@ -1511,9 +1509,12 @@ GameController.ExitPlaneDimension = function()
     if Game == nil then return end
 
     vRP.generateItem(user_id, "WEAPON_KNIFE",parseInt(1),false, 5)
+
     clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
+
     SetPlayerRoutingBucket(source, Game.routing)
     Player(source).state.inPlane = false
+    
     TriggerClientEvent("NotifyAnnouncement", source, { status = false, timer = false })
 
     if Game.gameType == "duo" or Game.gameType == "squad" and isUserLeaderOfGroup(user_id, Player(source).state.teamCode) then
@@ -1526,56 +1527,39 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.GetLoot = function(source, data) 
     local user_id = vRP.getUserId(source)
+
     local GameId = Player(source).state.gameId
     local Game = Games[GameId]
-    if Game == nil then return end
 
-    local ammoCounts = {
-        ["AMMO_PISTOL"] = { min=20, max=250 },
-        ["AMMO_RIFLE"] = { min=30, max=250 },
-        ["AMMO_SHOTGUN"] = { min=10, max=250 },
-        ["ENERGETICO"] = { min=1, max=3 },
-    }
+    if Game == nil then 
+        return 
+    end
 
     if data.drop and data.ammout > 0 then
         if (vRP.inventoryWeight(user_id) + itemWeight(data.item) * data.ammout) <= vRP.getWeight(user_id) then
-            
             vRP.generateItem(user_id,data.item,data.ammout,true)
+
             TriggerClientEvent("inventory:Update", source,"updateMochila")
+
             clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
+
             GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number })
-            return 
         else
-            return TriggerClientEvent("Notify", source, "negado", "Inventário cheio.", 15000, "normal", "Admin")
+            TriggerClientEvent("Notify", source, "negado", "Inventário cheio.", 15000, "normal", "Admin")
         end
     else
-        if ammoCounts[data.item] then
-            local ammout = math.random(ammoCounts[data.item].min, ammoCounts[data.item].max)
-            if (vRP.inventoryWeight(user_id) + itemWeight(data.item) * ammout) <= vRP.getWeight(user_id) then
-                
-                vRP.generateItem(user_id,data.item,ammout,true)
-                TriggerClientEvent("inventory:Update", source,"updateMochila")
-                clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
-                GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number })
-                return 
-            else
-                return TriggerClientEvent("Notify", source, "negado", "Inventário cheio.", 15000, "normal", "Admin")
-            end
+        if (vRP.inventoryWeight(user_id) + itemWeight(data.item) * 1) <= vRP.getWeight(user_id) then
+            vRP.generateItem(user_id,data.item,1,true)
+
+            TriggerClientEvent("inventory:Update", source,"updateMochila")
+
+            clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
+
+            GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number })
         else
-            if (vRP.inventoryWeight(user_id) + itemWeight(data.item) * 1) <= vRP.getWeight(user_id) then
-                
-                vRP.generateItem(user_id,data.item,1,true)
-                TriggerClientEvent("inventory:Update", source,"updateMochila")
-                clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
-                GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number })
-                return 
-            else
-                return TriggerClientEvent("Notify", source, "negado", "Inventário cheio.", 15000, "normal", "Admin")
-            end
+            TriggerClientEvent("Notify", source, "negado", "Inventário cheio.", 15000, "normal", "Admin")
         end
     end
-
-    -- GameController.checkEndGame(source, GameId)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- RequestSpectator - Function
@@ -1723,16 +1707,7 @@ function getTableSize(t)
     end
     return count
 end
------------------------------------------------------------------------------------------------------------------------------------------
--- getRandomWeapon - Function
------------------------------------------------------------------------------------------------------------------------------------------
-function getRandomWeapon(type)
-	if Config.weapons[type] == nil then return false end
-  
-	local nbWeapons = count(Config.weapons[type])
-	local randWeaponIndex = math.random(nbWeapons)
-	return Config.weapons[type][randWeaponIndex]
-end
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- count - Function
 -----------------------------------------------------------------------------------------------------------------------------------------

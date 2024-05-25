@@ -68,7 +68,6 @@ local currentWeapon = ""
 RegisterNetEvent("inventory:throwableWeapons")
 AddEventHandler("inventory:throwableWeapons",function(weaponName)
 	currentWeapon = weaponName
-	print("a")
 
 	local ped = PlayerPedId()
 	if GetSelectedPedWeapon(ped) == GetHashKey(currentWeapon) then
@@ -424,71 +423,6 @@ function cRP.storeWeaponHands()
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- WEAPONAMMOS
------------------------------------------------------------------------------------------------------------------------------------------
-local weaponAmmos = {
-	["AMMO_PISTOL"] = {
-		"WEAPON_PISTOL",
-		"WEAPON_PISTOL_MK2",
-		"WEAPON_PISTOL50",
-		"WEAPON_REVOLVER",
-		"WEAPON_COMBATPISTOL",
-		"WEAPON_APPISTOL",
-		"WEAPON_HEAVYPISTOL",
-		"WEAPON_SNSPISTOL",
-		"WEAPON_SNSPISTOL_MK2",
-		"WEAPON_VINTAGEPISTOL"
-	},
-	["AMMO_SMG"] = {
-		"WEAPON_MICROSMG",
-		"WEAPON_MINISMG",
-		"WEAPON_SMG",
-		"WEAPON_SMG_MK2",
-		"WEAPON_ASSAULTSMG",
-		"WEAPON_ADVANCEDRIFLE",
-		"WEAPON_GUSENBERG",
-		"WEAPON_MACHINEPISTOL"
-	},
-	["AMMO_RIFLE"] = {
-		"WEAPON_COMPACTRIFLE",
-		"WEAPON_CARBINERIFLE",
-		"WEAPON_CARBINERIFLE_MK2",
-		"WEAPON_BULLPUPRIFLE",
-		"WEAPON_BULLPUPRIFLE_MK2",
-		"WEAPON_ASSAULTRIFLE",
-		"WEAPON_ASSAULTRIFLESKIN1",
-		"WEAPON_ASSAULTRIFLESKIN2",
-		"WEAPON_ASSAULTRIFLESKIN3",
-		"WEAPON_ASSAULTRIFLESKIN4",
-		"WEAPON_ASSAULTRIFLESKIN5",
-		"WEAPON_ASSAULTRIFLESKIN6",
-		"WEAPON_ASSAULTRIFLESKIN7",
-		"WEAPON_ASSAULTRIFLESKIN8",
-		"WEAPON_ASSAULTRIFLESKIN9",
-		"WEAPON_ASSAULTRIFLESKIN10",
-		"WEAPON_ASSAULTRIFLESKIN11",
-		"WEAPON_ASSAULTRIFLESKIN12",
-		"WEAPON_SPECIALCARBINESKIN1",
-		"WEAPON_SPECIALCARBINESKIN2",
-		"WEAPON_SPECIALCARBINESKIN3",
-		"WEAPON_SPECIALCARBINESKIN4",
-		"WEAPON_SPECIALCARBINESKIN5",
-		"WEAPON_SPECIALCARBINESKIN6",
-		"WEAPON_SPECIALCARBINESKIN7",
-		"WEAPON_ASSAULTRIFLE_MK2",
-		"WEAPON_SPECIALCARBINE",
-		"WEAPON_SPECIALCARBINE_MK2",
-		"WEAPON_FNFAL",
-		"WEAPON_PARAFAL"
-	},
-	["AMMO_SHOTGUN"] = {
-		"WEAPON_PUMPSHOTGUN",
-		"WEAPON_PUMPSHOTGUN_MK2",
-		"WEAPON_SAWNOFFSHOTGUN",
-		"WEAPON_MUSKET"
-	},
-}
------------------------------------------------------------------------------------------------------------------------------------------
 -- RECHARGECHECK
 -----------------------------------------------------------------------------------------------------------------------------------------
 function cRP.rechargeCheck(ammoType)
@@ -497,10 +431,12 @@ function cRP.rechargeCheck(ammoType)
 	local Ped = PlayerPedId()
 	local weaponStatus = false
 
-	if weaponAmmos[ammoType] then
+	local weaponsByAmmoType = itemsByAmmo(ammoType)
+
+	if weaponsByAmmoType then
 		weaponAmmo = GetAmmoInPedWeapon(Ped,Weapon)
 
-		for _,v in pairs(weaponAmmos[ammoType]) do
+		for _, weaponName in pairs(weaponsByAmmoType) do
 			if Weapon == v then
 				weaponHash = Weapon
 				weaponStatus = true
@@ -817,47 +753,46 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INVENTORY:CreateThread -- AirDrop
 -----------------------------------------------------------------------------------------------------------------------------------------
-Citizen.CreateThread(function()
-    local isNear = false
+-- Citizen.CreateThread(function()
+--     local isNear = false
 
-    while true do
-		local timeDistance = 2000
-		
-		if evento ~= nil then
-			timeDistance = 5
-			local ped = PlayerPedId()
-			local pedCoords = GetEntityCoords(ped)
-			local dist = #(pedCoords - vector3(x, y, z))
+--     while true do
+-- 			local timeDistance = 2000
 			
-            if not IsPedInAnyVehicle(ped) and not LocalPlayer.state.death and not LocalPlayer.state.agonizing and not pickingAirDrop and dropNoChao == true then
-				if dist <= 1.5 then
-					if not isNear then
-						isNear = true
-						TriggerEvent("NotifyKeyboardInfo", {
-							status = true,
-							key = "E",
-							text = "Abrir airdrop"
-						})
-					end
-		
-					if IsControlJustPressed(0, 38) then
-						if isNear then
-							isNear = false
-							TriggerEvent("NotifyKeyboardInfo", { status = false })
-						end
-						finishEvent()
-						vSERVER.OpenAirSuplement()
-					end
-				else
-					if isNear then
-						isNear = false
-						TriggerEvent("NotifyKeyboardInfo", { status = false })
-					end
-				end
-			end
+-- 			if evento ~= nil then
+-- 				timeDistance = 5
+-- 				local ped = PlayerPedId()
+-- 				local pedCoords = GetEntityCoords(ped)
+-- 				local dist = #(pedCoords - vector3(x, y, z))
+				
+-- 				if not IsPedInAnyVehicle(ped) and not LocalPlayer.state.death and not LocalPlayer.state.agonizing and not pickingAirDrop and dropNoChao == true then
+-- 					if dist <= 1.5 then
+-- 						if not isNear then
+-- 							isNear = true
+-- 							TriggerEvent("NotifyKeyboardInfo", {
+-- 								status = true,
+-- 								key = "E",
+-- 								text = "Abrir airdrop"
+-- 							})
+-- 						end
+			
+-- 						if IsControlJustPressed(0, 38) then
+-- 							if isNear then
+-- 								isNear = false
+-- 								TriggerEvent("NotifyKeyboardInfo", { status = false })
+-- 							end
+-- 							finishEvent()
+-- 							vSERVER.OpenAirSuplement()
+-- 						end
+-- 					else
+-- 							if isNear then
+-- 								isNear = false
+-- 								TriggerEvent("NotifyKeyboardInfo", { status = false })
+-- 							end
+-- 					end
+-- 				end
+-- 			end
 
-		end
-
-        Citizen.Wait(timeDistance)
-    end
-end)
+-- 			Citizen.Wait(timeDistance)
+--     end
+-- end)
