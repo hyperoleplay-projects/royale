@@ -3,7 +3,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local itemlist = {
 	["WEAPON_KNIFE"] = {
-		["index"] = "knife",
+		["index"] = string.lower('WEAPON_KNIFE'),
 		["name"] = "Faca",
 		["type"] = "Armamento",
 		["drop"] = true,
@@ -12,7 +12,7 @@ local itemlist = {
 		["spawName"] = "WEAPON_KNIFE"
 	},
 	["WEAPON_PISTOL_MK2"] = {
-		["index"] = "fiveseven",
+		["index"] = string.lower('WEAPON_PISTOL_MK2'),
 		["name"] = "FN Five Seven",
 		["drop"] = true,
 		["type"] = "Armamento",
@@ -23,98 +23,90 @@ local itemlist = {
 		["spawName"] = "WEAPON_PISTOL_MK2"
 	},
 	["WEAPON_APPISTOL"] = {
-		["index"] = "kochvp9",
+		["index"] = string.lower('WEAPON_APPISTOL'),
 		["name"] = "Koch Vp9",
 		["drop"] = true,
 		["type"] = "Armamento",
 		["ammo"] = "WEAPON_AMMO",
-
 		["vehicle"] = true,
 		["weight"] = 1.25,
 		["spawName"] = "WEAPON_APPISTOL"
 	},
 	["WEAPON_MICROSMG"] = {
-		["index"] = "uzi",
+		["index"] = string.lower('WEAPON_MICROSMG'),
 		["name"] = "Uzi",
 		["type"] = "Armamento",
 		["drop"] = true,
 		["ammo"] = "WEAPON_AMMO",
-
 		["vehicle"] = true,
 		["weight"] = 1.25,
 		["spawName"] = "WEAPON_MICROSMG"
 	},
 	["WEAPON_MINISMG"] = {
-		["index"] = "skorpionv61",
+		["index"] = string.lower('WEAPON_MINISMG'),
 		["name"] = "Skorpion V61",
 		["drop"] = true,
 		["type"] = "Armamento",
 		["ammo"] = "WEAPON_AMMO",
-
 		["vehicle"] = true,
 		["weight"] = 1.75,
 		["spawName"] = "WEAPON_MINISMG"
 	},
 	["WEAPON_COMBATPISTOL"] = {
-		["index"] = "glock",
+		["index"] = string.lower('WEAPON_COMBATPISTOL'),
 		["name"] = "Glock",
 		["drop"] = true,
 		["type"] = "Armamento",
 		["ammo"] = "WEAPON_AMMO",
-
 		["vehicle"] = true,
 		["weight"] = 1.25,
 		["spawName"] = "WEAPON_COMBATPISTOL"
 	},
 	["WEAPON_CARBINERIFLE_MK2"] = {
-		["index"] = "m4a4",
+		["index"] = string.lower('WEAPON_CARBINERIFLE_MK2'),
 		["name"] = "M4A4",
 		["drop"] = true,
 		["type"] = "Armamento",
 		["ammo"] = "WEAPON_AMMO",
-
 		["weight"] = 8.50,
 		["spawName"] = "WEAPON_CARBINERIFLE_MK2"
 	},
 	["WEAPON_SPECIALCARBINE_MK2"] = {
-		["index"] = "sigsauer556",
+		["index"] = string.lower('WEAPON_SPECIALCARBINE_MK2'),
 		["name"] = "Sig Sauer 556",
 		["drop"] = true,
 		["type"] = "Armamento",
 		["ammo"] = "WEAPON_AMMO",
-
 		["weight"] = 8.25,
 		["spawName"] = "WEAPON_SPECIALCARBINE_MK2"
 	},
 	["WEAPON_ASSAULTRIFLE_MK2"] = {
-		["index"] = "ak74",
+		["index"] = string.lower('WEAPON_ASSAULTRIFLE_MK2'),
 		["name"] = "AK-74",
 		["drop"] = true,
 		["type"] = "Armamento",
 		["ammo"] = "WEAPON_AMMO",
-
 		["weight"] = 7.75,
 		["spawName"] = "WEAPON_ASSAULTRIFLE_MK2"
 	},
 	["WEAPON_ASSAULTSMG"] = {
-		["index"] = "steyraug",
+		["index"] = string.lower('WEAPON_ASSAULTSMG'),
 		["name"] = "Steyr AUG",
 		["drop"] = true,
 		["type"] = "Armamento",
 		["ammo"] = "WEAPON_AMMO",
-
 		["weight"] = 5.75,
 		["spawName"] = "WEAPON_ASSAULTSMG"
 	},
 	["GADGET_PARACHUTE"] = {
-		["index"] = "parachute",
+		["index"] = string.lower('GADGET_PARACHUTE'),
 		["name"] = "Paraquedas",
 		["type"] = "Usável",
 		["weight"] = 2.25,
 		["spawName"] = "GADGET_PARACHUTE"
 	},
 	["WEAPON_AMMO"] = {
-		["index"] = "pistolammo",
+		["index"] = "ammo",
 		["drop"] = true,
 		["name"] = "Munição de arma",
 		["type"] = "Munição",
@@ -122,7 +114,7 @@ local itemlist = {
 		["spawName"] = "WEAPON_AMMO"
 	},
 	["ARMOUR_STANDARD"] = {
-		["index"] = "ARMOUR_STANDARD",
+		["index"] = "vest",
 		["name"] = "Colete",
 		["type"] = "Usável",
 		["weight"] = 2.25,
@@ -132,7 +124,7 @@ local itemlist = {
 		["spawName"] = "ARMOUR_STANDARD"
 	},
 	["HEALTH_STANDARD"] = {
-		["index"] = "HEALTH_STANDARD",
+		["index"] = "health",
 		["name"] = "Bandagem",
 		["type"] = "Usável",
 		["drop"] = true,

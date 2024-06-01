@@ -812,7 +812,6 @@ CreateThread(function()
 end)
 
 clientEvents.GeneratePickup = function(data)
-    print('GeneratePickup', json.encode(data))
     local closestObject = closestPickups[data.id]
 
     if closestObject then
@@ -833,9 +832,11 @@ clientEvents.GeneratePickup = function(data)
         deleteObject(pickupObject.chestHandle)
 
         local pickupHash = GetHashKey('PICKUP_'..data.item)
+        print('PICKUP_'..data.item)
 
-        if data.item:find('AMMO_') then
+        if data.item:find('AMMO') then
             pickupHash = GetHashKey('PICKUP_AMMO_BULLET_MP')
+            print('PICKUP_AMMO_BULLET_MP')
         end
 
         local pickupHandle = CreatePickupRotate(pickupHash, data.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
