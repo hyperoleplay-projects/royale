@@ -9,8 +9,6 @@ LuizDev.PedsClient = {}
 -- reMapData
 -----------------------------------------------------------------------------------------------------------------------------------------
 function LuizDev.reMapData(game_data)
-	-- print(dump(game_data))
-	-- RED
 	local cntRed = 0
 	local _redList = game_data
 	game_data = {}

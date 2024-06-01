@@ -576,8 +576,6 @@ GameController.BuildGameUI = function(gameId, eventData)
                 event = "BuildGame",
                 data = eventData
             })
-        else
-            print("Invalid player source for player ID:", playerId)
         end
     end
 end
@@ -683,36 +681,6 @@ end)
 --  checkEndGame - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.checkEndGame = function(source, gameId)
-    -- local game = Games[gameId]
-    -- if game == nil then return end
-
-    -- local teamsAlive = {}
-    -- for _, playerInGame in pairs(game.players) do
-    --     local player = Player(playerInGame.source)
-    --     if not player.state.death and not player.state.inSpec then
-    --         local teamCode = playerInGame.team
-    --         teamsAlive[teamCode] = (teamsAlive[teamCode] or 0) + 1
-    --     end
-    -- end
-
-    -- if not game.finished then
-    --     local numTeamsAlive = 0
-    --     local winningTeam = nil
-
-    --     for teamCode, numAlive in pairs(teamsAlive) do
-    --         if numAlive > 0 then
-    --             numTeamsAlive = numTeamsAlive + 1
-    --             winningTeam = teamCode
-    --         end
-    --     end
-
-    --     if numTeamsAlive == 1 then
-    --         game.finished = true
-    --         print("^2[ PARTIDAS ]^7 Partida: "..game.gameId.." finalizada com o ganhador: "..winningTeam..", modo: "..game.gameType.."")
-    --         ApiController.OpenWinner({ code = winningTeam, gameId = game.gameId })
-    --         return
-    --     end
-    -- end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 --  processGamesEnd - Function
@@ -720,10 +688,8 @@ end
 GameController.processGamesEnd = function() 
     for _, game in pairs(Games) do 
         if game.started and GameController.GetPlayersCountGame(game.gameId) == 0 then
-            print("Partida auto delete / GameId: "..game.gameId.." deletada.")
             Games[game.gameId] = nil
         end    
-        Wait(1)
     end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------

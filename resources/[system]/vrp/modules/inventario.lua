@@ -312,7 +312,6 @@ function vRP.giveInventoryItem(user_id,nameItem,amount,notify,slot)
 			end
 
 			if notify and itemBody(nameItem) then
-				-- print("recebeu")
 				-- TriggerClientEvent("itensNotify",source,{ "recebeu",itemIndex(nameItem),amount,itemName(nameItem) })
 			end
 		end
@@ -535,7 +534,6 @@ function vRP.tryGetInventoryItem(user_id,nameItem,amount,notify,slot)
 			end
 
 			if notify and itemBody(nameItem) then
-				-- print("removeu")
 				-- TriggerClientEvent("itensNotify",source,{ "removeu",itemIndex(nameItem),amount,itemName(nameItem) })
 			end
 

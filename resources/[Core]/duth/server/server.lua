@@ -815,8 +815,6 @@ end
 -- reMapData - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 function reMapData(game_data)
-	-- print(dump(game_data))
-	-- RED
 	local cntRed = 0
 	local _redList = game_data
 	game_data = {}
@@ -937,6 +935,7 @@ events['global_ranking'] = function (src, data)
             local gmResult = {}
             local tmpResult = {}
             local query_res = vRP.query("vRP/getPlayerGlobalRanking", { gamemode = gameName })
+
             for key2, score in pairs(query_res) do
                 score.gamemode = gamemode.title
                 score.username = "N/A"
@@ -948,11 +947,9 @@ events['global_ranking'] = function (src, data)
                 if identity then score.avatar = identity.avatar end
                 table.insert(tmpResult, score)
 
-                -- print('identity: '..json.encode(identity))
                 if not exports["core"]:checkBan({ user_id = score.user_id }) then
                     table.insert(tmpResult, score)
                 end
-                Wait(1)
             end
 
             local rankPos = 1
@@ -964,18 +961,13 @@ events['global_ranking'] = function (src, data)
             end
             result[gamemode.title] = gmResult
         end
-
         
-        -- RANKING GERAL
         result['geral'] = rankingCache
         cache['global_ranking'] = result
         cache['global_ranking']._timeout = GetGameTimer() + 1 * 60 * 60 * 1000 -- 1 hora
-        -- cache['global_ranking']._timeout = GetGameTimer() + 1 * 60 * 1000 -- 3 minutos
 
         local timeRemaining = math.floor((cache['global_ranking']._timeout - GetGameTimer()) / 1000)
         
-        -- print('global_ranking result: '..json.encode(result))
-        -- return result
         return { ranking = result, time = timeRemaining}
 
     end

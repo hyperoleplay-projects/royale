@@ -296,11 +296,9 @@ RegisterNUICallback('cDoneSave', function(data, cb)
 	local ped = PlayerPedId()
     if GetEntityModel(ped) == GetHashKey("mp_m_freemode_01") then
 		tipo = "mp_m_freemode_01"
-		print(tipo)
 		TriggerServerEvent("Creation:CreateCharacter", currentCharacterMode, characterNome, tipo, skinData)
     elseif GetEntityModel(ped) == GetHashKey("mp_f_freemode_01") then
 		tipo = "mp_f_freemode_01"
-		print(tipo)
 		TriggerServerEvent("Creation:CreateCharacter", currentCharacterMode, characterNome, tipo, skinDataF)
     end
 

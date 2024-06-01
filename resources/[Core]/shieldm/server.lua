@@ -14,8 +14,6 @@ local function ShieldmReleaseOnWhenConnected(name, setKickReason, deferrals)
         else 
             result = 'Erro: ' .. err
         end
-
-        -- print(string.format("Jogador %s conectando - IP: %s - Status: %s", name, userIp, result))
     end, "GET", "", {["X-SHIELDM-APIKEY"] = serverKey })
 end
 

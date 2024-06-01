@@ -544,7 +544,6 @@ Citizen.CreateThread(function()
 			-- data.timeout = data.timeout + 1
 
 			-- if ((data.timeout >= 300 and lastMsg >= 35000) or data.timeout >= 340) and os.time() - data.firstconnect > 5 then
-			-- 	print(data.source..' received timeout')
 			-- 	removeQueue(data.source,true)
 			-- 	removeConnect(data.source,true)
 			-- else

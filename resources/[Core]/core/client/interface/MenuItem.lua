@@ -238,316 +238,151 @@ function ChangeVariation(data)
 		tipo = "mp_f_freemode_01"
     end
 
-    -- if tipo == sex then
-        if category == "pants" then
-            if types == "item" then
-                SetPedComponentVariation(ped,4,item,0,1)
-                skinData["pants"]["item"] = item
-            
-                SetPedComponentVariation(ped,4,GetPedDrawableVariation(ped,4),cor,1)
-                skinData["pants"]["texture"] = cor
-            end
-        elseif category == "arms" then
-            if types == "item" then
-                SetPedComponentVariation(ped,3,item,0,1)
-                skinData["arms"]["item"] = item
-            
-                SetPedComponentVariation(ped,3,GetPedDrawableVariation(ped,3),cor,1)
-                skinData["arms"]["texture"] = cor
-            end
-        elseif category == "tshirt" then
-            if types == "item" then
-                SetPedComponentVariation(ped,8,item,0,1)
-                skinData["tshirt"]["item"] = item
-            
-                SetPedComponentVariation(ped,8,GetPedDrawableVariation(ped,8),cor,1)
-                skinData["tshirt"]["texture"] = cor
-            end
-        elseif category == "vest" then
-            if types == "item" then
-                SetPedComponentVariation(ped,9,item,0,1)
-                skinData["vest"]["item"] = item
-            
-                SetPedComponentVariation(ped,9,skinData["vest"]["item"],cor,1)
-                skinData["vest"]["texture"] = cor
-            end
-        elseif category == "backpack" then
-            if types == "item" then
-                SetPedComponentVariation(ped,5,item,0,1)
-                skinData["backpack"]["item"] = item
-            
-                SetPedComponentVariation(ped,5,skinData["backpack"]["item"],cor,1)
-                skinData["backpack"]["texture"] = cor
-            end
-        elseif category == "decals" then
-            if types == "item" then
-                SetPedComponentVariation(ped,10,item,0,1)
-                skinData["decals"]["item"] = item
-            
-                SetPedComponentVariation(ped,10,skinData["decals"]["item"],cor,1)
-                skinData["decals"]["texture"] = cor
-            end
-        elseif category == "accessory" then
-            if types == "item" then
-                SetPedComponentVariation(ped,7,item,0,1)
-                skinData["accessory"]["item"] = item
-            
-                SetPedComponentVariation(ped,7,skinData["accessory"]["item"],cor,1)
-                skinData["accessory"]["texture"] = cor
-            end
-        elseif category == "torso" then
-            if types == "item" then
-                SetPedComponentVariation(ped,11,item,0,1)
-                skinData["torso"]["item"] = item
-            
-                SetPedComponentVariation(ped,11,GetPedDrawableVariation(ped,11),cor,1)
-                skinData["torso"]["texture"] = cor
-            end
-        elseif category == "shoes" then
-            if types == "item" then
-                SetPedComponentVariation(ped,6,item,0,1)
-                skinData["shoes"]["item"] = item
-            
-                SetPedComponentVariation(ped,6,GetPedDrawableVariation(ped,6),cor,1)
-                skinData["shoes"]["texture"] = cor
-            end
-        elseif category == "mask" then
-            if types == "item" then
-                SetPedComponentVariation(ped,1,item,0,1)
-                skinData["mask"]["item"] = item
-            
-                SetPedComponentVariation(ped,1,GetPedDrawableVariation(ped,1),cor,1)
-                skinData["mask"]["texture"] = cor
-            end
-        elseif category == "hat" then
-            if types == "item" then
-                if item ~= -1 then
-                    SetPedPropIndex(ped,0,item,cor,1)
-                else
-                    ClearPedProp(ped,0)
-                end
-    
-                skinData["hat"]["item"] = item
-            
-                SetPedPropIndex(ped,0,item,item,1)
-                skinData["hat"]["texture"] = cor
-            end
-        elseif category == "glass" then
-            if types == "item" then
-                if item ~= -1 then
-                    SetPedPropIndex(ped,1,item,cor,1)
-                    skinData["glass"]["item"] = item
-                else
-                    ClearPedProp(ped,1)
-                end
-            
-                SetPedPropIndex(ped,1,skinData["glass"]["item"],cor,1)
-                skinData["glass"]["texture"] = cor
-            end
-        elseif category == "ear" then
-            if types == "item" then
-                if item ~= -1 then
-                    SetPedPropIndex(ped,2,item,cor,1)
-                else
-                    ClearPedProp(ped,2)
-                end
-    
-                skinData["ear"]["item"] = item
-            
-                SetPedPropIndex(ped,2,skinData["ear"]["item"],cor,1)
-                skinData["ear"]["texture"] = cor
-            end
-        elseif category == "watch" then
-            if types == "item" then
-                if item ~= -1 then
-                    SetPedPropIndex(ped,6,item,cor,1)
-                else
-                    ClearPedProp(ped,6)
-                end
-    
-                skinData["watch"]["item"] = item
-            
-                SetPedPropIndex(ped,6,skinData["watch"]["item"],item,1)
-                skinData["watch"]["texture"] = cor
-            end
-        elseif category == "bracelet" then
-            if types == "item" then
-                if item ~= -1 then
-                    SetPedPropIndex(ped,7,item,cor,1)
-                else
-                    ClearPedProp(ped,7)
-                end
-    
-                skinData["bracelet"]["item"] = item
-            
-                SetPedPropIndex(ped,7,skinData["bracelet"]["item"],item,1)
-                skinData["bracelet"]["texture"] = cor
-            end
+    if category == "pants" then
+        if types == "item" then
+            SetPedComponentVariation(ped,4,item,0,1)
+            skinData["pants"]["item"] = item
+        
+            SetPedComponentVariation(ped,4,GetPedDrawableVariation(ped,4),cor,1)
+            skinData["pants"]["texture"] = cor
         end
+    elseif category == "arms" then
+        if types == "item" then
+            SetPedComponentVariation(ped,3,item,0,1)
+            skinData["arms"]["item"] = item
+        
+            SetPedComponentVariation(ped,3,GetPedDrawableVariation(ped,3),cor,1)
+            skinData["arms"]["texture"] = cor
+        end
+    elseif category == "tshirt" then
+        if types == "item" then
+            SetPedComponentVariation(ped,8,item,0,1)
+            skinData["tshirt"]["item"] = item
+        
+            SetPedComponentVariation(ped,8,GetPedDrawableVariation(ped,8),cor,1)
+            skinData["tshirt"]["texture"] = cor
+        end
+    elseif category == "vest" then
+        if types == "item" then
+            SetPedComponentVariation(ped,9,item,0,1)
+            skinData["vest"]["item"] = item
+        
+            SetPedComponentVariation(ped,9,skinData["vest"]["item"],cor,1)
+            skinData["vest"]["texture"] = cor
+        end
+    elseif category == "backpack" then
+        if types == "item" then
+            SetPedComponentVariation(ped,5,item,0,1)
+            skinData["backpack"]["item"] = item
+        
+            SetPedComponentVariation(ped,5,skinData["backpack"]["item"],cor,1)
+            skinData["backpack"]["texture"] = cor
+        end
+    elseif category == "decals" then
+        if types == "item" then
+            SetPedComponentVariation(ped,10,item,0,1)
+            skinData["decals"]["item"] = item
+        
+            SetPedComponentVariation(ped,10,skinData["decals"]["item"],cor,1)
+            skinData["decals"]["texture"] = cor
+        end
+    elseif category == "accessory" then
+        if types == "item" then
+            SetPedComponentVariation(ped,7,item,0,1)
+            skinData["accessory"]["item"] = item
+        
+            SetPedComponentVariation(ped,7,skinData["accessory"]["item"],cor,1)
+            skinData["accessory"]["texture"] = cor
+        end
+    elseif category == "torso" then
+        if types == "item" then
+            SetPedComponentVariation(ped,11,item,0,1)
+            skinData["torso"]["item"] = item
+        
+            SetPedComponentVariation(ped,11,GetPedDrawableVariation(ped,11),cor,1)
+            skinData["torso"]["texture"] = cor
+        end
+    elseif category == "shoes" then
+        if types == "item" then
+            SetPedComponentVariation(ped,6,item,0,1)
+            skinData["shoes"]["item"] = item
+        
+            SetPedComponentVariation(ped,6,GetPedDrawableVariation(ped,6),cor,1)
+            skinData["shoes"]["texture"] = cor
+        end
+    elseif category == "mask" then
+        if types == "item" then
+            SetPedComponentVariation(ped,1,item,0,1)
+            skinData["mask"]["item"] = item
+        
+            SetPedComponentVariation(ped,1,GetPedDrawableVariation(ped,1),cor,1)
+            skinData["mask"]["texture"] = cor
+        end
+    elseif category == "hat" then
+        if types == "item" then
+            if item ~= -1 then
+                SetPedPropIndex(ped,0,item,cor,1)
+            else
+                ClearPedProp(ped,0)
+            end
 
+            skinData["hat"]["item"] = item
+        
+            SetPedPropIndex(ped,0,item,item,1)
+            skinData["hat"]["texture"] = cor
+        end
+    elseif category == "glass" then
+        if types == "item" then
+            if item ~= -1 then
+                SetPedPropIndex(ped,1,item,cor,1)
+                skinData["glass"]["item"] = item
+            else
+                ClearPedProp(ped,1)
+            end
+        
+            SetPedPropIndex(ped,1,skinData["glass"]["item"],cor,1)
+            skinData["glass"]["texture"] = cor
+        end
+    elseif category == "ear" then
+        if types == "item" then
+            if item ~= -1 then
+                SetPedPropIndex(ped,2,item,cor,1)
+            else
+                ClearPedProp(ped,2)
+            end
 
+            skinData["ear"]["item"] = item
+        
+            SetPedPropIndex(ped,2,skinData["ear"]["item"],cor,1)
+            skinData["ear"]["texture"] = cor
+        end
+    elseif category == "watch" then
+        if types == "item" then
+            if item ~= -1 then
+                SetPedPropIndex(ped,6,item,cor,1)
+            else
+                ClearPedProp(ped,6)
+            end
 
+            skinData["watch"]["item"] = item
+        
+            SetPedPropIndex(ped,6,skinData["watch"]["item"],item,1)
+            skinData["watch"]["texture"] = cor
+        end
+    elseif category == "bracelet" then
+        if types == "item" then
+            if item ~= -1 then
+                SetPedPropIndex(ped,7,item,cor,1)
+            else
+                ClearPedProp(ped,7)
+            end
 
-
-
-
-
-
-
-
-
-
-    -- elseif sex == "double" then
-    --     if category == "pants" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,4,item,0,1)
-    --             skinData["pants"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,4,GetPedDrawableVariation(ped,4),cor,1)
-    --             skinData["pants"]["texture"] = cor
-    --         end
-    --     elseif category == "arms" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,3,item,0,1)
-    --             skinData["arms"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,3,GetPedDrawableVariation(ped,3),cor,1)
-    --             skinData["arms"]["texture"] = cor
-    --         end
-    --     elseif category == "tshirt" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,8,item,0,1)
-    --             skinData["tshirt"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,8,GetPedDrawableVariation(ped,8),cor,1)
-    --             skinData["tshirt"]["texture"] = cor
-    --         end
-    --     elseif category == "vest" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,9,item,0,1)
-    --             skinData["vest"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,9,skinData["vest"]["item"],cor,1)
-    --             skinData["vest"]["texture"] = cor
-    --         end
-    --     elseif category == "backpack" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,5,item,0,1)
-    --             skinData["backpack"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,5,skinData["backpack"]["item"],cor,1)
-    --             skinData["backpack"]["texture"] = cor
-    --         end
-    --     elseif category == "decals" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,10,item,0,1)
-    --             skinData["decals"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,10,skinData["decals"]["item"],cor,1)
-    --             skinData["decals"]["texture"] = cor
-    --         end
-    --     elseif category == "accessory" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,7,item,0,1)
-    --             skinData["accessory"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,7,skinData["accessory"]["item"],cor,1)
-    --             skinData["accessory"]["texture"] = cor
-    --         end
-    --     elseif category == "torso" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,11,item,0,1)
-    --             skinData["torso"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,11,GetPedDrawableVariation(ped,11),cor,1)
-    --             skinData["torso"]["texture"] = cor
-    --         end
-    --     elseif category == "shoes" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,6,item,0,1)
-    --             skinData["shoes"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,6,GetPedDrawableVariation(ped,6),cor,1)
-    --             skinData["shoes"]["texture"] = cor
-    --         end
-    --     elseif category == "mask" then
-    --         if types == "item" then
-    --             SetPedComponentVariation(ped,1,item,0,1)
-    --             skinData["mask"]["item"] = item
-            
-    --             SetPedComponentVariation(ped,1,GetPedDrawableVariation(ped,1),cor,1)
-    --             skinData["mask"]["texture"] = cor
-    --         end
-    --     elseif category == "hat" then
-    --         if types == "item" then
-    --             if item ~= -1 then
-    --                 SetPedPropIndex(ped,0,item,cor,1)
-    --             else
-    --                 ClearPedProp(ped,0)
-    --             end
-    
-    --             skinData["hat"]["item"] = item
-            
-    --             SetPedPropIndex(ped,0,item,item,1)
-    --             skinData["hat"]["texture"] = cor
-    --         end
-    --     elseif category == "glass" then
-    --         if types == "item" then
-    --             if item ~= -1 then
-    --                 SetPedPropIndex(ped,1,item,cor,1)
-    --                 skinData["glass"]["item"] = item
-    --             else
-    --                 ClearPedProp(ped,1)
-    --             end
-            
-    --             SetPedPropIndex(ped,1,skinData["glass"]["item"],cor,1)
-    --             skinData["glass"]["texture"] = cor
-    --         end
-    --     elseif category == "ear" then
-    --         if types == "item" then
-    --             if item ~= -1 then
-    --                 SetPedPropIndex(ped,2,item,cor,1)
-    --             else
-    --                 ClearPedProp(ped,2)
-    --             end
-    
-    --             skinData["ear"]["item"] = item
-            
-    --             SetPedPropIndex(ped,2,skinData["ear"]["item"],cor,1)
-    --             skinData["ear"]["texture"] = cor
-    --         end
-    --     elseif category == "watch" then
-    --         if types == "item" then
-    --             if item ~= -1 then
-    --                 SetPedPropIndex(ped,6,item,cor,1)
-    --             else
-    --                 ClearPedProp(ped,6)
-    --             end
-    
-    --             skinData["watch"]["item"] = item
-            
-    --             SetPedPropIndex(ped,6,skinData["watch"]["item"],item,1)
-    --             skinData["watch"]["texture"] = cor
-    --         end
-    --     elseif category == "bracelet" then
-    --         if types == "item" then
-    --             if item ~= -1 then
-    --                 SetPedPropIndex(ped,7,item,cor,1)
-    --             else
-    --                 ClearPedProp(ped,7)
-    --             end
-    
-    --             skinData["bracelet"]["item"] = item
-            
-    --             SetPedPropIndex(ped,7,skinData["bracelet"]["item"],item,1)
-    --             skinData["bracelet"]["texture"] = cor
-    --         end
-    --     end
-
-    -- else
-    --     print("Essa roupa é para mulher")
-    --     return
-    -- end
+            skinData["bracelet"]["item"] = item
+        
+            SetPedPropIndex(ped,7,skinData["bracelet"]["item"],item,1)
+            skinData["bracelet"]["texture"] = cor
+        end
+    end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TATTOS

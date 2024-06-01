@@ -455,7 +455,6 @@ function GetPlayersReady(teamCode)
     local allPlayersReady = true -- variável de controle
     for k,v in pairs(Teams[teamCode].players) do
         if not Player(v.source).state.ready then
-			-- print("a")
             allPlayersReady = false -- altera variável de controle para false se um jogador não estiver pronto
         end
     end

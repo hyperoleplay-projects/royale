@@ -195,8 +195,6 @@ clientEvents.StopPlane = function()
     NetworkRequestControlOfEntity(driver2)
 
     while not NetworkHasControlOfDoor(plane) do 
-        print("wait") 
-
         Citizen.Wait(0)
     end
 
@@ -832,11 +830,9 @@ clientEvents.GeneratePickup = function(data)
         deleteObject(pickupObject.chestHandle)
 
         local pickupHash = GetHashKey('PICKUP_'..data.item)
-        print('PICKUP_'..data.item)
 
         if data.item:find('AMMO') then
             pickupHash = GetHashKey('PICKUP_AMMO_BULLET_MP')
-            print('PICKUP_AMMO_BULLET_MP')
         end
 
         local pickupHandle = CreatePickupRotate(pickupHash, data.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
@@ -1173,8 +1169,8 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.initSpectatorAdmin = function(data) 
     if not AdminSpec and spectatingPlayers ~= nil then
-        print("initSpectatorAdmin", data, spectatingPlayers)
         AdminSpec = data.status
+
         AddKeyHelp({
             id = 2,
             status = data.status,
@@ -1226,7 +1222,6 @@ RegisterKeyMapping("+activeCursor","Ativar cursor.","keyboard","G")
 -- sendSpectadorAdmin - NUI
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("sendSpectadorAdmin", function(data, cb)
-    print("sendSpectadorAdmin / "..data.key.."")
     controller.sendServerEvent('setSpectatorTargetServer', {
         key = data.key, 
         source_player = spectatingPlayers[data.key].source
@@ -1455,8 +1450,6 @@ clientEvents.Agonizing = function(dataServer)
                 SetEntityHealth(PlayerPedId(), GetEntityHealth(PlayerPedId()) - 1)
           
                 if GetEntityHealth(PlayerPedId()) == 101 then
-                    print("Morreu agonizando")
-    
                     if LocalPlayer.state.agonizing and not LocalPlayer.state.inSpec and not LocalPlayer.state.finishGameUI then
                         SetEntityVisible(ped,false)
                         SetEntityNoCollisionEntity(ped,false,false)
@@ -1602,8 +1595,6 @@ AddEventHandler('events_controller', function(sv_content)
     local eventName = sv_content.event
     local data = sv_content.data
     
-    print('events_controller', eventName, json.encode(data))
-
     if clientEvents[eventName] ~= nil then
         clientEvents[eventName](data)
     end

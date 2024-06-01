@@ -56,7 +56,6 @@ function Premium.checkExpired()
     --     if os.time() >= v.expire_time then
     --         exports.oxmysql:query("UPDATE `vips` SET `is_active` = false, `expire_time` = NULL, `expired_at` = NOW() WHERE `id` = @id",{ id = v.id })
     --         vRP.execute('vRP/deletePriority',{ user_id = v.id })
-    --         print("[^2APPOINTMENTS^7] O pacote "..v.category.." do Usuário "..v.user_id.." expirou. ["..os.date("%d/%m/%y %H:%M:%S").."]")
     --     end
     -- end
 end
