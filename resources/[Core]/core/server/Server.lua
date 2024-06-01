@@ -267,9 +267,40 @@ end
 -- OpenWinner - Funciton
 -----------------------------------------------------------------------------------------
 ApiController.OpenWinner = function(data) 
-    if Groups[data.code] == nil then return end
-	local Group = Groups[data.code]
+    local game = GameController.GetGameFromId(data.gameId)
+
+    if game == nil then 
+        return 
+    end
+
+    for _, playerInGame in pairs(game.players) do
+        if playerInGame.team ~= data.code then
+            if Player(playerInGame.source).state.inSpec then
+                clientAPI.stopSpectatorMode(playerInGame.source)
+
+                Player(playerInGame.source).state.inSpec = false
+            end
+
+            ApiController.sendPlayerEvent(playerInGame.source, "CheckOut", { 
+                status = true,
+                type = "Lose",
+                pos = ApiController.GetPlayerPosition(playerInGame.source),
+                maxPlayers = GameController.GetMaxPlayersGame(data.gameId)
+            })
+
+            SetPlayerRoutingBucket(playerInGame.source, playerInGame.user_id + 1)
+
+            Player(playerInGame.source).state.typeCheckOut = "Lose"
+            Player(playerInGame.source).state.finishGameUI = true
+        end
+    end
+
+    if Groups[data.code] == nil then 
+        return 
+    end
+
     local source = 0
+	local Group = Groups[data.code]
     
     for k,v in pairs(Group.players) do
         if v.source and v.state and Player(v.source) then
@@ -278,7 +309,6 @@ ApiController.OpenWinner = function(data)
 
             if Player(v.source).state.inSpec then
                 clientAPI.stopSpectatorMode(v.source)
-
                 Player(v.source).state.inSpec = false
             end
 
@@ -337,7 +367,6 @@ ApiController.RegisterKillGame = function(data)
 
                     if Player(v.source).state.inSpec then
 						clientAPI.stopSpectatorMode(v.source)
-
 						Player(v.source).state.inSpec = false
 					end
 
@@ -359,7 +388,7 @@ ApiController.RegisterKillGame = function(data)
 
     if Group.playersCount > 1 and not allPlayersDead then
         if GameController.GetPlayersCountGame(data.gameId) > 1 then
-            Player(data.source).state.inSpec = true
+            Player(data.source).state:set('inSpec', true, true)
             ApiController.RequestSpectatorTeam(data, true)
         end
         -- Atualiza a tabela do spec
@@ -372,13 +401,12 @@ ApiController.RegisterKillGame = function(data)
     elseif allPlayersDead and data.gameType == "solo" then
 		if Player(data.source).state.death then
             if GameController.GetPlayersCountGame(data.gameId) > 1 then
-                Player(data.source).state.inSpec = true
+                Player(data.source).state:set('inSpec', true, true)
 
                 GameController.RequestSpectator(data, true)
             else
                 if Player(data.source).state.inSpec then
                     clientAPI.stopSpectatorMode(data.source)
-
                     Player(data.source).state.inSpec = false
                 end
     

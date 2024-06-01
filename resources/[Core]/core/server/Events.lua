@@ -13,6 +13,7 @@ local events = {
     BuildGameUI = true,
     SetupLoots = true,
     ExitPlaneDimension = true,
+    OpenBox = true,
     GetLoot = true,
     GetPlayersInPlaneClient = true,
     RegisterKill = true,

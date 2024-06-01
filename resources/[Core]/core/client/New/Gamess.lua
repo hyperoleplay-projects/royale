@@ -741,22 +741,14 @@ CreateThread(function()
                             end
                             
                             if isEPressed and GetGameTimer() - pressTime >= 2000 then
-                                deleteObject(v.chestHandle)
-
-                                local pickupHash = GetHashKey('PICKUP_' .. v.item)
-
-                                if v.item:find('AMMO_') then
-                                    pickupHash = GetHashKey('PICKUP_AMMO_BULLET_MP')
-                                end
-
-                                local pickupHandle = CreatePickupRotate(pickupHash, v.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
-                                
-                                SetPickupRegenerationTime(pickupHandle, -1)
+                                controller.sendServerEvent('OpenBox', {
+                                    id = k,
+                                    item = v.item,
+                                    pos = v.pos,
+                                    number = v.tabela,
+                                })
 
                                 v.timeout = GetGameTimer() + 550
-
-                                PickUps[k].handle = pickupHandle
-                                PickUps[k].chestHandle = nil
 
                                 PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
                                 
@@ -777,19 +769,13 @@ CreateThread(function()
                                     lastPickupTime = currentTime
 
                                     controller.sendServerEvent('GetLoot', {
+                                        id = k,
                                         number = v.tabela,
                                         item = v.item,
                                         drop = v.drop,
                                         ammout = v.ammout
                                     })
 
-                                    RemovePickup(PickUps[k].handle)
-
-                                    PickUps[k].coleted = true
-                                    closestPickups[k] = nil
-                                    
-                                    RemoveItemFromTable(v.item)
-                    
                                     PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
                                     
                                     break
@@ -824,6 +810,42 @@ CreateThread(function()
         Wait(sleepTime)
     end
 end)
+
+clientEvents.GeneratePickup = function(data)
+    print('GeneratePickup', json.encode(data))
+    local closestObject = closestPickups[data.id]
+
+    if closestObject then
+        deleteObject(closestObject.chestHandle)
+    end
+
+    local pickupObject = PickUps[data.id]
+
+    if not pickupObject then
+        for i, pickup in ipairs(PickUps) do
+            if data.tabela == pickup.source then
+                pickupObject = PickUps[i]
+            end
+        end
+    end
+
+    if pickupObject then
+        deleteObject(pickupObject.chestHandle)
+
+        local pickupHash = GetHashKey('PICKUP_'..data.item)
+
+        if data.item:find('AMMO_') then
+            pickupHash = GetHashKey('PICKUP_AMMO_BULLET_MP')
+        end
+
+        local pickupHandle = CreatePickupRotate(pickupHash, data.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
+        
+        SetPickupRegenerationTime(pickupHandle, -1)
+
+        pickupObject.handle = pickupHandle
+        pickupObject.chestHandle = nil
+    end
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- Create Object - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -884,7 +906,7 @@ Citizen.CreateThread(function()
                         end
                     end
                 else
-                    if distance > 100 then
+                    if distance > 100 or pickup.coleted then
                         if DoesEntityExist(pickup.chestHandle) then
                             deleteObject(pickup.chestHandle)
 
@@ -903,8 +925,24 @@ end)
 -- GetLoot - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.GetLootClient = function(data)
+    local pickupObject = PickUps[data.id]
+
+    if pickupObject then
+        RemovePickup(pickupObject.handle)
+        
+        pickupObject.coleted = true
+    end
+
+    if closestPickups[data.id] then
+        closestPickups[data.id] = nil
+    end
+    
+    RemoveItemFromTable(data.item)
+
     for i, pickup in ipairs(PickUps) do
         if data.tabela == pickup.source then
+            RemovePickup(pickup.handle)
+
             pickup.coleted = true
         end
     end
@@ -1217,7 +1255,7 @@ end)
 clientEvents.initSpectator = function(data) 
     if getTableSize(data.players) > 0 and data.target ~= nil then
         spectatingPlayers = data.players
-        LocalPlayer.state.inSpec = true
+        LocalPlayer.state:set('inSpec', true, true)
         EndGame = data.endGame
         setSpectatorTarget(data.target, data.coords)
 
@@ -1349,6 +1387,7 @@ function src.stopSpectatorMode()
         NetworkOverrideSendRestrictions(targetEntity, true) -- ATIVAR VOIP ENTRE OS JOGADORES
         NetworkSetOverrideSpectatorMode(false)
         SetEntityVisible(ped, true)
+
         LocalPlayer.state.inSpec = false
         AdminSpec = false
         Cursor = false
@@ -1561,6 +1600,8 @@ RegisterNetEvent('events_controller')
 AddEventHandler('events_controller', function(sv_content)
     local eventName = sv_content.event
     local data = sv_content.data
+    
+    print('events_controller', eventName, json.encode(data))
 
     if clientEvents[eventName] ~= nil then
         clientEvents[eventName](data)

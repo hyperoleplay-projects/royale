@@ -77,7 +77,7 @@ GameController.AdminFunctions = function(data)
         Player(data.source).state.inLobbyPrincipal = false
         Player(data.source).state.inAimLab = false
         vRP.clearInventory(user_id)
-        Player(data.source).state.inSpec = true
+        Player(data.source).state:set('inSpec', true, true)
     
         GameController.BuildGameUI(data.gameId, {
             status = true,
@@ -756,8 +756,11 @@ GameController.processEventTick = function(gameId)
 
         if numTeamsAlive == 1 then
             game.finished = true
+
             print("^2[ PARTIDAS ]^7 Partida: "..game.gameId.." finalizada com o ganhador: "..winningTeam..", modo: "..game.gameType.."")
+
             ApiController.OpenWinner({ code = winningTeam, gameId = game.gameId })
+
             return
         end
     end
@@ -1249,6 +1252,12 @@ GameController.GetGameForCode = function(code)
     return nil
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+--  GetGameFromId - Function
+-----------------------------------------------------------------------------------------------------------------------------------------
+GameController.GetGameFromId = function(gameId) 
+    return Games[gameId]
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 --  GetGameForCode - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.GenerateUniqueId = function()
@@ -1523,6 +1532,19 @@ GameController.ExitPlaneDimension = function()
     GameController.UpdatePlayersInPlane(Player(source).state.gameId)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+--  OpenBox - Function
+-----------------------------------------------------------------------------------------------------------------------------------------
+GameController.OpenBox = function(source, data) 
+    local GameId = Player(source).state.gameId
+    local Game = Games[GameId]
+
+    if Game == nil then 
+        return 
+    end
+
+    GameController.sendEventPlayersLoot(GameId, "GeneratePickup", data)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 --  GetLoot - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.GetLoot = function(source, data) 
@@ -1543,7 +1565,7 @@ GameController.GetLoot = function(source, data)
 
             clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
 
-            GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number })
+            GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number, id = data.id })
         else
             TriggerClientEvent("Notify", source, "negado", "Inventário cheio.", 15000, "normal", "Admin")
         end
@@ -1555,7 +1577,7 @@ GameController.GetLoot = function(source, data)
 
             clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
 
-            GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number })
+            GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number, id = data.id })
         else
             TriggerClientEvent("Notify", source, "negado", "Inventário cheio.", 15000, "normal", "Admin")
         end

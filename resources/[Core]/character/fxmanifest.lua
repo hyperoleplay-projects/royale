@@ -11,7 +11,6 @@ ui_page "character-nui/index.html"
 
 files {
     "character-nui/index.html",
-    "character-nui/range.png",
     "character-nui/style.css",
     "character-nui/reset.css",
     "character-nui/vue.js",
@@ -20,7 +19,6 @@ files {
 
 server_scripts {
   '@vrp/lib/utils.lua',
-  "@oxmysql/server.lua",
   'server.lua'
 }
 
