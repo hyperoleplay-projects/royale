@@ -685,6 +685,8 @@ AddEventHandler('events_controllerApi', function(sv_content)
 
     if clientApiEvents[eventName] ~= nil then
         clientApiEvents[eventName](data)
+    else
+        print('[ERROR] - Evento não existe. - '..eventName)
     end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

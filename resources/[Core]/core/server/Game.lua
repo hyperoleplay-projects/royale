@@ -149,7 +149,10 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.DropInventoryItems = function(gameId, inventory, Coords)
     local Game = Games[gameId]
-    if Game == nil then return end
+
+    if Game == nil then 
+        return 
+    end
 
     for k,inventory in pairs(inventory) do 
         if itemDrop(inventory.item) then
@@ -159,7 +162,6 @@ GameController.DropInventoryItems = function(gameId, inventory, Coords)
                 ammout = inventory.amount
             })
         end
-        Wait(5)
     end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -168,39 +170,47 @@ end
 function src.DropInventoryItem(Slot, Amount) 
     local source = source
     local Game = Games[Player(source).state.gameId]
-    if Game == nil then return end
-    local user_id = vRP.getUserId(source)
-    local Slot = tostring(Slot)
-    local Amount = parseInt(Amount)
-    local Ped = GetPlayerPed(source)
-    local Coords = GetEntityCoords(Ped)
+    
+    if Game == nil then 
+        return 
+    end
 
     if Player(source).state.inGame then
+        local Slot = tostring(Slot)
+        local Amount = parseInt(Amount)
+        local user_id = vRP.getUserId(source)
         local inventory = vRP.userInventory(source, user_id)
-        if not inventory[Slot] or inventory[Slot]["item"] == nil then
+        
+        if not inventory[Slot] or inventory[Slot].item == nil then
             return
         end
-
-        if Amount == 0 then Amount = 1 end
-        local Item = inventory[Slot]["item"]
+        
+        if not Amount or Amount <= 0 then 
+            Amount = 1 
+        end
+        
+        local Item = inventory[Slot].item
 
         if itemDrop(Item) then
+            if vRP.tryGetInventoryItem(user_id, Item, Amount, true, Slot) then
+                TriggerClientEvent('inventory:Update', source, 'updateMochila')
 
-            if vRP.tryGetInventoryItem(user_id,Item,Amount,true,Slot) then
-                TriggerClientEvent("inventory:Update", source,"updateMochila")
+                local Ped = GetPlayerPed(source)
+                local Coords = GetEntityCoords(Ped)
 
-                GameController.sendEventPlayersEvent(Player(source).state.gameId, "DropInventoryItem", {
-                    name = Item,
-                    coords = vector3(Coords["x"],Coords["y"],Coords["z"]),
-                    ammout = Amount
+                GameController.sendEventPlayersEvent(Player(source).state.gameId, 'DropInventoryItem', {
+                    name = Item, 
+                    ammout = Amount, 
+                    coords = vector3(Coords.x, Coords.y, Coords.z)
                 })
             end
-
         else
-            TriggerClientEvent("Notify", source, "negado", "Não é possível dropar este item.", 15000, "normal", "Admin")
+            TriggerClientEvent('Notify', source, 'negado', 'Não é possível dropar este item.', 15000, 'normal', 'Admin')
         end
     end
-    Wait(100)
+
+    Citizen.Wait(100)
+
     clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -541,7 +551,6 @@ GameController.sendEventPlayersEvent = function(gameId, eventName, eventData)
             event = eventName,
             data = eventData
         })
-        Wait(5)
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------

@@ -51,7 +51,6 @@ ApiController.sendEventPlayersEvent = function(teamCode, eventName, eventData)
             event = eventName,
             data = eventData
         })
-        Wait(5)
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------

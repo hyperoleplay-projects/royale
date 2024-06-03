@@ -500,55 +500,50 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TRYGETINVENTORYITEM
 -----------------------------------------------------------------------------------------------------------------------------------------
-function vRP.tryGetInventoryItem(user_id,nameItem,amount,notify,slot)
-	selfReturn[user_id] = false
-	local amount = parseInt(amount)
-	local source = vRP.getUserSource(user_id)
-	local inventory = vRP.userInventory(source, user_id)
+function vRP.tryGetInventoryItem(user_id, nameItem, amount, notify, slot)
+    selfReturn[user_id] = false
 
-	if not slot then
-		for k,v in pairs(inventory) do
-			if v["item"] == nameItem and v["amount"] >= amount then
-				v["amount"] = parseInt(v["amount"]) - amount
+    local amount = parseInt(amount)
+    local source = vRP.getUserSource(user_id)
+    local inventory = vRP.userInventory(source, user_id)
 
-				if parseInt(v["amount"]) <= 0 then
-					inventory[k] = nil
-				end
+    if not slot then
+        for k, v in pairs(inventory) do
+            if v.item == nameItem and v.amount >= amount then
+                v.amount = parseInt(v.amount) - amount
 
-				if notify and itemBody(nameItem) then
-					-- TriggerClientEvent("itensNotify",source,{ "removeu",itemIndex(nameItem),amount,itemName(nameItem) })
-				end
+                if parseInt(v.amount) <= 0 then
+                    inventory[k] = nil
+                end
 
-				selfReturn[user_id] = true
+                selfReturn[user_id] = true
 
-				break
-			end
-		end
-	else
-		local selectSlot = tostring(slot)
-		if inventory[selectSlot] and inventory[selectSlot]["item"] == nameItem and parseInt(inventory[selectSlot]["amount"]) >= amount then
-			inventory[selectSlot]["amount"] = parseInt(inventory[selectSlot]["amount"]) - amount
+                break
+            end
+        end
+    else
+        local selectSlot = tostring(slot)
 
-			if parseInt(inventory[selectSlot]["amount"]) <= 0 then
-				inventory[selectSlot] = nil
-			end
+        if inventory[selectSlot] and inventory[selectSlot].item == nameItem and parseInt(inventory[selectSlot].amount) >= amount then
+            inventory[selectSlot].amount = parseInt(inventory[selectSlot].amount) - amount
 
-			if notify and itemBody(nameItem) then
-				-- TriggerClientEvent("itensNotify",source,{ "removeu",itemIndex(nameItem),amount,itemName(nameItem) })
-			end
+            if parseInt(inventory[selectSlot].amount) <= 0 then
+                inventory[selectSlot] = nil
+            end
 
-			selfReturn[user_id] = true
-		end
-	end
+            selfReturn[user_id] = true
+        end
+    end
 
-	local splitName = splitString(nameItem,"-")
-	if itemType(splitName[1]) == "Animal" then
-		TriggerClientEvent("dynamic:animalFunctions",source,"deletar")
-	end
+    local splitName = splitString(nameItem, "-")
+	
+    if itemType(splitName[1]) == "Animal" then
+        TriggerClientEvent("dynamic:animalFunctions", source, "deletar")
+    end
 
-	verifyItens(user_id,nameItem)
+    verifyItens(user_id, nameItem)
 
-	return selfReturn[user_id]
+    return selfReturn[user_id]
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REMOVEINVENTORYITEM

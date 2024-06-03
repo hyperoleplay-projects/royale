@@ -178,7 +178,7 @@ clientEvents.BuildGame = function(data)
         setDiscordRich("HYPE", "Battle Royale - Jogo em andamento ".. data.players.. " restantes.")
     end
 
-    TriggerEvent("BuildGame", { status = data.status, safe = false, kills = data.kills or 0, safeTime = 0, players = data.players, updatePlayers = true, updateKills = true })
+    TriggerEvent("BuildGame", { status = data.status, safe = false, kills = data.kills, safeTime = 0, players = data.players, updatePlayers = true, updateKills = true })
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- StopPlane - Function
@@ -444,98 +444,115 @@ clientEvents.StartGameClient = function(data)
     
     if not GameTheard2 then
         GameTheard2 = true
+
         Citizen.CreateThread(function()
+            local function leavePlane()
+                local playerPed = PlayerPedId()
+        
+                DoScreenFadeIn(1000)
+                SetEntityVisible(playerPed, true)
+                SetEntityNoCollisionEntity(playerPed, true, true)
+                DisplayRadar(true)
+                Hud(true)
+        
+                local vehicle = GetVehiclePedIsIn(playerPed, false)
+        
+                ClearPedTasks(playerPed, true)
+                TaskLeaveVehicle(playerPed, vehicle, 64)
+                RemoveAllPedWeapons(playerPed, false)
+        
+                local coords = GetEntityCoords(playerPed)
+        
+                SetPedGadget(playerPed, GetHashKey("GADGET_PARACHUTE"), true)
+                GiveWeaponToPed(playerPed, "GADGET_PARACHUTE", 1, false, false)
+        
+                SetEntityCoordsNoOffset(playerPed, coords.x, coords.y, coords.z-5.5, true, true, true) 
+        
+                inPlane = false
+        
+                controller.sendServerEvent('ExitPlaneDimension', {})
+        
+                AddKeyboardInfo({ status = false })
+                NetworkSetTalkerProximity(2.0)
+                NetworkClearVoiceChannel()
+                NetworkSetVoiceActive(true)
+                
+                inPlaneMessage = false
+        
+                NetworkFadeInEntity(playerPed, true)
+        
+                local height = GetEntityHeightAboveGround(playerPed)
+                local waitingFall = true
+        
+                while waitingFall do
+                    height = GetEntityHeightAboveGround(playerPed)
+        
+                    if height < 80 then
+                        ForcePedToOpenParachute(playerPed)
+        
+                        if GetPedParachuteState(playerPed) == -1 and not IsPedInParachuteFreeFall(playerPed) then
+                            waitingFall = false
+                        end
+                    end
+            
+                    Wait(20)
+                end
+        
+                SetEntityAsMissionEntity(plane, true, true)
+                
+                while DoesEntityExist(plane) do 
+                    DeleteEntity(plane)
+                end 
+        
+                while DoesBlipExist(planeBlip) do 
+                    RemoveBlip(planeBlip)
+                end 
+            end
+        
             while true do
-                local idle = 1
-                Citizen.Wait(idle)
-                local playerPed = GetPlayerPed(-1)
+                local idle = 1000
         
                 if inPlane then
                     idle = 1
+        
                     if not inPlaneMessage then
                         if LocalPlayer.state.IsFollowingTeam then
                             AddKeyboardInfo({
-                                status = true,
-                                key = "F",
+                                status = true, 
+                                key = "F", 
                                 text = "Seguindo <b>"..LocalPlayer.state.IsFollowingTeamLeaderName.."</b>"
                             })
                         else
                             AddKeyboardInfo({
-                                status = true,
-                                key = "F",
+                                status = true, 
+                                key = "F", 
                                 text = "Pular do avião"
                             })
                         end
-
+        
                         inPlaneMessage = true
-
+        
                         controller.sendServerEvent('GetPlayersInPlaneClient', {})
                     end
-    
-                    if inPlane and IsControlPressed(0, 23) then
-                        if not LocalPlayer.state.IsFollowingTeam then
-                            DoScreenFadeIn(1000)
-                            SetEntityVisible(PlayerPedId(),true)
-                            SetEntityNoCollisionEntity(PlayerPedId(),true,true)
-                            DisplayRadar(true)
-                            Hud(true)
-    
-                            local vehicle = GetVehiclePedIsIn(playerPed, false)
-                            ClearPedTasks(playerPed, true)
-                            TaskLeaveVehicle(playerPed, vehicle, 64)
-                            RemoveAllPedWeapons(playerPed, false)
         
-                            local coords = GetEntityCoords(playerPed)
-
-                            SetPedGadget(playerPed, GetHashKey("GADGET_PARACHUTE"), true)
-                            GiveWeaponToPed(playerPed, "GADGET_PARACHUTE", 1, false, false)
-
-                            SetEntityCoordsNoOffset(playerPed, coords.x, coords.y, coords.z-5.5, true, true, true) 
-        
-                            inPlane = false
-                            controller.sendServerEvent('ExitPlaneDimension', {})
-                            AddKeyboardInfo({ status = false })
-                            NetworkSetTalkerProximity(2.0)
-                            NetworkClearVoiceChannel()
-                            NetworkSetVoiceActive(true)
-                            
-                            inPlaneMessage = false
-    
-                            -- Bota o ped visivel denovo
-                            NetworkFadeInEntity(ped, true)
-    
-                            local ped = PlayerPedId()
-                            local height = GetEntityHeightAboveGround(ped)
-                            local waitingFall = true
-
-                            while waitingFall do
-                                height = GetEntityHeightAboveGround(ped)
-
-                                if height < 80 then
-                                    ForcePedToOpenParachute(ped)
-
-                                    if GetPedParachuteState(ped) == -1 and not IsPedInParachuteFreeFall(ped) then
-                                        waitingFall = false
-                                    end
-                                end
-                        
-                                Wait(20)
+                    if inPlane then
+                        if IsControlPressed(0, 23) then
+                            if not LocalPlayer.state.IsFollowingTeam then
+                                leavePlane()
                             end
-
-                            SetEntityAsMissionEntity(plane, true, true)
-
-                            while DoesEntityExist(plane) do 
-                                DeleteEntity(plane)
-                            end 
-
-                            while DoesBlipExist(planeBlip) do 
-                                RemoveBlip(planeBlip)
-                            end 
+                        end
+        
+                        local playerPed = PlayerPedId()
+                        local pedCoordinates = GetEntityCoords(playerPed)
+                        local distance = #(data.planePos - pedCoordinates)
+        
+                        if distance > 5000 then
+                            leavePlane()
                         end
                     end
-                else 
-                    idle = 1000
                 end
+        
+                Citizen.Wait(idle)
             end
         end)
     end
@@ -607,19 +624,32 @@ end
 -- DropInventoryItem - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.DropInventoryItem = function(data) 
-	PickUps[#PickUps+1] = {
-        source = #PickUps+1,
+    local pickupHash = GetHashKey('PICKUP_'..data.name)
+
+    if data.name:find('AMMO') then
+        pickupHash = GetHashKey('PICKUP_AMMO_BULLET_MP')
+    end
+
+    local pickupHandle = CreatePickupRotate(pickupHash, data.coords, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
+    
+    SetPickupRegenerationTime(pickupHandle, -1)
+
+    PickUps[#PickUps + 1] = {
+        source = #PickUps + 1,
+
 		name = data.name,
-		x = data.coords["x"],
-		y = data.coords["y"],
-		z = data.coords["z"],
-		created = false,
-		chestHandle = nil,
-		handle = nil,
-		drop = true,
+		x = data.coords.x,
+		y = data.coords.y,
+		z = data.coords.z,
 		ammout = data.ammout,
-		coleted = false
-	}
+
+        handle = pickupHandle,
+
+        drop = true,
+        coleted = false, 
+        created = false,
+        chestHandle = nil
+    }
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- Pick - Thread
@@ -893,12 +923,14 @@ Citizen.CreateThread(function()
                         local foundZ, cdz = GetGroundZFor_3dCoord(pickup.x, pickup.y, 99990.0, true)
 
                         if foundZ then
-                            local chestHandle = createObject(CHEST_MODELS[pickup.color], vector3(pickup.x, pickup.y, cdz))
+                            local chestHandle = createObject(CHEST_MODELS[pickup.color], vector3(pickup.x, pickup.y, cdz + 0.2))
 
                             if chestHandle then
                                 pickup.chestHandle = chestHandle
                                 pickup.z = cdz + 0.5
                                 pickup.created = true
+
+                                PlaceObjectOnGroundProperly(chestHandle)
                             end
                         end
                     end
