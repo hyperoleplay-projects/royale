@@ -26,7 +26,6 @@ local EndGame = false
 local GameTheard1 = false
 local GameTheard2 = false
 local GameTheard3 = false
-local SpecTheard = false
 local adrenaline = false
 local adrenalineItem = false
 local allPickups = {}
@@ -38,7 +37,6 @@ local lootsTheard1 = nil
 local spectatingPlayer = nil
 local spectatingPlayers = nil
 local isReturnLobby = false
-local SpecTheard = nil
 local lootsTheard2 = nil
 local LuizDev = moduleEE("client")
 local nearbyItems = {}
@@ -573,11 +571,19 @@ RegisterNetEvent('brv:createPickups', function(seed, mapId)
         local lootType = AVAILABLE_LOOTS[randomIndex]
         local lootColor = LOOTS_COLORS_NAMES[lootType]
 
+        local amount = false
+        local name = getRandomWeapon(lootType)
+
+        if name:find('AMMO') then
+            amount = math.random(Config.AmmoAmounts.Min, Config.AmmoAmounts.Max)
+        end
+
         PickUps[#PickUps + 1] = {
             source = #PickUps + 1,
             color = lootColor, 
             lootName = lootType, 
-            name = getRandomWeapon(lootType),
+            ammout = amount,
+            name = name,
             x = location.x,
             y = location.y,
             z = location.z,
@@ -585,7 +591,6 @@ RegisterNetEvent('brv:createPickups', function(seed, mapId)
             chestHandle = nil,
             handle = nil,
             drop = false,
-            ammout = false,
             coleted = false
         }
 
@@ -1180,23 +1185,6 @@ AddEventHandler("entityDamaged", function(victim, culprit, weapon, baseDamage)
     end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- prevSpectator
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterKeyMapping("+prevSpectator","A","keyboard","A")
-RegisterCommand("+prevSpectator",function(source,args,rawCommand)
-	if spectatingPlayers ~= nil and spectatingPlayer ~= nil and LocalPlayer.state.inSpec and getTableSize(spectatingPlayers) > 1 then
-        local newKey = spectatingPlayer.pos-1
-        if spectatingPlayers[newKey] == nil then
-            newKey = #spectatingPlayers-1
-        end
-
-        controller.sendServerEvent('setSpectatorTargetServer', {
-            key = newKey, 
-            source_player = spectatingPlayers[newKey].source
-        })
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- initSpectator - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.initSpectatorAdmin = function(data) 
@@ -1266,11 +1254,35 @@ end)
 RegisterKeyMapping("+nextSpectator","D","keyboard","D")
 RegisterCommand("+nextSpectator",function(source,args,rawCommand)
 	if spectatingPlayers ~= nil and spectatingPlayer ~= nil and LocalPlayer.state.inSpec and getTableSize(spectatingPlayers) > 1 then
-        local newKey = spectatingPlayer.pos+1
-        if spectatingPlayers[newKey] == nil then
-            newKey = 0
-            newKey = #spectatingPlayers-1
+        local newKey = spectatingPlayer.pos
+        
+        if spectatingPlayer.pos >= #spectatingPlayers then
+            newKey = 1
+        else
+            newKey = spectatingPlayer.pos + 1
         end
+
+        controller.sendServerEvent('setSpectatorTargetServer', {
+            key = newKey, 
+            source_player = spectatingPlayers[newKey].source
+        })
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- prevSpectator
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterKeyMapping("+prevSpectator","A","keyboard","A")
+
+RegisterCommand("+prevSpectator",function(source,args,rawCommand)
+	if spectatingPlayers ~= nil and spectatingPlayer ~= nil and LocalPlayer.state.inSpec and getTableSize(spectatingPlayers) > 1 then
+        local newKey = spectatingPlayer.pos
+
+        if spectatingPlayer.pos <= 1 then
+            newKey = #spectatingPlayers
+        else
+            newKey = spectatingPlayer.pos - 1
+        end
+
         controller.sendServerEvent('setSpectatorTargetServer', {
             key = newKey, 
             source_player = spectatingPlayers[newKey].source
@@ -1281,6 +1293,7 @@ end)
 -- initSpectator - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.initSpectator = function(data) 
+    print('initSpectator', json.encode(data))
     if getTableSize(data.players) > 0 and data.target ~= nil then
         spectatingPlayers = data.players
         LocalPlayer.state:set('inSpec', true, true)
@@ -1336,15 +1349,23 @@ function setSpectatorTarget(key, coords)
     end
 
     DoScreenFadeOut(1000)
+
+    local ped = PlayerPedId()
     local newSpectateCoords = calculateSpectatorCoords(coords)
-    SetEntityCoords(PlayerPedId(), newSpectateCoords.x, newSpectateCoords.y, newSpectateCoords.z, 0, 0, 0, false)
+
+    SetEntityCoords(ped, newSpectateCoords.x, newSpectateCoords.y, newSpectateCoords.z, 0, 0, 0, false)
 
     local pid = GetPlayerFromServerId(targetPlayer.source)
+
+    while pid == -1 do
+        pid = GetPlayerFromServerId(targetPlayer.source)
+
+        Citizen.Wait(100)
+    end
+
     local targetEntity = GetPlayerPed(pid)
 
     if DoesEntityExist(targetEntity) then
-        local ped = PlayerPedId()
-
         NetworkSetInSpectatorMode(true, targetEntity)
         SetPlayerInvincible(ped, true)
         SetEntityNoCollisionEntity(ped, targetEntity, false) -- DESATIVAR COLISÕES ENTRE OS JOGADORES
@@ -1354,51 +1375,52 @@ function setSpectatorTarget(key, coords)
     end
 
     Wait(1500)
+
     DoScreenFadeIn(1000)
 
-    if not SpecTheard then
-        SpecTheard = true
+    local playerSpectateEntries = gameApi.getPlayerToSpectate(targetPlayer.source)
+    local spectatingSource = spectatingPlayer.source
 
-        local playerSpectateEntries = gameApi.getPlayerToSpectate(targetPlayer.source)
-        local spectatingSource = spectatingPlayer.source
+    if spectatingPlayer and spectatingSource == spectatingPlayer.source then
+        return
+    end
 
-        CreateThread(function()
-            while spectatingPlayer and spectatingSource == spectatingPlayer.source do
-                local inSpec = LocalPlayer.state.inSpec 
+    CreateThread(function()
+        while spectatingPlayer and spectatingSource == spectatingPlayer.source do
+            local inSpec = LocalPlayer.state.inSpec 
 
-                if inSpec then
-                    local pid = GetPlayerFromServerId(spectatingPlayer.source)
-                    local targetEntity = GetPlayerPed(pid)
-                    local newSpectateCoords = calculateSpectatorCoords(GetEntityCoords(targetEntity))
+            if inSpec then
+                local playerPed = PlayerPedId()
 
-                    SetEntityCoords(PlayerPedId(), newSpectateCoords.x, newSpectateCoords.y, newSpectateCoords.z, 0, 0, 0, false)
-        
+                local pid = GetPlayerFromServerId(spectatingPlayer.source)
+                local targetEntity = GetPlayerPed(pid)
+                local newSpectateCoords = calculateSpectatorCoords(GetEntityCoords(targetEntity))
+
+                SetEntityCoords(playerPed, newSpectateCoords.x, newSpectateCoords.y, newSpectateCoords.z, 0, 0, 0, false)
+    
+                NetworkSetInSpectatorMode(true, targetEntity)
+
+                if playerSpectateEntries then 
+                    local playerTag, playerName, playerColor, playerKills, playerTeamKills = table.unpack(playerSpectateEntries)
+
                     local nowhp = (GetEntityHealth(targetEntity) - 100) / (GetPedMaxHealth(targetEntity) - 100) * 100
                     local nowarmour = GetPedArmour(targetEntity)
 
-                    local newSpectateCoords = calculateSpectatorCoords(GetEntityCoords(targetEntity))
-
-                    NetworkSetInSpectatorMode(true, targetEntity)
-
-                    if playerSpectateEntries then 
-                        local playerTag, playerName, playerColor, playerKills, playerTeamKills = table.unpack(playerSpectateEntries)
-
-                        SendReactMessage('showSpectator', {
-                            tag = playerTag,
-                            name = playerName,
-                            color = playerColor, 
-                            health = nowhp,
-                            armour = nowarmour,
-                            kills = playerKills,
-                            teamKills = playerTeamKills
-                        })
-                    end 
-                end
-
-                Wait(100)
+                    SendReactMessage('showSpectator', {
+                        tag = playerTag,
+                        name = playerName,
+                        color = playerColor, 
+                        health = nowhp,
+                        armour = nowarmour,
+                        kills = playerKills,
+                        teamKills = playerTeamKills
+                    })
+                end 
             end
-        end)
-    end
+
+            Wait(100)
+        end
+    end)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- stopSpectatorMode - Function

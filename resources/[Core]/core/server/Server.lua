@@ -183,7 +183,7 @@ ApiController.RequestSpectatorTeam = function(data, status)
     for playerId, player in pairs(Group.players) do
         if not Player(player.source).state.death then
             local identity = vRP.getIdentity(player.user_id)
-            local plyKey = getTableSize(Players)
+            local plyKey = #Players + 1 -- getTableSize(Players)
 			PlayerKey = plyKey
 
             Players[plyKey] = {
@@ -194,7 +194,6 @@ ApiController.RequestSpectatorTeam = function(data, status)
                 pos = plyKey,
             }
         end
-        Wait(1)
     end
 
     if PlayerKey ~= nil and getTableSize(Players) > 0 then

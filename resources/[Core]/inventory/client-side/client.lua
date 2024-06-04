@@ -128,6 +128,8 @@ end)
 -- USEITEM
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("useItem",function(data)
+	print('useItem', json.encode(data))
+	
 	TriggerServerEvent("inventory:useItem",data["slot"],data["amount"])
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -175,7 +177,7 @@ AddEventHandler("inventory:verifyWeapon",function(splitName)
 		end
 	else
 		if Weapon == "" then
-			vSERVER.existWeapon(splitName)
+			vSERVER.verifyWeapon(splitName)
 		end
 	end
 end)
@@ -437,9 +439,10 @@ function cRP.rechargeCheck(ammoType)
 		weaponAmmo = GetAmmoInPedWeapon(Ped,Weapon)
 
 		for _, weaponName in pairs(weaponsByAmmoType) do
-			if Weapon == v then
+			if Weapon == weaponName then
 				weaponHash = Weapon
 				weaponStatus = true
+
 				break
 			end
 		end
@@ -576,7 +579,6 @@ RegisterKeyMapping("cRbindInventory 3","Interação do botão 3.","keyboard","3"
 RegisterKeyMapping("cRbindInventory 4","Interação do botão 4.","keyboard","4")
 RegisterKeyMapping("cRbindInventory 5","Interação do botão 5.","keyboard","5")
 
-	
 RegisterNetEvent("PlayAnim")
 AddEventHandler("PlayAnim",function(name1, name2)
 	while ( not HasAnimDictLoaded( name1 ) ) do
@@ -591,7 +593,6 @@ AddEventHandler("StopAnim",function(name1, name2)
 	StopAnimTask(PlayerPedId(), name1, name2, -4.0);
 end)
 
-
 RegisterCommand("+StopUso", function() 
 	vSERVER.StopUso()
 end)
@@ -605,27 +606,6 @@ end
 function cRP.getArmour()
 	return GetPedArmour(PlayerPedId())
 end
-
--- Munição automatica
-local isShooting = false
-
-Citizen.CreateThread(function()
-   while true do
-      if IsPedShooting(PlayerPedId()) and LocalPlayer.state.inGame then -- Verificar se o jogador está atirando
-         if not isShooting then
-            isShooting = true
-			local lastWeapon = Weapon
-
-			Wait(3000)
-			TriggerServerEvent("playerShot", lastWeapon)
-         end
-      else
-         isShooting = false
-      end
-      Citizen.Wait(0)
-   end
-end)
-
 --------------------------------------------------------------------------------------------------------------------------------
 -- CREATEAIRSUPPLYBLIP
 --------------------------------------------------------------------------------------------------------------------------------

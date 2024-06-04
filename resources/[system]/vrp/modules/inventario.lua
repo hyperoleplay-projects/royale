@@ -18,44 +18,6 @@ function vRP.checkInventory()
 	return true
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- VERIFYWEAPON
------------------------------------------------------------------------------------------------------------------------------------------
-function vRP.verifyWeapon(Item,Ammo)
-	local source = source
-	local user_id = vRP.getUserId(source)
-	if user_id then
-		local consultItem = vRP.getInventoryItemAmount(user_id,Item)
-		if consultItem[1] <= 0 then
-			local wHash = itemAmmo(Item)
-
-			if wHash ~= nil then
-				if Ammos[user_id][wHash] then
-					Ammos[user_id][wHash] = parseInt(Ammo)
-
-					if Attachs[user_id][Item] ~= nil then
-						for nameAttachs,_ in pairs(Attachs[user_id][Item]) do
-							vRP.generateItem(user_id,nameAttachs,1)
-						end
-
-						Attachs[user_id][Item] = nil
-					end
-
-					if Ammos[user_id][wHash] > 0 then
-						vRP.generateItem(user_id,wHash,Ammos[user_id][wHash])
-						Ammos[user_id][wHash] = nil
-					end
-
-					TriggerClientEvent("inventory:Update",source,"updateMochila")
-				end
-			end
-
-			return false
-		end
-	end
-
-	return true
-end
------------------------------------------------------------------------------------------------------------------------------------------
 -- SHORTCUTS
 -----------------------------------------------------------------------------------------------------------------------------------------
 function vRP.Shortcuts(source, user_id)
@@ -68,38 +30,6 @@ function vRP.Shortcuts(source, user_id)
 		return Shortcuts
 	end
 	return false
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- EXISTWEAPON
------------------------------------------------------------------------------------------------------------------------------------------
-function vRP.existWeapon(Item)
-	local source = source
-	local user_id = vRP.getUserId(source)
-	if user_id then
-		local consultItem = vRP.getInventoryItemAmount(user_id,Item)
-		if consultItem[1] <= 0 then
-			local wHash = itemAmmo(Item)
-
-			if wHash ~= nil then
-				if Ammos[user_id][wHash] then
-					if Attachs[user_id][Item] ~= nil then
-						for nameAttachs,_ in pairs(Attachs[user_id][Item]) do
-							vRP.generateItem(user_id,nameAttachs,1)
-						end
-
-						Attachs[user_id][Item] = nil
-					end
-
-					if Ammos[user_id][wHash] > 0 then
-						vRP.generateItem(user_id,wHash,Ammos[user_id][wHash])
-						Ammos[user_id][wHash] = nil
-					end
-
-					TriggerClientEvent("inventory:Update",source,"updateMochila")
-				end
-			end
-		end
-	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DROPWEAPONS
@@ -117,26 +47,6 @@ function vRP.dropWeapons(Item)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PREVENTWEAPON
------------------------------------------------------------------------------------------------------------------------------------------
-function vRP.preventWeapon(Item,Ammo)
-	local source = source
-	local user_id = vRP.getUserId(source)
-	if user_id then
-		local wHash = itemAmmo(Item)
-
-		if wHash ~= nil then
-			if Ammos[user_id][wHash] then
-				if Ammo > 0 then
-					Ammos[user_id][wHash] = Ammo
-				else
-					Ammos[user_id][wHash] = nil
-				end
-			end
-		end
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
 -- REMOVETHROWABLE
 -----------------------------------------------------------------------------------------------------------------------------------------
 function vRP.removeThrowable(nameItem)
@@ -147,18 +57,6 @@ function vRP.removeThrowable(nameItem)
 		vRP.removeInventoryItem(user_id,nameItem,1,true)
 	end
 end
-
------------------------------------------------------------------------------------------------------------------------------------------
--- INVENTORY:CLEARWEAPONS
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterServerEvent("inventory:clearWeapons")
-AddEventHandler("inventory:clearWeapons",function(user_id)
-	if Ammos[user_id] then
-		Ammos[user_id] = {}
-		Attachs[user_id] = {}
-	end
-end)
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GETWEIGHT
 -----------------------------------------------------------------------------------------------------------------------------------------	
@@ -337,97 +235,97 @@ end
 -- GENERATEITEM
 -----------------------------------------------------------------------------------------------------------------------------------------
 function vRP.generateItem(user_id, nameItem, amount, notify, slot)
-	if tonumber(amount) > 0 then
-			local amount = tonumber(amount)
-			local source = vRP.getUserSource(user_id)
-			local nomeDoItem = ""
-			local SkinsData = {}
+    if tonumber(amount) > 0 then
+        local amount = tonumber(amount)
+        local source = vRP.getUserSource(user_id)
+        local nomeDoItem = ''
+        local SkinsData = {}
 
-			for k, v in pairs(itemSkins(nameItem)) do
-					if not Player(source).state.userSkins then
-							local userInventory = vRP.query("vRP/getInventory", {user_id = user_id})
-							for k, v in pairs(userInventory) do
-									if v.inventory_itemType == "skin" then
-											local item = exports["core"]:Config().Skins[v.inventory_itemName]
-											if item then
-													SkinsData[item.skin_spawnName] = {
-															skin_id = v.inventory_id,
-															skin_spawnName = item.skin_spawnName,
-															skin_name = item.skin_name,
-															skin_category = item.skin_category,
-															skin_model = item.skin_model,
-															skin_image = item.skin_image,
-															skin_status = v.inventory_itemStatus
-													}
-											end
-									end
-							end
-					end
+        for k, v in pairs(itemSkins(nameItem)) do
+            if not Player(source).state.userSkins then
+                local userInventory = vRP.query('vRP/getInventory', {user_id = user_id})
+                
+				for k, v in pairs(userInventory) do
+                    if v.inventory_itemType == 'skin' then
+                        local item = exports.core:Config().Skins[v.inventory_itemName]
+                        
+						if item then
+                            SkinsData[item.skin_spawnName] = {
+                                skin_id = v.inventory_id, 
+                                skin_spawnName = item.skin_spawnName, 
+                                skin_name = item.skin_name, 
+                                skin_category = item.skin_category, 
+                                skin_model = item.skin_model, 
+                                skin_image = item.skin_image, 
+                                skin_status = v.inventory_itemStatus
+                            }
+                        end
+                    end
+                end
+            end
 
-					Player(source).state.userSkins = SkinsData
-					Wait(300)
+            Player(source).state.userSkins = SkinsData
 
-					if Player(source).state.userSkins then
-							for kk, vv in pairs(Player(source).state.userSkins) do
-									if vv.skin_model == v.name then
-											if vv.skin_status == "true" then
-													nomeDoItem = vv.skin_model
-											end
-									end
-							end
-					end
-			end
+            Wait(300)
 
-			if nomeDoItem == "" then
-					nomeDoItem = nameItem
-			end
+            if Player(source).state.userSkins then
+                for kk, vv in pairs(Player(source).state.userSkins) do
+                    if vv.skin_model == v.name then
+                        if vv.skin_status == 'true' then
+                            nomeDoItem = vv.skin_model
+                        end
+                    end
+                end
+            end
+        end
 
-			local inventory = vRP.userInventory(source, user_id)
+        if nomeDoItem == '' then
+            nomeDoItem = nameItem
+        end
 
-			if not slot then
-					local initial = 0
-					if itemType(nomeDoItem) ~= "Munição" then
-							repeat
-									initial = initial + 1
-							until inventory[tostring(initial)] == nil or
-									(inventory[tostring(initial)] and inventory[tostring(initial)]["item"] == nomeDoItem) or
-									initial > vRP.getWeight(user_id)
-					else
-							initial = 5
-							repeat
-									initial = initial + 1
-							until inventory[tostring(initial)] == nil or
-									(inventory[tostring(initial)] and inventory[tostring(initial)]["item"] == nomeDoItem) or
-									initial > vRP.getWeight(user_id)
-					end
+        local inventory = vRP.userInventory(source, user_id)
 
-					if initial <= vRP.getWeight(user_id) then
-							initial = tostring(initial)
+        if not slot then
+            local initial = 0
 
-							if inventory[initial] == nil then
-									inventory[initial] = {item = nomeDoItem, amount = amount}
-							elseif inventory[initial] and inventory[initial]["item"] == nomeDoItem then
-									inventory[initial]["amount"] = tonumber(inventory[initial]["amount"]) + amount
-							end
+            if itemType(nomeDoItem) ~= 'Munição' then
+                repeat
+                    initial = initial + 1
+                until inventory[tostring(initial)] == nil or (inventory[tostring(initial)] and inventory[tostring(initial)].item == nomeDoItem) or initial > vRP.getWeight(user_id)
+            else
+                initial = 5
 
-							TriggerEvent("inventory:MuniLuiz", nomeDoItem, initial, amount, user_id)
+                repeat
+                    initial = initial + 1
+                until inventory[tostring(initial)] == nil or (inventory[tostring(initial)] and inventory[tostring(initial)].item == nomeDoItem) or initial > vRP.getWeight(user_id)
+            end
 
-							TesteInventory[user_id] = inventory
-					end
-			else
-					local selectSlot = tostring(slot)
+            if initial <= vRP.getWeight(user_id) then
+                initial = tostring(initial)
 
-					if inventory[selectSlot] then
-							if inventory[selectSlot]["item"] == nomeDoItem then
-									inventory[selectSlot]["amount"] = tonumber(inventory[selectSlot]["amount"]) + amount
-							end
-					else
-							inventory[selectSlot] = {item = nomeDoItem, amount = amount}
-					end
+                if inventory[initial] == nil then
+                    inventory[initial] = {
+						item = nomeDoItem, 
+						amount = amount
+					}
+                elseif inventory[initial] and inventory[initial].item == nomeDoItem then
+                    inventory[initial].amount = tonumber(inventory[initial].amount) + amount
+                end
 
-					TriggerEvent("inventory:MuniLuiz", nomeDoItem, initial, amount, user_id)
-			end
-	end
+                TesteInventory[user_id] = inventory
+            end
+        else
+            local selectSlot = tostring(slot)
+
+            if inventory[selectSlot] then
+                if inventory[selectSlot].item == nomeDoItem then
+                    inventory[selectSlot].amount = tonumber(inventory[selectSlot].amount) + amount
+                end
+            else
+                inventory[selectSlot] = {item = nomeDoItem, amount = amount}
+            end
+        end
+    end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKMAXITENS
@@ -477,6 +375,7 @@ function verifyItens(user_id,nameItem)
 		TriggerClientEvent("inventory:verifyWeapon",source,midName)
 	elseif checkBackpack[midName] then
 		local consultItem = vRP.getInventoryItemAmount(user_id,nameItem)
+		
 		if consultItem[1] <= 0 then
 			TriggerClientEvent("skinshop:removeBackpack",source,checkBackpack[midName])
 		end
@@ -512,6 +411,10 @@ function vRP.tryGetInventoryItem(user_id, nameItem, amount, notify, slot)
             if v.item == nameItem and v.amount >= amount then
                 v.amount = parseInt(v.amount) - amount
 
+				if "Armamento" == itemType(nameItem) or "Throwing" ~= itemType(nameItem) then
+					TriggerClientEvent("inventory:verifyWeapon", source, nameItem)
+				end
+
                 if parseInt(v.amount) <= 0 then
                     inventory[k] = nil
                 end
@@ -526,6 +429,10 @@ function vRP.tryGetInventoryItem(user_id, nameItem, amount, notify, slot)
 
         if inventory[selectSlot] and inventory[selectSlot].item == nameItem and parseInt(inventory[selectSlot].amount) >= amount then
             inventory[selectSlot].amount = parseInt(inventory[selectSlot].amount) - amount
+
+			if "Armamento" == itemType(nameItem) or "Throwing" ~= itemType(nameItem) then
+				TriggerClientEvent("inventory:verifyWeapon", source, nameItem)
+			end
 
             if parseInt(inventory[selectSlot].amount) <= 0 then
                 inventory[selectSlot] = nil
@@ -557,21 +464,19 @@ function vRP.removeInventoryItem(user_id,nameItem,amount,notify)
 		if v["item"] == nameItem and parseInt(v["amount"]) >= amount then
 			v["amount"] = parseInt(v["amount"]) - amount
 
+			if "Armamento" == itemType(nameItem) or "Throwing" ~= itemType(nameItem) then
+				TriggerClientEvent("inventory:verifyWeapon", source, nameItem)
+			end
+
 			if parseInt(v["amount"]) <= 0 then
 				inventory[k] = nil
 			end
-
-			if notify and itemBody(nameItem) then
-				-- TriggerClientEvent("itensNotify",source,{ "removeu",itemIndex(nameItem),amount,itemName(nameItem) })
-			end
-
 			break
 		end
 	end
 
 	verifyItens(user_id,nameItem)
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INVUPDATE
 -----------------------------------------------------------------------------------------------------------------------------------------

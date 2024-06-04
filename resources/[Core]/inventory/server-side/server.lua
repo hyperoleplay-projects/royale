@@ -107,62 +107,13 @@ function GenerateItemWeapon(user_id,nameItem,amount)
 	WeaponPrimary[user_id] = true
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- INVENTORY:USEITEM
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterServerEvent("inventory:MuniLuiz")
-AddEventHandler("inventory:MuniLuiz",function(nameItem, Slot, Amount, user_idJogador)
-	local source = vRP.getUserSource(user_idJogador)
-
-	if itemType(nameItem) == "Munição" then
-		local Weapon,Hash,Ammo = vCLIENT.rechargeCheck(source,nameItem)
-
-		if Weapon then
-			if Hash == "WEAPON_PETROLCAN" then
-				if (Ammo + Amount) > 4500 then
-					Amount = 4500 - Ammo
-				end
-			else
-				if (Ammo + Amount) > 250 then
-					Amount = 250 - Ammo
-				end
-			end
-
-			if nameItem ~= itemAmmo(Hash) or Amount <= 0 then
-				return
-			end
-
-			TriggerClientEvent("inventory:Update",source,"updateMochila")
-			vCLIENT.rechargeWeapon(source,Hash,Amount)
-		end
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- GetMunicao
 -----------------------------------------------------------------------------------------------------------------------------------------
-function GetMunicao(user_id, tipo)
-	if tipo ~= nil then
-		if vRP.itemAmount(user_id, tipo) > 0 then
-			return vRP.itemAmount(user_id, tipo) -- Retorna 0 se a arma não for encontrada no inventário
-		end
-	end
+-- RegisterCommand('muni', function(source)
+-- 	local user_id = vRP.getUserId(source)
 
-	return 0
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- playerShot
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("playerShot")
-AddEventHandler("playerShot", function(tipo)
-	if tipo ~= nil then
-		local source = source
-		local user_id = vRP.getUserId(source)
-		local ammoItem = itemAmmo(tipo)
-		
-		if ammoItem ~= nil then
-		  vRP.tryGetInventoryItem(user_id, ammoItem, 1, false, Slot)
-		end
-	end
-end)
+-- 	vRP.generateItem(user_id,'WEAPON_AMMO',15,true)
+-- end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INVENTORY:USEITEM
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -199,26 +150,90 @@ AddEventHandler("inventory:useItem",function(Slot,Amount)
 		return end
 
 		if itemType(totalName) == "Armamento" then
+			if vCLIENT.returnWeapon(source) then
+				local Check,Ammo,Hash = vCLIENT.storeWeaponHands(source)
 
-			-- local returnWeapon = vCLIENT.returnWeapon(source)
-			-- if returnWeapon then
-			-- 	local weaponStatus,weaponAmmo,hashItem = vCLIENT.storeWeaponHands(source)
+				if Check then
+					local wHash = itemAmmo(Hash)
 
-			-- 	if weaponStatus then
-			-- 		exports["inventory"]:CleanWeapons(user_id,false)
-			-- 	end
-			-- else
+					if wHash then
+						if Ammo > 0 then
+							if not Ammos[user_id] then
+								Ammos[user_id] = {}
+							end
+
+							Ammos[user_id][wHash] = Ammo
+						else
+							if Ammos[user_id] and Ammos[user_id][wHash] then
+								Ammos[user_id][wHash] = nil
+							end
+						end
+					end
+				end
+			else
+				Ammo = 0
+
+				local wHash = itemAmmo(nameItem)
+
+				if wHash then
+					if not Ammos[user_id] then
+						Ammos[user_id] = {}
+					end
+
+					if not Ammos[user_id][wHash] then
+						Ammos[user_id][wHash] = 0
+					else
+						Ammo = Ammos[user_id][wHash]
+					end
+				end
+
 				if not Attachs[user_id] then
 					Attachs[user_id] = {}
 				end
-
+	
 				if not Attachs[user_id][nameItem] then
 					Attachs[user_id][nameItem] = {}
 				end
 
-				vCLIENT.putWeaponHands(source,nameItem, GetMunicao(user_id, itemAmmo(nameItem)),Attachs[user_id][nameItem] or nil)
-			-- end
-		return end
+				vCLIENT.putWeaponHands(source,nameItem,Ammo,Attachs[user_id][nameItem])
+			end
+			
+			return 
+		end
+
+		if itemType(totalName) == "Munição" then
+			local Weapon,Hash,Ammo = vCLIENT.rechargeCheck(source,nameItem)
+
+			if Weapon then
+				if Hash == "WEAPON_PETROLCAN" then
+					if (Ammo + Amount) > 4500 then
+						Amount = 4500 - Ammo
+					end
+				else
+					if (Ammo + Amount) > 250 then
+						Amount = 250 - Ammo
+					end
+				end
+
+				if nameItem ~= itemAmmo(Hash) or Amount <= 0 then
+					return
+				end
+
+				if vRP.tryGetInventoryItem(user_id,nameItem,Amount,false,Slot) then
+					if not Ammos[user_id] then
+						Ammos[user_id] = {}
+					end
+
+					Ammos[user_id][nameItem] = Ammo + Amount
+
+					TriggerClientEvent("inventory:Update",source,"Backpack")
+
+					vCLIENT.rechargeWeapon(source,Hash,Amount)
+				end
+			end
+
+			return
+		end
 
 		if nameItem == "attachsFlashlight" or nameItem == "attachsCrosshair" or nameItem == "attachsSilencer" or nameItem == "attachsGrip" then
 			local returnWeapon = vCLIENT.returnWeapon(source)
@@ -454,20 +469,95 @@ end)
 -- -----------------------------------------------------------------------------------------------------------------------------------------
 function cRP.preventWeapon(Item,Ammo)
 	local source = source
-	local Passport = vRP.getUserId(source)
-	if Passport and Ammos[Passport] then
-		local Hash = itemAmmo(Item)
+	local user_id = vRP.getUserId(source)
+	if user_id then
+		local wHash = itemAmmo(Item)
 
-		if Hash and Ammos[Passport][Hash] then
-			if Ammo > 0 then
-				Ammos[Passport][Hash] = Ammo
-			else
-				Ammos[Passport][Hash] = nil
-				exports["inventory"]:CleanWeapons(Passport,false)
+		if wHash ~= nil then
+			if Ammos[user_id][wHash] then
+				if Ammo > 0 then
+					Ammos[user_id][wHash] = Ammo
+				else
+					Ammos[user_id][wHash] = nil
+				end
 			end
 		end
 	end
 end
+
+function cRP.verifyWeapon(Item,Ammo)
+	local source = source
+	local user_id = vRP.getUserId(source)
+	if user_id then
+		local consultItem = vRP.getInventoryItemAmount(user_id,Item)
+		if consultItem[1] <= 0 then
+			local wHash = itemAmmo(Item)
+
+			if wHash ~= nil then
+				if Ammos[user_id][wHash] then
+					Ammos[user_id][wHash] = parseInt(Ammo)
+
+					if Attachs[user_id][Item] ~= nil then
+						for nameAttachs,_ in pairs(Attachs[user_id][Item]) do
+							vRP.generateItem(user_id,nameAttachs,1)
+						end
+
+						Attachs[user_id][Item] = nil
+					end
+
+					if Ammos[user_id][wHash] > 0 then
+						vRP.generateItem(user_id,wHash,Ammos[user_id][wHash])
+						Ammos[user_id][wHash] = nil
+					end
+
+					TriggerClientEvent("inventory:Update",source,"updateMochila")
+				end
+			end
+
+			return false
+		end
+	end
+
+	return true
+end
+
+function cRP.existWeapon(Item)
+	local source = source
+	local user_id = vRP.getUserId(source)
+	if user_id then
+		local consultItem = vRP.getInventoryItemAmount(user_id,Item)
+		if consultItem[1] <= 0 then
+			local wHash = itemAmmo(Item)
+
+			if wHash ~= nil then
+				if Ammos[user_id][wHash] then
+					if Attachs[user_id][Item] ~= nil then
+						for nameAttachs,_ in pairs(Attachs[user_id][Item]) do
+							vRP.generateItem(user_id,nameAttachs,1)
+						end
+
+						Attachs[user_id][Item] = nil
+					end
+
+					if Ammos[user_id][wHash] > 0 then
+						vRP.generateItem(user_id,wHash,Ammos[user_id][wHash])
+						Ammos[user_id][wHash] = nil
+					end
+
+					TriggerClientEvent("inventory:Update",source,"updateMochila")
+				end
+			end
+		end
+	end
+end
+
+RegisterServerEvent("inventory:clearWeapons")
+AddEventHandler("inventory:clearWeapons",function(user_id)
+	if Ammos[user_id] then
+		Ammos[user_id] = {}
+		Attachs[user_id] = {}
+	end
+end)
 
 RegisterNetEvent("inventory:clearAmmosAttachs")
 AddEventHandler("inventory:clearAmmosAttachs", function(sourceRecebido) 

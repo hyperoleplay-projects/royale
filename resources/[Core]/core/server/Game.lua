@@ -1571,7 +1571,8 @@ GameController.RequestSpectator = function(data, status)
     for playerId, player in pairs(Game.players) do
         if not Player(player.source).state.death and (Game.players[player.user_id] ~= nil) and GetPlayerRoutingBucket(player.source) == Game.routing then
             local identity = vRP.getIdentity(player.user_id)
-            local plyKey = getTableSize(Players)
+            local plyKey = #Players + 1 -- getTableSize(Players)
+            
             PlayerKey = plyKey
 
             Players[plyKey] = {
@@ -1581,7 +1582,6 @@ GameController.RequestSpectator = function(data, status)
                 pos = plyKey,
             }
         end
-        Wait(1)
     end
 
     if PlayerKey ~= nil and getTableSize(Players) > 0 then
@@ -1607,7 +1607,11 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.setSpectatorTargetServer = function(source, data) 
     local Game = Games[Player(source).state.gameId]
-    if Game == nil then return end
+
+    if Game == nil then 
+        return 
+    end
+
     local Ped = GetPlayerPed(data.source_player)
     local Coords = GetEntityCoords(Ped)
 
@@ -1699,12 +1703,13 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function getTableSize(t)
     local count = 0
+
     for _, __ in pairs(t) do
         count = count + 1
     end
+
     return count
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- count - Function
 -----------------------------------------------------------------------------------------------------------------------------------------

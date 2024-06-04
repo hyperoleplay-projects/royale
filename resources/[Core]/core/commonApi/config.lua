@@ -447,6 +447,10 @@ Config.weapons = {
 	},
 }
 
+Config.AmmoAmounts = {
+    Min = 10, Max = 30
+}
+
 Config.Cars = {
     "weevil",
     "rhapsody",
