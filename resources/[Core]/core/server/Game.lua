@@ -705,40 +705,40 @@ end
 --  processEventTick - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.processEventTick = function(gameId) 
-    local game = Games[gameId]
-    if game == nil then return end
+    -- local game = Games[gameId]
+    -- if game == nil then return end
 
-    local teamsAlive = {}
-    for _, playerInGame in pairs(game.players) do
-        local player = Player(playerInGame.source)
-        if not player.state.death and not player.state.inSpec and not player.state.inDashboard and not player.state.inGameLobby and not player.state.inLobbyPrincipal and GetPlayerRoutingBucket(playerInGame.source) == game.routing then
-            local teamCode = playerInGame.team
-            teamsAlive[teamCode] = (teamsAlive[teamCode] or 0) + 1
-        end
-        Wait(1)
-    end
+    -- local teamsAlive = {}
+    -- for _, playerInGame in pairs(game.players) do
+    --     local player = Player(playerInGame.source)
+    --     if not player.state.death and not player.state.inSpec and not player.state.inDashboard and not player.state.inGameLobby and not player.state.inLobbyPrincipal and GetPlayerRoutingBucket(playerInGame.source) == game.routing then
+    --         local teamCode = playerInGame.team
+    --         teamsAlive[teamCode] = (teamsAlive[teamCode] or 0) + 1
+    --     end
+    --     Wait(1)
+    -- end
 
-    if not game.finished then
-        local numTeamsAlive = 0
-        local winningTeam = nil
+    -- if not game.finished then
+    --     local numTeamsAlive = 0
+    --     local winningTeam = nil
 
-        for teamCode, numAlive in pairs(teamsAlive) do
-            if numAlive > 0 then
-                numTeamsAlive = numTeamsAlive + 1
-                winningTeam = teamCode
-            end
-        end
+    --     for teamCode, numAlive in pairs(teamsAlive) do
+    --         if numAlive > 0 then
+    --             numTeamsAlive = numTeamsAlive + 1
+    --             winningTeam = teamCode
+    --         end
+    --     end
 
-        if numTeamsAlive == 1 then
-            game.finished = true
+    --     if numTeamsAlive == 1 then
+    --         game.finished = true
 
-            print("^2[ PARTIDAS ]^7 Partida: "..game.gameId.." finalizada com o ganhador: "..winningTeam..", modo: "..game.gameType.."")
+    --         print("^2[ PARTIDAS ]^7 Partida: "..game.gameId.." finalizada com o ganhador: "..winningTeam..", modo: "..game.gameType.."")
 
-            ApiController.OpenWinner({ code = winningTeam, gameId = game.gameId })
+    --         ApiController.OpenWinner({ code = winningTeam, gameId = game.gameId })
 
-            return
-        end
-    end
+    --         return
+    --     end
+    -- end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 --  desbugar - command
@@ -1476,7 +1476,9 @@ GameController.LeaveGame = function(playerData)
     end
 
     -- Atualiza os jogadores da safe
+
     TriggerEvent("battle-UpdatePlayersSafe", Games[gameId])
+
     Player(playerData.source).state.gameId = 0
 
     if GameController.GetPlayersCountGame(Game.gameId) >= Game.MinPlayers and not Game.started and not Game.finished then

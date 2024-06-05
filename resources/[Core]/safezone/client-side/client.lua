@@ -29,9 +29,9 @@ AddEventHandler("SafeZone:StartEvent", function(eventID, tabela)
 	if eventID == 3 then
 		BR:ResetGame()
 
-		tabela.safeZone = vector3(tabela.safeZone.x, tabela.safeZone.y, tabela.safeZone.z)
+		-- tabela.safeZone = vector3(tabela.safeZone.x, tabela.safeZone.y, tabela.safeZone.z)
 
-		BR:CreateZone(tabela.safeZone, tabela.radius)
+		-- BR:CreateZone(tabela.safeZone, tabela.radius)
 	elseif eventID == 5 then
 		tabela.Zone = vector3(tabela.Zone.x, tabela.Zone.y, tabela.Zone.z)
 

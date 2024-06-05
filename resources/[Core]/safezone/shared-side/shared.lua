@@ -1,6 +1,5 @@
 BR = {}
 
-
 BR.Blips = {}
 BR.Players = {}
 BR.FormerZone = {}
@@ -66,7 +65,7 @@ function VecLerp(pos1, pos2, l, clamp)
 	return vector3(x, y, z)
 end
 
-function GenerateCenterPoint(distance, configZoneIndex)
+function GenerateCenterPoint(distance, notDIVIDED)
 	local vec = vector3(0.0, 0.0, 0.0)
 	local radius = math.floor(distance / 6)
 
@@ -76,7 +75,7 @@ function GenerateCenterPoint(distance, configZoneIndex)
 		Citizen.Wait(0)
 	end
 
-	return vec - vec / 2
+	return notDIVIDED and vec or vec - vec / 2
 end
 
 function tableHasValue(tbl, value, k)
