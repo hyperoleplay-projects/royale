@@ -20,24 +20,25 @@ function ResetHud()
 end
 
 RegisterNetEvent('BuildGame', function(data)
-	local hasGameStatus = tonumber(data.players) and tonumber(data.kills)
+	if data.updateKills or data.updatePlayers then
+		local informations = {}
 
-	if hasGameStatus then 
-		local newPlayers = data.players or 0
-		local newKills = data.kills or 0
+		if data.players ~= cacheHud.players then 
+			cacheHud.players = data.players
 
-		if newPlayers ~= cacheHud.players or newKills ~= cacheHud.kills then 
-			cacheHud.players = newPlayers
-			cacheHud.kills = newKills
-
-			if not LocalPlayer.state.inSpec then 
-				SendReactMessage('showGameStatus', {
-					alives = cacheHud.players,
-					killed = cacheHud.kills
-				})
-			end 
+			informations.alives = cacheHud.players
 		end
-	end 
+
+		if data.kills ~= cacheHud.kills then
+			cacheHud.kills = data.kills
+
+			informations.killed = cacheHud.kills
+		end
+
+		if not LocalPlayer.state.inSpec and informations.alives or informations.killed then 
+			SendReactMessage('showGameStatus', informations)
+		end 
+	end
 
 	local hasSafe = data.safeRemaining and data.safeTime
 	

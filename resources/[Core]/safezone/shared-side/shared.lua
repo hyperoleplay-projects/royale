@@ -16,6 +16,7 @@ BR.ZoneRadius = {}
 BR.StartTime = {}
 BR.ZoneConfigIndex = {}
 BR.CurrentStage = {}
+BR.SelectedRoute = {}
 
 --[[
 	0 -> WAITING GAME START.

@@ -231,16 +231,16 @@ GameController.SetupSafe = function(gameId)
         return 
     end
 
-    for _, playerInGame in pairs(Game.players) do 
-        if playerInGame.source then
-            Player(playerInGame.source).state.gameId = gameId
+    -- for _, playerInGame in pairs(Game.players) do 
+    --     if playerInGame.source then
+    --         Player(playerInGame.source).state.gameId = gameId
 
-            TriggerClientEvent("SafeZone:StartEvent", playerInGame.source, 3, {
-                safeZone = VectorToTable(vector3(Config.Maps[Game.map].center.x, Config.Maps[Game.map].center.y, 50.0)),
-                radius = Config.Maps[Game.map].radius,
-            })
-        end
-    end
+    --         TriggerClientEvent("SafeZone:StartEvent", playerInGame.source, 3, {
+    --             safeZone = VectorToTable(vector3(Config.Maps[Game.map].center.x, Config.Maps[Game.map].center.y, 50.0)),
+    --             radius = Config.Maps[Game.map].radius,
+    --         })
+    --     end
+    -- end
     
     TriggerEvent("battle-CreateSafe", Game, vector3(Config.Maps[Game.map].center.x, Config.Maps[Game.map].center.y, 50.0))
 end
@@ -496,7 +496,7 @@ GameController.SetupLoots = function(gameId)
             planePos = Game.planePos
         })
 
-        Citizen.Wait(Config.StartSafe * 1000)
+        -- Citizen.Wait(Config.StartSafe * 1000)
 
         GameController.SetupSafe(gameId)
     end)
@@ -580,6 +580,8 @@ GameController.BuildGameUI = function(gameId, eventData)
             local kills = Player(player.source).state.kills
 
             eventData.kills = kills
+
+            print('BuildGameUI - eventData', json.encode(eventData, { indent = true }))
 
             TriggerClientEvent('events_controller', player.source, {
                 event = "BuildGame",

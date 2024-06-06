@@ -11,8 +11,8 @@ clientAPI = Tunnel.getInterface('safezone')
 SAFEZONE_ROUTES = {
     {
         -- Etapa de rota: { Centro (vector3), Radius (number), Duration (number) }
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 2000.0, DURATION = 200 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1000.0, DURATION = 100 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 2000.0, DURATION = 60 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1000.0, DURATION = 40 }, 
         { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 500.0, DURATION = 20 }, 
         { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 250.0, DURATION = 20 }, 
         { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 100.0, DURATION = 10 }, 
@@ -29,7 +29,7 @@ function BR:Safe(Game)
 
         BR.CurrentStage[gameId] = BR.CurrentStage[gameId] + 1
 
-        local newSafezone = BR.SelectedRoute[BR.CurrentStage[gameId]]
+        local newSafezone = BR.SelectedRoute[gameId][BR.CurrentStage[gameId]]
 
         BR.ZoneRadius[gameId] = newSafezone.RADIUS
         BR.Zone[gameId] = newSafezone.COORDINATES
@@ -91,7 +91,7 @@ function BR:Safe(Game)
         BR.ZoneTime[gameId] = false
         BR.ZoneTimer[gameId] = false
         
-        local newSafezone = BR.SelectedRoute[BR.CurrentStage[gameId]]
+        local newSafezone = BR.SelectedRoute[gameId][BR.CurrentStage[gameId]]
 
         BR.ZoneRadius[gameId] = newSafezone.RADIUS
         BR.Zone[gameId] = newSafezone.COORDINATES
@@ -142,14 +142,21 @@ AddEventHandler('battle-CreateSafe', function(Game, Center)
     local routeIndex = math.random(#SAFEZONE_ROUTES)
 
     BR.CurrentStage[Game.gameId] = 0
-    BR.SelectedRoute = SAFEZONE_ROUTES[routeIndex]
-    BR.MaxZones[Game.gameId] = #BR.SelectedRoute
+    BR.SelectedRoute[Game.gameId] = SAFEZONE_ROUTES[routeIndex]
+    BR.MaxZones[Game.gameId] = #BR.SelectedRoute[Game.gameId]
+
+    local safezone = BR.SelectedRoute[Game.gameId][1]
 
     BR:Safe(Game)
 
     for _, playerObject in pairs(Game.players) do 
         Player(playerObject.source).state.inGame = true
         Player(playerObject.source).state.gameId = Game.gameId
+
+        TriggerClientEvent("SafeZone:StartEvent", playerObject.source, 3, {
+            safeZone = VectorToTable(vector3(safezone.COORDINATES.x, safezone.COORDINATES.y, 50.0)),
+            radius = safezone.RADIUS
+        })
 
         TriggerClientEvent('battle-IniciarSafe', playerObject.source)
     end

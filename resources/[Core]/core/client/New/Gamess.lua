@@ -176,7 +176,15 @@ clientEvents.BuildGame = function(data)
         setDiscordRich("HYPE", "Battle Royale - Jogo em andamento ".. data.players.. " restantes.")
     end
 
-    TriggerEvent("BuildGame", { status = data.status, safe = false, kills = data.kills, safeTime = 0, players = data.players, updatePlayers = true, updateKills = true })
+    TriggerEvent("BuildGame", { 
+        status = data.status, 
+        safe = false, 
+        kills = data.kills, 
+        safeTime = 0, 
+        players = data.players, 
+        updatePlayers = true, 
+        updateKills = true 
+    })
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- StopPlane - Function
