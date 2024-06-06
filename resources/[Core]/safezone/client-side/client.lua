@@ -9,7 +9,6 @@ local Blips = {}
 local GameId = 0
 local LuizDev = moduleEE('client')
 local multiDano = 0
-local morto = false
 local killRegistrada = false
 local safeZoneThread = nil
 local safeZoneThread2 = nil
@@ -192,9 +191,11 @@ function BR:GameTimer(ped)
 			if AnimpostfxIsRunning('ChopVision') then 
 				AnimpostfxStop('ChopVision')
 			end 
-
-			morto = false
 		end
+	else
+		if AnimpostfxIsRunning('ChopVision') then 
+			AnimpostfxStop('ChopVision')
+		end 
 	end
 end
 
@@ -231,7 +232,6 @@ function SafeZone.StopSafezone()
 	RemoveBlip(Blips.zone)
 	RemoveBlip(Blips.safezone)
 	
-	morto = false
 	multiDano = 0
 	killRegistrada = false
 	Blips = {}

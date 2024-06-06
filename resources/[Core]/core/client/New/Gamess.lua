@@ -1199,6 +1199,10 @@ clientEvents.initSpectatorAdmin = function(data)
     if not AdminSpec and spectatingPlayers ~= nil then
         AdminSpec = data.status
 
+        if AnimpostfxIsRunning('ChopVision') then 
+            AnimpostfxStop('ChopVision')
+        end 
+
         AddKeyHelp({
             id = 2,
             status = data.status,
@@ -1347,9 +1351,11 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- setSpectatorTarget - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
-local cardCache = {}
-
 function setSpectatorTarget(key, coords)
+    if AnimpostfxIsRunning('ChopVision') then 
+        AnimpostfxStop('ChopVision')
+    end 
+
     local targetPlayer = spectatingPlayers[key]
 
     if targetPlayer == nil then 
@@ -1388,10 +1394,6 @@ function setSpectatorTarget(key, coords)
 
     local playerSpectateEntries = gameApi.getPlayerToSpectate(targetPlayer.source)
     local spectatingSource = spectatingPlayer.source
-
-    if spectatingPlayer and spectatingSource == spectatingPlayer.source then
-        return
-    end
 
     CreateThread(function()
         while spectatingPlayer and spectatingSource == spectatingPlayer.source do

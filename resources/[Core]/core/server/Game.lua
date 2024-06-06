@@ -707,40 +707,45 @@ end
 --  processEventTick - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.processEventTick = function(gameId) 
-    -- local game = Games[gameId]
-    -- if game == nil then return end
+    local game = Games[gameId]
 
-    -- local teamsAlive = {}
-    -- for _, playerInGame in pairs(game.players) do
-    --     local player = Player(playerInGame.source)
-    --     if not player.state.death and not player.state.inSpec and not player.state.inDashboard and not player.state.inGameLobby and not player.state.inLobbyPrincipal and GetPlayerRoutingBucket(playerInGame.source) == game.routing then
-    --         local teamCode = playerInGame.team
-    --         teamsAlive[teamCode] = (teamsAlive[teamCode] or 0) + 1
-    --     end
-    --     Wait(1)
-    -- end
+    if game == nil then 
+        return 
+    end
 
-    -- if not game.finished then
-    --     local numTeamsAlive = 0
-    --     local winningTeam = nil
+    local teamsAlive = {}
 
-    --     for teamCode, numAlive in pairs(teamsAlive) do
-    --         if numAlive > 0 then
-    --             numTeamsAlive = numTeamsAlive + 1
-    --             winningTeam = teamCode
-    --         end
-    --     end
+    for _, playerInGame in pairs(game.players) do
+        local player = Player(playerInGame.source)
+        
+        if not player.state.death and not player.state.inSpec and not player.state.inDashboard and not player.state.inGameLobby and not player.state.inLobbyPrincipal and GetPlayerRoutingBucket(playerInGame.source) == game.routing then
+            local teamCode = playerInGame.team
+            
+            teamsAlive[teamCode] = (teamsAlive[teamCode] or 0) + 1
+        end
+    end
 
-    --     if numTeamsAlive == 1 then
-    --         game.finished = true
+    if not game.finished then
+        local numTeamsAlive = 0
+        local winningTeam = nil
 
-    --         print("^2[ PARTIDAS ]^7 Partida: "..game.gameId.." finalizada com o ganhador: "..winningTeam..", modo: "..game.gameType.."")
+        for teamCode, numAlive in pairs(teamsAlive) do
+            if numAlive > 0 then
+                numTeamsAlive = numTeamsAlive + 1
+                winningTeam = teamCode
+            end
+        end
 
-    --         ApiController.OpenWinner({ code = winningTeam, gameId = game.gameId })
+        if numTeamsAlive == 1 then
+            game.finished = true
 
-    --         return
-    --     end
-    -- end
+            print("^2[ PARTIDAS ]^7 Partida: "..game.gameId.." finalizada com o ganhador: "..winningTeam..", modo: "..game.gameType.."")
+
+            ApiController.OpenWinner({ code = winningTeam, gameId = game.gameId })
+
+            return
+        end
+    end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 --  desbugar - command

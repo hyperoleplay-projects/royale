@@ -152,6 +152,10 @@ clientApiEvents.JoinLobby = function()
     LocalPlayer.state.inGame = false 
     LocalPlayer.state.inGameLobby = false
 
+    if AnimpostfxIsRunning('ChopVision') then 
+        AnimpostfxStop('ChopVision')
+    end 
+
     Hud(false)
 
     TriggerEvent("duth:ChatStatus", false)
@@ -182,6 +186,10 @@ clientApiEvents.JoinLobby = function()
     end)
 
     Wait(1000)
+
+    if AnimpostfxIsRunning('ChopVision') then 
+        AnimpostfxStop('ChopVision')
+    end 
 
     LocalPlayer.state.inDashboard = true
 

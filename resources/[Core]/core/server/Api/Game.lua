@@ -1,31 +1,32 @@
-local api = {}; Tunnel.bindInterface('core:gameApi', api); 
+local api = {}; 
+Tunnel.bindInterface('core:gameApi', api); 
 
 function api.getPlayerToSpectate(playerSource)
-  local playerId = vRP.getUserId(playerSource)
+    local playerId = vRP.getUserId(playerSource)
 
-  if not playerId then 
-    return 
-  end 
+    if not playerId then 
+        return 
+    end 
 
-  local playerIdentity = vRP.getIdentity(playerId)
+    local playerIdentity = vRP.getIdentity(playerId)
 
-  if not playerIdentity then 
-    return 
-  end 
+    if not playerIdentity then 
+        return 
+    end 
 
-  local teamColor = getPlayerColor(playerSource, playerId)
+    local teamColor = getPlayerColor(playerSource, playerId)
 
-  if not teamColor then 
-    return 
-  end 
+    if not teamColor then 
+        return 
+    end 
 
-  local playerTag = getUserGuildTag(playerId)
+    local playerTag = getUserGuildTag(playerId)
 
-  return {
-    playerTag,
-    playerIdentity.username, 
-    teamColor,
-    0, 
-    0
-  }
+    return {
+        playerTag,
+        playerIdentity.username, 
+        teamColor,
+        0, 
+        0
+    }
 end 

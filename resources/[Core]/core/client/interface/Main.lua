@@ -108,11 +108,18 @@ AddEventHandler('NotifyKill', function(dataEntries)
 	local weaponHash, victimId, victimName, victimGuildTag, killerId, killerName, killerGuildTag = table.unpack(dataEntries)
 	local weaponImage = indexByHash(weaponHash)
 
+	local hasKiller = not not killerName
+	local killerTag = not hasKiller and victimGuildTag
+	
+	if hasKiller then
+		killerTag = killerGuildTag
+	end
+
 	SendReactMessage('showKillfeed', {
 		killerName = killerName or victimName, 
 		victimName = victimName or 'Indefinido', 
 		victimTag = victimGuildTag,
-		killerTag = killerGuildTag or victimGuildTag,
+		killerTag = killerTag,
 		weapon = weaponImage
 	})
 end)
