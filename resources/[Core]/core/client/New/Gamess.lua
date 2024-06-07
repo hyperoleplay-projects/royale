@@ -637,15 +637,19 @@ end
 -- DropInventoryItem - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.DropInventoryItem = function(data) 
-    local pickupHash = GetHashKey('PICKUP_'..data.name)
+    local pickupHandle = nil 
 
-    if data.name:find('AMMO') then
-        pickupHash = GetHashKey('PICKUP_AMMO_BULLET_MP')
+    if not data.name:find('AMMO') then
+        local pickupHash = GetHashKey('PICKUP_'..data.name)
+        
+        pickupHandle = CreatePickupRotate(pickupHash, data.coords, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
+
+        SetPickupRegenerationTime(pickupHandle, -1)
+    else 
+        local pickupHash = GetHashKey('v_ret_gc_ammo5')
+
+        pickupHandle = CreateObject(pickupHash, data.coords - vector3(0, 0, 0.9), true, false, false)
     end
-
-    local pickupHandle = CreatePickupRotate(pickupHash, data.coords, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
-    
-    SetPickupRegenerationTime(pickupHandle, -1)
 
     PickUps[#PickUps + 1] = {
         source = #PickUps + 1,
@@ -872,17 +876,18 @@ clientEvents.GeneratePickup = function(data)
     if pickupObject then
         deleteObject(pickupObject.chestHandle)
 
-        local pickupHash = GetHashKey('PICKUP_'..data.item)
-
-        if data.item:find('AMMO') then
-            pickupHash = GetHashKey('PICKUP_AMMO_BULLET_MP')
+        if not data.item:find('AMMO') then
+            local pickupHash = GetHashKey('PICKUP_'..data.item)
+            
+            pickupObject.handle = CreatePickupRotate(pickupHash, data.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
+    
+            SetPickupRegenerationTime(pickupObject.handle, -1)
+        else 
+            local pickupHash = GetHashKey('v_ret_gc_ammo5')
+    
+            pickupObject.handle = CreateObject(pickupHash, data.pos - vector3(0, 0, 0.9), true, false, false)
         end
 
-        local pickupHandle = CreatePickupRotate(pickupHash, data.pos, vector3(-72.0, 0.0, 42.0), 512, -1, 2, 1)
-        
-        SetPickupRegenerationTime(pickupHandle, -1)
-
-        pickupObject.handle = pickupHandle
         pickupObject.chestHandle = nil
     end
 end
@@ -970,7 +975,14 @@ clientEvents.GetLootClient = function(data)
     local pickupObject = PickUps[data.id]
 
     if pickupObject then
-        RemovePickup(pickupObject.handle)
+        if DoesPickupExist(pickupObject.handle) then
+            RemovePickup(pickupObject.handle)
+        end
+
+        if DoesEntityExist(pickupObject.handle) and IsEntityAnObject(pickupObject.handle) then
+            DeleteEntity(pickupObject.handle)
+            SetEntityAsMissionEntity(pickupObject.handle, true, true)
+        end
         
         pickupObject.coleted = true
     end
@@ -983,7 +995,14 @@ clientEvents.GetLootClient = function(data)
 
     for i, pickup in ipairs(PickUps) do
         if data.tabela == pickup.source then
-            RemovePickup(pickup.handle)
+            if DoesPickupExist(pickup.handle) then
+                RemovePickup(pickup.handle)
+            end
+    
+            if DoesEntityExist(pickup.handle) and IsEntityAnObject(pickup.handle) then
+                DeleteEntity(pickup.handle)
+                SetEntityAsMissionEntity(pickup.handle, true, true)
+            end
 
             pickup.coleted = true
         end
@@ -1048,8 +1067,13 @@ clientEvents.StopLoots = function()
             end
         end
 
-        if pickup.handle then
+        if DoesPickupExist(pickup.handle) then
             RemovePickup(pickup.handle)
+        end
+
+        if DoesEntityExist(pickup.handle) and IsEntityAnObject(pickup.handle) then
+            DeleteEntity(pickup.handle)
+            SetEntityAsMissionEntity(pickup.handle, true, true)
         end
     end
 
@@ -1305,7 +1329,6 @@ end)
 -- initSpectator - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 clientEvents.initSpectator = function(data) 
-    print('initSpectator', json.encode(data))
     if getTableSize(data.players) > 0 and data.target ~= nil then
         spectatingPlayers = data.players
         LocalPlayer.state:set('inSpec', true, true)

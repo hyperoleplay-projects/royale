@@ -201,7 +201,7 @@ function src.DropInventoryItem(Slot, Amount)
                 GameController.sendEventPlayersEvent(Player(source).state.gameId, 'DropInventoryItem', {
                     name = Item, 
                     ammout = Amount, 
-                    coords = vector3(Coords.x, Coords.y, Coords.z)
+                    coords = vector3(Coords.x, Coords.y, Coords.z - 1.0)
                 })
             end
         else
@@ -580,8 +580,6 @@ GameController.BuildGameUI = function(gameId, eventData)
             local kills = Player(player.source).state.kills
 
             eventData.kills = kills
-
-            print('BuildGameUI - eventData', json.encode(eventData, { indent = true }))
 
             TriggerClientEvent('events_controller', player.source, {
                 event = "BuildGame",

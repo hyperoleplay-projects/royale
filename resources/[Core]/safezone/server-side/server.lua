@@ -159,7 +159,6 @@ end)
 
 RegisterNetEvent('battle-FinishSafe')
 AddEventHandler('battle-FinishSafe', function(GameRecebido)
-    print('Finish safe', GameRecebido)
 end)
 
 RegisterNetEvent('battle-UpdatePlayersSafe')
