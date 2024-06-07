@@ -104,7 +104,7 @@ AddEventHandler('inventory:Close', function()
 			action = 'hideMenu'
 		})
 
-		Wait(1000)
+		Wait(200)
 
 		Backpack = false
 	end
@@ -252,11 +252,19 @@ end
 
 Citizen.CreateThread(function()
 	while true do 
+		local sleepTime = 0
+
 		if IsControlJustPressed(0, 37) or IsDisabledControlJustPressed(0, 37) then 
 			openBackpack()
 		end 
 
-		Citizen.Wait(not Backpack and 0 or 500)
+		if Backpack then 
+			sleepTime = 500 
+
+			DisableControlAction(0, 200, true)
+		end 
+
+		Citizen.Wait(0)
 	end 
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

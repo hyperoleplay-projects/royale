@@ -686,7 +686,7 @@ function toggleChestAnim(inProgress)
         TaskPlayAnim(ped, dict, anim, 2.0, 2.0, -1, 1, 0, 0, 0, 0)
         FreezeEntityPosition(ped, true)
 
-        exports.progressbar:createProgressBar(2000, "Abrindo baú")
+        exports.progressbar:createProgressBar(2, "Abrindo baú")
     elseif not inProgress and hasAnim then 
         ClearPedTasks(ped)
         ClearPedSecondaryTask(ped)

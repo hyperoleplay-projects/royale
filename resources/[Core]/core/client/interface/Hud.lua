@@ -155,7 +155,7 @@ LuizDev.Thread(function ()
         local weaponHash = GetSelectedPedWeapon(ped)
         local unarmedHash = GetHashKey('WEAPON_UNARMED') 
 
-        if weapon ~= unarmedHash then
+        if weapon ~= unarmedHash and not LocalPlayer.state.inSpec then
             local _, weaponAmmoInClip = GetAmmoInClip(ped, weaponHash)
             local weaponAmmo = GetAmmoInPedWeapon(ped, weaponHash) - weaponAmmoInClip
 

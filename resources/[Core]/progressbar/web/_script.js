@@ -1,5 +1,4 @@
 var $progressBar = null;
-var $progressBarPercent = 0;
 
 $(document).ready(function() {
     $("#hud").fadeIn();
@@ -23,41 +22,33 @@ $(document).ready(function() {
 });
 
 function createProgressBar($time,$text) {
-    if ($progressBar !== null) {
+    $("#progress-bar").html(`
+        <div class="info">
+            <div class="percent" id="progress-percent"></div>
+            <div class="text">${$text.toUpperCase()}</div>
+        </div>
+        <div class="bar"><div id="progress-bar-bar"  style="animation: progress ${$time}s forwards;" class="fill"></div></div>
+    `);
+
+    setTimeout(() => {
         removeCurrentProgressBar();
-    }
+    }, ($time + 0.2) * 1000);
 
     $progressBarPercent = 0;
 
-    let $interval = ($time/100 * 1000)
-
-    $("#progress-bar").html(`
-        <div class="info">
-            <div class="percent" id="progress-percent">${$progressBarPercent}%</div>
-            <div class="text">${$text.toUpperCase()}</div>
-        </div>
-        <div class="bar"><div id="progress-bar-bar" style="width: 0px" class="fill"></div></div>
-    `);
-
     $progressBar = setInterval(() => {
-        if ($progressBarPercent < 100) {
-            $progressBarPercent = $progressBarPercent + 1;
-            $("#progress-percent").html($progressBarPercent+"%");
-            $("#progress-bar-bar").css("width",$progressBarPercent+"%");
-        } else {
-            setTimeout(() => {
-                removeCurrentProgressBar();
-            }, 1000);
-            return;
+        if ($progressBarPercent >= 100) {
+            return
         }
-    }, $interval);
+
+        $progressBarPercent = $progressBarPercent + 1;
+
+        $("#progress-percent").html($progressBarPercent+"%");
+    }, $time/100 * 1000);
 }
 
 function removeCurrentProgressBar() {
-    if ($progressBar !== null) {
-        clearInterval($progressBar);
-        $progressBar = null;
-        $progressBarPercent = 0;
-    }
+    clearInterval($progressBar);
+    $progressBarPercent = 0;
     $("#progress-bar").empty();
 }
