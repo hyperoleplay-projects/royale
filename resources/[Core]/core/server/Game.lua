@@ -496,7 +496,7 @@ GameController.SetupLoots = function(gameId)
             planePos = Game.planePos
         })
 
-        -- Citizen.Wait(Config.StartSafe * 1000)
+        Citizen.Wait(Config.StartSafe * 1000)
 
         GameController.SetupSafe(gameId)
     end)
@@ -706,7 +706,13 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 --  processEventTick - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
+local InTest = false
+
 GameController.processEventTick = function(gameId) 
+    if InTest then
+        return
+    end
+
     local game = Games[gameId]
 
     if game == nil then 

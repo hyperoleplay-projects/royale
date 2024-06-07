@@ -17,6 +17,7 @@ BR.StartTime = {}
 BR.ZoneConfigIndex = {}
 BR.CurrentStage = {}
 BR.SelectedRoute = {}
+BR.IsWaiting = {}
 
 --[[
 	0 -> WAITING GAME START.

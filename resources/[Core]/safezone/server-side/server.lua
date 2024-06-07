@@ -8,16 +8,18 @@ src = {}
 Tunnel.bindInterface('safezone', src)
 clientAPI = Tunnel.getInterface('safezone')
 
+INITIAL_SAFEZONE = { COORDINATES = vector3(0, 0, 0), RADIUS = 5000.0 }
+
 SAFEZONE_ROUTES = {
     {
         -- Etapa de rota: { Centro (vector3), Radius (number), Duration (number) }
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 2000.0, DURATION = 60 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1000.0, DURATION = 40 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 500.0, DURATION = 20 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 250.0, DURATION = 20 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 100.0, DURATION = 10 }, 
+        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 2000.0, DURATION = 60 }, 
+        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1000.0, DURATION = 40 }, 
+        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 500.0, DURATION = 20 }, 
+        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 250.0, DURATION = 20 }, 
+        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 100.0, DURATION = 10 }, 
         { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 50.0, DURATION = 10 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 0.0, DURATION = 0 } -- Essa etapa não move mais, ele finaliza o movimento, por isso não tem duração
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1.0, DURATION = 10 } -- Essa etapa não move mais, ele finaliza o movimento, por isso não tem duração
     }
 }
 
@@ -25,8 +27,6 @@ function BR:Safe(Game)
     local gameId = Game.gameId
 
     if not BR.Zone[gameId] and os.time() >= BR.StartTime[gameId] + BR.StartZone[gameId] then
-        print('PASSOU AQUI 1')
-
         BR.CurrentStage[gameId] = BR.CurrentStage[gameId] + 1
 
         local newSafezone = BR.SelectedRoute[gameId][BR.CurrentStage[gameId]]
@@ -34,7 +34,7 @@ function BR:Safe(Game)
         BR.ZoneRadius[gameId] = newSafezone.RADIUS
         BR.Zone[gameId] = newSafezone.COORDINATES
         BR.IntervalZone[gameId] = newSafezone.DURATION
-       
+
         for _, playerObject in pairs(BR.Players[gameId]) do 
             if playerObject.source and (BR.Players[gameId][playerObject.user_id] ~= nil) then
                 if not Player(playerObject.source).state.inSpec then
@@ -51,26 +51,16 @@ function BR:Safe(Game)
                 })
             end
         end
-    elseif BR.Zone[gameId] and not BR.ZoneTime[gameId] then
-        print('PASSOU AQUI 2')
+    elseif BR.Zone[gameId] and not BR.ZoneTime[gameId] and not BR.IsWaiting[gameId] then
+        BR.IsWaiting[gameId] = true
 
-        BR.ZoneTime[gameId] = os.time()
-        BR.ZoneTimer[gameId] = BR.IntervalZone[gameId]
-        
-        local SafeTeste = false
-       
         Citizen.SetTimeout(60000, function()
-            print('PASSOU AQUI 3')
+            BR.ZoneTimer[gameId] = BR.IntervalZone[gameId]
+            BR.ZoneTime[gameId] = os.time()
+            BR.IsWaiting[gameId] = false
 
             for _, playerObject in pairs(BR.Players[gameId]) do 
                 if playerObject.source and not Player(playerObject.source).state.finishGameUI and (BR.Players[gameId][playerObject.user_id] ~= nil) then
-                    if not SafeTeste then
-                        SafeTeste = true
-
-                        BR.ZoneTimer[gameId] = BR.IntervalZone[gameId]
-                        BR.ZoneTime[gameId] = os.time()
-                    end
-
                     if not Player(playerObject.source).state.inSpec then
                         TriggerClientEvent('NotifyAnnouncement', playerObject.source, { 
                             status = true, 
@@ -84,8 +74,6 @@ function BR:Safe(Game)
             end
         end)
     elseif BR.CurrentStage[gameId] < BR.MaxZones[gameId] and BR.ZoneTime[gameId] and BR.ZoneTime[gameId] + BR.ZoneTimer[gameId] <= os.time() then
-        print('PASSOU AQUI 4')
-
         BR.CurrentStage[gameId] = BR.CurrentStage[gameId] + 1
 
         BR.ZoneTime[gameId] = false
@@ -114,14 +102,18 @@ function BR:Safe(Game)
             end
         end
 
-        print('PASSOU AQUI 5')
-
         -- BR.ZoneCount[gameId] = BR.ZoneCount[gameId] + 1
     end
 
     SetTimeout(1500, function() 
         return BR:Safe(Game) 
     end)
+end
+
+function getTimeByTimestamp(timestamp)
+    local localTime = os.date('*t', timestamp)
+
+    return string.format('%02d:%02d:%02d', localTime.hour, localTime.min, localTime.sec)
 end
 
 RegisterNetEvent('battle-CreateSafe')
@@ -131,6 +123,7 @@ AddEventHandler('battle-CreateSafe', function(Game, Center)
     BR.Zone[Game.gameId] = false
     BR.ZoneTime[Game.gameId] = false
     BR.ZoneTimer[Game.gameId] = false
+    BR.IsWaiting[Game.gameId] = false
     BR.Players[Game.gameId] = Game.players
     
     -- BR.ZoneCount[Game.gameId] = 0
@@ -145,21 +138,23 @@ AddEventHandler('battle-CreateSafe', function(Game, Center)
     BR.SelectedRoute[Game.gameId] = SAFEZONE_ROUTES[routeIndex]
     BR.MaxZones[Game.gameId] = #BR.SelectedRoute[Game.gameId]
 
-    local safezone = BR.SelectedRoute[Game.gameId][1]
-
-    BR:Safe(Game)
-
     for _, playerObject in pairs(Game.players) do 
         Player(playerObject.source).state.inGame = true
         Player(playerObject.source).state.gameId = Game.gameId
 
         TriggerClientEvent("SafeZone:StartEvent", playerObject.source, 3, {
-            safeZone = VectorToTable(vector3(safezone.COORDINATES.x, safezone.COORDINATES.y, 50.0)),
-            radius = safezone.RADIUS
+            safeZone = VectorToTable(vector3(INITIAL_SAFEZONE.COORDINATES.x, INITIAL_SAFEZONE.COORDINATES.y, 50.0)),
+            radius = INITIAL_SAFEZONE.RADIUS
         })
+    end
 
+    Citizen.Wait(2000)
+
+    for _, playerObject in pairs(Game.players) do 
         TriggerClientEvent('battle-IniciarSafe', playerObject.source)
     end
+
+    BR:Safe(Game)
 end)
 
 RegisterNetEvent('battle-FinishSafe')

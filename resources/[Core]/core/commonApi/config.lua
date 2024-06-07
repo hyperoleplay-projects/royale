@@ -1,5 +1,5 @@
 Config = {}
-Config.MinPlayers = 3
+Config.MinPlayers = 1
 Config.StartTime = 15
 Config.StartSafe = 60
 

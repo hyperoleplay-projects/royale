@@ -47,15 +47,7 @@ end)
 function BR:CreateZone(zonePos, zoneRadius)
 	RemoveBlip(Blips.zone)
 
-	print('CreateZone', zonePos, zoneRadius)
-
-	print(
-		BR.ZoneRadius[LocalPlayer.state.gameId], 
-		BR.Zone[LocalPlayer.state.gameId]
-	)
-
 	if BR.ZoneRadius[LocalPlayer.state.gameId] or BR.Zone[LocalPlayer.state.gameId] then
-		print('cu123')
 		BR.FormerZoneRadius[LocalPlayer.state.gameId] = BR.ZoneRadius[LocalPlayer.state.gameId] or zoneRadius
 		BR.FormerZone[LocalPlayer.state.gameId] = BR.Zone[LocalPlayer.state.gameId]
 	end
@@ -111,47 +103,37 @@ function BR:GameTick(ped)
 				if LocalPlayer.state.inGame then
 					local gameId = LocalPlayer.state.gameId
 
-					if BR.FormerZoneRadius[gameId] then
-						local zoneRadius, remaining = BR.FormerZoneRadius[gameId]
-						
-						if BR.ZoneTime[gameId] and BR.ZoneTime[gameId] ~= 0 and BR.Zone[gameId] then
-							print(
-								BR.ZoneTime[gameId], 
-								BR.ZoneTimer[gameId], 
-								BR.ZoneRadius[gameId],
-								BR.FormerZoneRadius[gameId],
-								remaining
-							)
-
-							remaining = math.max(0, BR.ZoneTime[gameId] - GetGameTimer()) / (BR.ZoneTimer[gameId] * 1000)
-							zoneRadius = math.max(BR.ZoneRadius[gameId], BR.ZoneRadius[gameId] + (BR.FormerZoneRadius[gameId] - BR.ZoneRadius[gameId]) * remaining)
-							
-							if remaining > 0 and not LocalPlayer.state.finishGameUI then
-								TriggerEvent('BuildGame', { 
-									status = true, 
-									safe = true, 
-									kills = LocalPlayer.state.kills, 
-									safeRemaining = remaining, 
-									safeTime = math.floor(remaining * BR.ZoneTimer[gameId]), 
-									updateKills = false, 
-									updatePlayers = false 
-								})
-							end
-			
-							if Blips.safezone and DoesBlipExist(Blips.safezone) then
-								SetBlipScale(Blips.safezone, zoneRadius)
+					local zoneRadius = BR.FormerZoneRadius[gameId]
 					
-								if GetDistanceBetweenCoords(GetBlipCoords(Blips.safezone), GetBlipCoords(Blips.zone)) > 0 then
-									local diff = VecLerp(BR.FormerZone[gameId], GetBlipCoords(Blips.zone), 1.0 )
-									
-									SetBlipCoords(Blips.safezone, BR.FormerZone[gameId] + (diff - BR.FormerZone[gameId]) * ((BR.FormerZoneRadius[gameId] - zoneRadius) / BR.ZoneRadius[gameId]))
-								end
+					if BR.ZoneTime[gameId] and BR.ZoneTime[gameId] ~= 0 and BR.Zone[gameId] then
+						local remaining = math.max(0, BR.ZoneTime[gameId] - GetGameTimer()) / (BR.ZoneTimer[gameId] * 1000)
+						zoneRadius = math.max(BR.ZoneRadius[gameId], BR.ZoneRadius[gameId] + (BR.FormerZoneRadius[gameId] - BR.ZoneRadius[gameId]) * remaining)
+
+						if remaining > 0 and not LocalPlayer.state.finishGameUI then
+							TriggerEvent('BuildGame', { 
+								status = true, 
+								safe = true, 
+								kills = LocalPlayer.state.kills, 
+								safeRemaining = remaining, 
+								safeTime = math.floor(remaining * BR.ZoneTimer[gameId]), 
+								updateKills = false, 
+								updatePlayers = false 
+							})
+						end
+		
+						if Blips.safezone and DoesBlipExist(Blips.safezone) then
+							SetBlipScale(Blips.safezone, zoneRadius)
+				
+							if GetDistanceBetweenCoords(GetBlipCoords(Blips.safezone), GetBlipCoords(Blips.zone)) > 0 then
+								local diff = VecLerp(BR.FormerZone[gameId], GetBlipCoords(Blips.zone), 1.0 )
+								
+								SetBlipCoords(Blips.safezone, BR.FormerZone[gameId] + (diff - BR.FormerZone[gameId]) * ((BR.FormerZoneRadius[gameId] - zoneRadius) / BR.ZoneRadius[gameId]))
 							end
 						end
-						
-						if zoneRadius then
-							DrawMarker(28, GetBlipCoords(Blips.safezone), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, zoneRadius, zoneRadius, 1000.0, 255, 165, 0, 155, 0, 0, 0, 0, 0, 0, 0)
-						end
+					end
+					
+					if zoneRadius then
+						DrawMarker(28, GetBlipCoords(Blips.safezone), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, zoneRadius, zoneRadius, 1000.0, 255, 165, 0, 155, 0, 0, 0, 0, 0, 0, 0)
 					end
 				end
 
@@ -163,7 +145,6 @@ end
 
 function BR:GameTimer(ped)
 	if LocalPlayer.state.inGame then
-		local plyPos = GetEntityCoords(ped)
 		local zoneRadius = BR.FormerZoneRadius[LocalPlayer.state.gameId]
 			
 		if BR.ZoneTime[LocalPlayer.state.gameId] and BR.ZoneTime[LocalPlayer.state.gameId] ~= 0 and BR.Zone[LocalPlayer.state.gameId] then
