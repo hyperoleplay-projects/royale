@@ -63,6 +63,14 @@ function BR:CreateZone(zonePos, zoneRadius)
 		Blips.safezone = blip
 	end
 
+	if BR.FormerZone[LocalPlayer.state.gameId] then 
+		SetBlipCoords(Blips.safezone, BR.FormerZone[LocalPlayer.state.gameId])
+	end 
+
+	if BR.FormerZoneRadius[LocalPlayer.state.gameId] then 
+		SetBlipScale(Blips.safezone, BR.FormerZoneRadius[LocalPlayer.state.gameId])
+	end 
+
 	local blip2 = AddBlipForRadius(zonePos, zoneRadius)
 
 	SetBlipSprite(blip2, 10)
