@@ -648,6 +648,12 @@ clientEvents.DropInventoryItem = function(data)
     else 
         local pickupHash = GetHashKey('v_ret_gc_ammo5')
 
+        RequestModel(pickupHash)
+
+        while not HasModelLoaded(pickupHash) do
+            Citizen.Wait(1)
+        end
+
         pickupHandle = CreateObject(pickupHash, data.coords - vector3(0, 0, 0.9), true, false, false)
     end
 
@@ -885,6 +891,12 @@ clientEvents.GeneratePickup = function(data)
         else 
             local pickupHash = GetHashKey('v_ret_gc_ammo5')
     
+            RequestModel(pickupHash)
+
+            while not HasModelLoaded(pickupHash) do
+                Citizen.Wait(1)
+            end
+
             pickupObject.handle = CreateObject(pickupHash, data.pos - vector3(0, 0, 0.9), true, false, false)
         end
 
