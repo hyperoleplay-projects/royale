@@ -13,13 +13,13 @@ INITIAL_SAFEZONE = { COORDINATES = vector3(0, 0, 0), RADIUS = 5000.0 }
 SAFEZONE_ROUTES = {
     {
         -- Etapa de rota: { Centro (vector3), Radius (number), Duration (number) }
-        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 2000.0, DURATION = 60 }, 
-        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1000.0, DURATION = 40 }, 
-        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 500.0, DURATION = 20 }, 
-        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 250.0, DURATION = 20 }, 
-        -- { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 100.0, DURATION = 10 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 2000.0, DURATION = 60 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1000.0, DURATION = 40 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 500.0, DURATION = 20 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 250.0, DURATION = 20 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 100.0, DURATION = 10 }, 
         { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 50.0, DURATION = 10 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1.0, DURATION = 10 } -- Essa etapa não move mais, ele finaliza o movimento, por isso não tem duração
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1.0, DURATION = 10 }
     }
 }
 
@@ -101,19 +101,11 @@ function BR:Safe(Game)
                 })
             end
         end
-
-        -- BR.ZoneCount[gameId] = BR.ZoneCount[gameId] + 1
     end
 
     SetTimeout(1500, function() 
         return BR:Safe(Game) 
     end)
-end
-
-function getTimeByTimestamp(timestamp)
-    local localTime = os.date('*t', timestamp)
-
-    return string.format('%02d:%02d:%02d', localTime.hour, localTime.min, localTime.sec)
 end
 
 RegisterNetEvent('battle-CreateSafe')
@@ -126,12 +118,6 @@ AddEventHandler('battle-CreateSafe', function(Game, Center)
     BR.IsWaiting[Game.gameId] = false
     BR.Players[Game.gameId] = Game.players
     
-    -- BR.ZoneCount[Game.gameId] = 0
-    -- BR.MaxZones[Game.gameId] = 9
-    -- BR.IntervalZone[Game.gameId] = 300
-    -- BR.ZoneRadius[Game.gameId] = 2400.0
-    -- BR.BaseZone[Game.gameId] = Center
-
     local routeIndex = math.random(#SAFEZONE_ROUTES)
 
     BR.CurrentStage[Game.gameId] = 0

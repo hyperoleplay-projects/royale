@@ -1536,8 +1536,6 @@ end
 --  GetLoot - Function
 -----------------------------------------------------------------------------------------------------------------------------------------
 GameController.GetLoot = function(source, data) 
-    local user_id = vRP.getUserId(source)
-
     local GameId = Player(source).state.gameId
     local Game = Games[GameId]
 
@@ -1545,22 +1543,16 @@ GameController.GetLoot = function(source, data)
         return 
     end
 
-    if data.drop and data.ammout > 0 then
+    if not data.ammout then
+        data.ammout = 1
+    end
+
+    if data.ammout > 0 then
+        local user_id = vRP.getUserId(source)
+
         if (vRP.inventoryWeight(user_id) + itemWeight(data.item) * data.ammout) <= vRP.getWeight(user_id) then
-            vRP.generateItem(user_id,data.item,data.ammout,true)
-
-            TriggerClientEvent("inventory:Update", source,"updateMochila")
-
-            clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
-
-            GameController.sendEventPlayersLoot(GameId, "GetLootClient", { tabela = data.number, id = data.id })
-        else
-            TriggerClientEvent("Notify", source, "negado", "Inventário cheio.", 15000, "normal", "Admin")
-        end
-    else
-        if (vRP.inventoryWeight(user_id) + itemWeight(data.item) * 1) <= vRP.getWeight(user_id) then
-            vRP.generateItem(user_id,data.item,1,true)
-
+            vRP.generateItem(user_id, data.item, data.ammout, true)
+ 
             TriggerClientEvent("inventory:Update", source,"updateMochila")
 
             clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
