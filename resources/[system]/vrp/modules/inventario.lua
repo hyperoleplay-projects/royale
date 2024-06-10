@@ -1,5 +1,4 @@
 local TesteInventory = {}
-local WeaponPrimary = {}
 local WeightInventory = {}
 local actived = {}
 local selfReturn = {}
@@ -288,19 +287,15 @@ function vRP.generateItem(user_id, nameItem, amount, notify, slot)
         if not slot then
             local initial = 0
 
-            if itemType(nomeDoItem) ~= 'Munição' then
-                repeat
-                    initial = initial + 1
-                until inventory[tostring(initial)] == nil or (inventory[tostring(initial)] and inventory[tostring(initial)].item == nomeDoItem) or initial > vRP.getWeight(user_id)
-            else
+            if itemType(nomeDoItem) == 'Munição' then
                 initial = 5
-
-                repeat
-                    initial = initial + 1
-                until inventory[tostring(initial)] == nil or (inventory[tostring(initial)] and inventory[tostring(initial)].item == nomeDoItem) or initial > vRP.getWeight(user_id)
-            end
-
-            if initial <= vRP.getWeight(user_id) then
+			end
+			
+			repeat
+				initial = initial + 1
+			until inventory[tostring(initial)] == nil or (itemType(nomeDoItem) ~= 'Armamento' and inventory[tostring(initial)] and inventory[tostring(initial)].item == nomeDoItem) or initial > vRP.getWeight(user_id)
+			
+			if initial <= vRP.getWeight(user_id) then
                 initial = tostring(initial)
 
                 if inventory[initial] == nil then
@@ -528,7 +523,6 @@ end
 function vRP.userInventory(source, user_id)
 	if TesteInventory[user_id] == nil then
 		TesteInventory[user_id] = {}
-		WeaponPrimary[user_id] = false
 	end
 	
 	return TesteInventory[user_id]
@@ -549,5 +543,4 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function vRP.clearInventory(user_id)
 	TesteInventory[user_id] = {}
-	WeaponPrimary[user_id] = false
 end
