@@ -513,14 +513,19 @@ end
 -- SetReadyTeam - Funciton
 -----------------------------------------------------------------------------------------
 ApiController.SetReadyTeam = function(user_id, teamCode) 
-	if Groups[teamCode] == nil then return end
+	if Groups[teamCode] == nil then 
+        return 
+    end
+
     for k,v in pairs(Groups[teamCode].players) do
         if v.user_id == user_id then
             if v.ready then 
 				v.ready = false
+
 				Player(v.source).state.ready = false
             else
 				v.ready = true
+
 				Player(v.source).state.ready = true
             end
         end

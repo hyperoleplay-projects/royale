@@ -564,7 +564,8 @@ function api.tryStartGame()
     local source = source
     local userId = vRP.getUserId(source)
 
-    local isInQueue = Player(source).state.inQueue and not Player(source).state.inGameLobby and not Player(source).state.inGame and not Player(source).state.inPlane
+    local playerState = Player(source).state
+    local isInQueue = playerState.inQueue and not playerState.inGameLobby and not playerState.inGame and not playerState.inPlane
 
     if isInQueue then
         removeOfQueueGame(source, userId)
@@ -572,7 +573,7 @@ function api.tryStartGame()
         return
     end
 
-    local teamCode = Player(source).state.teamCode
+    local teamCode = playerState.teamCode
 
     local isSolo = Groups[teamCode].playerCount == 1
     local teamPlayers = Groups[teamCode].players
@@ -595,7 +596,7 @@ function api.tryStartGame()
         return
     end
 
-    local canStartGame = isTeamReady and isUserLeaderOfGroup(userId, teamCode) and not Player(source).state.inQueue and not Player(source).state.inGameLobby and not Player(source).state.inGame and not Player(source).state.inPlane and not Player(source).state.inAimLab
+    local canStartGame = isTeamReady and isUserLeaderOfGroup(userId, teamCode) and not playerState.inQueue and not playerState.inGameLobby and not playerState.inGame and not playerState.inPlane and not playerState.inAimLab
 
     if not canStartGame then
         return
@@ -608,6 +609,8 @@ function api.tryStartGame()
         local isSolo = Groups[teamCode].playersCount == 1
 
         if not isSolo then
+            TriggerClientEvent('Notify', source, 'negado', 'Você não pode iniciar a busca no modo solo, pois seu time tem mais de um jogador.')
+
             return
         end
     elseif groupQueue.mode == 'DUO' then
@@ -675,7 +678,8 @@ function api.tryReadyToGame()
     local source = source
     local userId = vRP.getUserId(source)
 
-    local isInQueue = Player(source).state.inQueue and not Player(source).state.inGameLobby and not Player(source).state.inGame and not Player(source).state.inPlane
+    local playeState = Player(source).state
+    local isInQueue = playeState.inQueue and not playeState.inGameLobby and not playeState.inGame and not playeState.inPlane
 
     if isInQueue then
         removeOfQueueGame(source, userId)
@@ -683,7 +687,7 @@ function api.tryReadyToGame()
         return
     end
 
-    local teamCode = Player(source).state.teamCode
+    local teamCode = playeState.teamCode
     local isLeader = isUserLeaderOfGroup(userId, teamCode)
 
     if isLeader then
@@ -695,7 +699,7 @@ function api.tryReadyToGame()
     ApiController.SetReadyTeam(userId, teamCode)
 
     for _, player in pairs(teamPlayers) do
-        TriggerClientEvent('core:updateGroupMember', player.source, userId, {isReady = true})
+        TriggerClientEvent('core:updateGroupMember', player.source, source, { isReady = Player(source).state.ready })
     end
 end
 
