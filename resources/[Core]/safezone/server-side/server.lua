@@ -13,13 +13,13 @@ INITIAL_SAFEZONE = { COORDINATES = vector3(0, 0, 0), RADIUS = 5000.0 }
 SAFEZONE_ROUTES = {
     {
         -- Etapa de rota: { Centro (vector3), Radius (number), Duration (number) }
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 2000.0, DURATION = 60 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1000.0, DURATION = 40 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 500.0, DURATION = 20 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 250.0, DURATION = 20 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 100.0, DURATION = 10 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 50.0, DURATION = 10 }, 
-        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1.0, DURATION = 10 }
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 2000.0, DURATION = 360 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1000.0, DURATION = 120 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 500.0, DURATION = 70 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 250.0, DURATION = 45 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 100.0, DURATION = 30 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 50.0, DURATION = 20 }, 
+        { COORDINATES = vector3(-94.68, 881.03, 30.38), RADIUS = 1.0, DURATION = 15 }, 
     }
 }
 
