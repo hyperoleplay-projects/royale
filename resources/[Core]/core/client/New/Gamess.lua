@@ -1421,51 +1421,50 @@ function setSpectatorTarget(key, coords)
         NetworkOverrideSendRestrictions(targetEntity, false) -- DESATIVAR VOIP ENTRE OS JOGADORES
 
         spectatingPlayer = targetPlayer
-    end
-
-    Wait(1500)
-
-    DoScreenFadeIn(1000)
-
-    local playerSpectateEntries = gameApi.getPlayerToSpectate(targetPlayer.source)
-    local spectatingSource = spectatingPlayer.source
-
-    CreateThread(function()
-        while spectatingPlayer and spectatingSource == spectatingPlayer.source do
-            local inSpec = LocalPlayer.state.inSpec 
-
-            if inSpec then
-                local playerPed = PlayerPedId()
-
-                local pid = GetPlayerFromServerId(spectatingPlayer.source)
-                local targetEntity = GetPlayerPed(pid)
-                local newSpectateCoords = calculateSpectatorCoords(GetEntityCoords(targetEntity))
-
-                SetEntityCoords(playerPed, newSpectateCoords.x, newSpectateCoords.y, newSpectateCoords.z, 0, 0, 0, false)
+        
+        Wait(1500)
     
-                NetworkSetInSpectatorMode(true, targetEntity)
+        DoScreenFadeIn(1000)
+    
+        local playerSpectateEntries = gameApi.getPlayerToSpectate(targetPlayer.source)
 
-                if playerSpectateEntries then 
-                    local playerTag, playerName, playerColor, playerKills, playerTeamKills = table.unpack(playerSpectateEntries)
-
-                    local nowhp = (GetEntityHealth(targetEntity) - 100) / (GetPedMaxHealth(targetEntity) - 100) * 100
-                    local nowarmour = GetPedArmour(targetEntity)
-
-                    SendReactMessage('showSpectator', {
-                        tag = playerTag,
-                        name = playerName,
-                        color = playerColor, 
-                        health = nowhp,
-                        armour = nowarmour,
-                        kills = playerKills,
-                        teamKills = playerTeamKills
-                    })
-                end 
+        CreateThread(function()
+            while spectatingPlayer and spectatingPlayer.source == targetPlayer.source do
+                local inSpec = LocalPlayer.state.inSpec 
+    
+                if inSpec then
+                    local playerPed = PlayerPedId()
+    
+                    local pid = GetPlayerFromServerId(spectatingPlayer.source)
+                    local targetEntity = GetPlayerPed(pid)
+                    local newSpectateCoords = calculateSpectatorCoords(GetEntityCoords(targetEntity))
+    
+                    SetEntityCoords(playerPed, newSpectateCoords.x, newSpectateCoords.y, newSpectateCoords.z, 0, 0, 0, false)
+        
+                    NetworkSetInSpectatorMode(true, targetEntity)
+    
+                    if playerSpectateEntries then 
+                        local playerTag, playerName, playerColor, playerKills, playerTeamKills = table.unpack(playerSpectateEntries)
+    
+                        local nowhp = (GetEntityHealth(targetEntity) - 100) / (GetPedMaxHealth(targetEntity) - 100) * 100
+                        local nowarmour = GetPedArmour(targetEntity)
+    
+                        SendReactMessage('showSpectator', {
+                            tag = playerTag,
+                            name = playerName,
+                            color = playerColor, 
+                            health = nowhp,
+                            armour = nowarmour,
+                            kills = playerKills,
+                            teamKills = playerTeamKills
+                        })
+                    end 
+                end
+    
+                Wait(100)
             end
-
-            Wait(100)
-        end
-    end)
+        end)
+    end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- stopSpectatorMode - Function
