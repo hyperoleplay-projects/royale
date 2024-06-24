@@ -719,6 +719,8 @@ CreateThread(function()
 
     local isKeyboardChestActive = false
 
+    local timeout = GetGameTimer()
+
     while true do
         local sleepTime = 1000
 
@@ -815,21 +817,25 @@ CreateThread(function()
                                 AddItemToTable(v.name, v.index)
                             end
                 
-                            if GetGameTimer() > v.timeout then 
+                            if currentTime > v.timeout then 
                                 if IsControlJustReleased(0, 38) and (currentTime - lastPickupTime) > pickupDelay then
-                                    lastPickupTime = currentTime
+                                    if timeout < currentTime then
+                                        timeout = currentTime + 1000
 
-                                    controller.sendServerEvent('GetLoot', {
-                                        id = k,
-                                        number = v.tabela,
-                                        item = v.item,
-                                        drop = v.drop,
-                                        ammout = v.ammout
-                                    })
+                                        lastPickupTime = currentTime
 
-                                    PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
-                                    
-                                    break
+                                        controller.sendServerEvent('GetLoot', {
+                                            id = k,
+                                            number = v.tabela,
+                                            item = v.item,
+                                            drop = v.drop,
+                                            ammout = v.ammout
+                                        })
+
+                                        PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+                                        
+                                        break
+                                    end
                                 end
                             end
                         end

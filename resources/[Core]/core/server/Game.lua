@@ -175,10 +175,11 @@ function src.DropInventoryItem(Slot, Amount)
         return 
     end
 
+    local user_id = vRP.getUserId(source)
+
     if Player(source).state.inGame then
         local Slot = tostring(Slot)
         local Amount = parseInt(Amount)
-        local user_id = vRP.getUserId(source)
         local inventory = vRP.userInventory(source, user_id)
         
         if not inventory[Slot] or inventory[Slot].item == nil then

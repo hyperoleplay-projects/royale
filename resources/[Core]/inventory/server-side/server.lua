@@ -494,7 +494,7 @@ function cRP.verifyWeapon(Item,Ammo)
 			local wHash = itemAmmo(Item)
 
 			if wHash ~= nil then
-				if Ammos[user_id][wHash] then
+				if Ammos[user_id] and Ammos[user_id][wHash] then
 					Ammos[user_id][wHash] = parseInt(Ammo)
 
 					if Attachs[user_id][Item] ~= nil then

@@ -22,12 +22,18 @@ end
 function vRP.Shortcuts(source, user_id)
 	if user_id then
 		local Shortcuts = {}
+		local Inventory = vRP.userInventory(source, user_id)
+
 		for i = 1, 5 do
 			local Slot = tostring(i)
-			Shortcuts[Slot] = vRP.userInventory(source, user_id)[Slot] and itemIndex(vRP.userInventory(source, user_id)[Slot]["item"]) or ""
+			local Object = Inventory[Slot]
+
+			Shortcuts[Slot] = Object and itemIndex(Object.item) or ''
 		end
+
 		return Shortcuts
 	end
+	
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
