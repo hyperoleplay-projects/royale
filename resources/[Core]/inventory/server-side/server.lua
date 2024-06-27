@@ -158,14 +158,10 @@ AddEventHandler("inventory:useItem",function(Slot,Amount)
 
 					if wHash then
 						if Ammo > 0 then
-							if not Ammos[user_id] then
-								Ammos[user_id] = {}
-							end
-
-							Ammos[user_id][wHash] = Ammo
+							Ammos[user_id] = Ammo
 						else
-							if Ammos[user_id] and Ammos[user_id][wHash] then
-								Ammos[user_id][wHash] = nil
+							if Ammos[user_id] then
+								Ammos[user_id] = nil
 							end
 						end
 					end
@@ -177,13 +173,9 @@ AddEventHandler("inventory:useItem",function(Slot,Amount)
 
 				if wHash then
 					if not Ammos[user_id] then
-						Ammos[user_id] = {}
-					end
-
-					if not Ammos[user_id][wHash] then
-						Ammos[user_id][wHash] = 0
+						Ammos[user_id] = 0
 					else
-						Ammo = Ammos[user_id][wHash]
+						Ammo = Ammos[user_id]
 					end
 				end
 
@@ -220,11 +212,7 @@ AddEventHandler("inventory:useItem",function(Slot,Amount)
 				end
 
 				if vRP.tryGetInventoryItem(user_id,nameItem,Amount,false,Slot) then
-					if not Ammos[user_id] then
-						Ammos[user_id] = {}
-					end
-
-					Ammos[user_id][nameItem] = Ammo + Amount
+					Ammos[user_id] = Ammo + Amount
 
 					TriggerClientEvent("inventory:Update",source,"Backpack")
 
@@ -474,11 +462,11 @@ function cRP.preventWeapon(Item,Ammo)
 		local wHash = itemAmmo(Item)
 
 		if wHash ~= nil then
-			if Ammos[user_id][wHash] then
+			if Ammos[user_id] then
 				if Ammo > 0 then
-					Ammos[user_id][wHash] = Ammo
+					Ammos[user_id] = Ammo
 				else
-					Ammos[user_id][wHash] = nil
+					Ammos[user_id] = nil
 				end
 			end
 		end
@@ -494,8 +482,8 @@ function cRP.verifyWeapon(Item,Ammo)
 			local wHash = itemAmmo(Item)
 
 			if wHash ~= nil then
-				if Ammos[user_id] and Ammos[user_id][wHash] then
-					Ammos[user_id][wHash] = parseInt(Ammo)
+				if Ammos[user_id] then
+					Ammos[user_id] = parseInt(Ammo)
 
 					if Attachs[user_id][Item] ~= nil then
 						for nameAttachs,_ in pairs(Attachs[user_id][Item]) do
@@ -505,9 +493,9 @@ function cRP.verifyWeapon(Item,Ammo)
 						Attachs[user_id][Item] = nil
 					end
 
-					if Ammos[user_id][wHash] > 0 then
-						vRP.generateItem(user_id,wHash,Ammos[user_id][wHash])
-						Ammos[user_id][wHash] = nil
+					if Ammos[user_id] > 0 then
+						vRP.generateItem(user_id,wHash,Ammos[user_id])
+						Ammos[user_id] = nil
 					end
 
 					TriggerClientEvent("inventory:Update",source,"updateMochila")
@@ -530,7 +518,7 @@ function cRP.existWeapon(Item)
 			local wHash = itemAmmo(Item)
 
 			if wHash ~= nil then
-				if Ammos[user_id][wHash] then
+				if Ammos[user_id] then
 					if Attachs[user_id][Item] ~= nil then
 						for nameAttachs,_ in pairs(Attachs[user_id][Item]) do
 							vRP.generateItem(user_id,nameAttachs,1)
@@ -539,9 +527,9 @@ function cRP.existWeapon(Item)
 						Attachs[user_id][Item] = nil
 					end
 
-					if Ammos[user_id][wHash] > 0 then
-						vRP.generateItem(user_id,wHash,Ammos[user_id][wHash])
-						Ammos[user_id][wHash] = nil
+					if Ammos[user_id] > 0 then
+						vRP.generateItem(user_id,wHash,Ammos[user_id])
+						Ammos[user_id] = nil
 					end
 
 					TriggerClientEvent("inventory:Update",source,"updateMochila")
@@ -551,10 +539,23 @@ function cRP.existWeapon(Item)
 	end
 end
 
+RegisterServerEvent("inventory:rechargeWeapons")
+AddEventHandler("inventory:rechargeWeapons",function(user_id, source, Amount)
+	if not Ammos[user_id] then
+		Ammos[user_id] = 0
+	end
+
+	Ammos[user_id] = Ammos[user_id] + Amount
+
+	TriggerClientEvent("inventory:Update",source,"Backpack")
+
+	vCLIENT.rechargeWeapon(source, nil, Amount)
+end)
+
 RegisterServerEvent("inventory:clearWeapons")
 AddEventHandler("inventory:clearWeapons",function(user_id)
 	if Ammos[user_id] then
-		Ammos[user_id] = {}
+		Ammos[user_id] = 0
 		Attachs[user_id] = {}
 	end
 end)
@@ -563,7 +564,7 @@ RegisterNetEvent("inventory:clearAmmosAttachs")
 AddEventHandler("inventory:clearAmmosAttachs", function(sourceRecebido) 
 	local user_id = vRP.getUserId(sourceRecebido)
 	if user_id then
-		Ammos[user_id] = {}
+		Ammos[user_id] = 0
 		Attachs[user_id] = {}
 	end
 end)
@@ -591,7 +592,7 @@ exports("CleanWeapons",function(Passport,Clean)
 
 		if Clean then
 			Attachs[Passport] = {}
-			Ammos[Passport] = {}
+			Ammos[Passport] = 0
 		end
 	end
 end)

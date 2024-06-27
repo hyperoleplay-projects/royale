@@ -1552,8 +1552,12 @@ GameController.GetLoot = function(source, data)
         local user_id = vRP.getUserId(source)
 
         if (vRP.inventoryWeight(user_id) + itemWeight(data.item) * data.ammout) <= vRP.getWeight(user_id) then
-            vRP.generateItem(user_id, data.item, data.ammout, true)
- 
+            if data.item == 'WEAPON_AMMO' then
+                TriggerEvent('inventory:rechargeWeapons', user_id, source, data.ammout)
+            else
+                vRP.generateItem(user_id, data.item, data.ammout, true)
+            end
+
             TriggerClientEvent("inventory:Update", source,"updateMochila")
 
             clientAPI.UpdateShortcuts(source, vRP.Shortcuts(source, user_id))
