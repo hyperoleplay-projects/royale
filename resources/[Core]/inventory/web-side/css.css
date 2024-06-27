@@ -135,17 +135,16 @@ inventory section .item img,
 
 inventory section .item .top,
 .ui-draggable .top {
-  background: #fff;
-  color: black;
-  border-radius: 5px 0 0 0;
+  background: #288FF2;
+  color: #FFF;
+  border-radius: 0px 2px 0px 8px;
   position: relative;
   justify-content: center;
-  min-width: 25%;
+  align-self: flex-end;
   font-size: 10px;
   display: flex;
   letter-spacing: 1px;
-  margin-left: 75px;
-  margin-top: 71px;
+  margin-top: -10px;
   padding: 2px;
   text-overflow: ellipsis; /* adicionado */
   /* align-items: center; */
